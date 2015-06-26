@@ -16,6 +16,10 @@
   ],
   "author": "Randy Lebeau",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/supremetechnopriest/react-idle-timer.git"
+  },
   "dependencies": {
     "moment": "^2.10.3",
     "react": "^0.13.3"
@@ -34,7 +38,6 @@
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
     "jest-cli": "^0.4.13",
-    "LUi": "git+ssh://git@github.com:luceracloud/LUi.git",
     "react-hot-loader": "^1.2.7",
     "react-tools": "^0.13.3",
     "webpack": "^1.9.12",
