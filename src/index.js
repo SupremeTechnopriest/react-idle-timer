@@ -185,13 +185,15 @@ export default React.createClass({
 	 */
 	pause() {
 		// this is already paused
-        if ( this.state.remaining != null ) { return; }
-
-        // define how much is left on the timer
-        this.state.remaining = this.props.timeout - ((+new Date()) - this.state.oldDate);
+        if(this.state.remaining !== null) return
 
         // clear any existing timeout
         clearTimeout(this.state.tId);
+
+        // define how much is left on the timer
+        this.setState({
+        	remaining: this.props.timeout - ((+new Date()) - this.state.oldDate)
+        });
 	},
 
 	/**
