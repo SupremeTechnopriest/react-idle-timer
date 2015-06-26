@@ -1,6 +1,8 @@
 # React Idle Timer
 > React.js port of jQuery.idleTimer with some extras.
 
+[![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://nodei.co/npm/react-idle-timer/)
+
 # Installation
 `npm install react-idle-timer`
 
