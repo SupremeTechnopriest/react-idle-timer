@@ -7,6 +7,7 @@
  */
 
 import React from 'react/addons';
+import moment from 'moment';
 
 export default React.createClass({
 
@@ -24,7 +25,8 @@ export default React.createClass({
 		element: React.PropTypes.oneOfType([						// Element ref to watch activty on
 			React.PropTypes.object,
 			React.PropTypes.string
-		])
+		]),
+		format: React.PropTypes.string
 	},
 
 	getDefaultProps() {
@@ -72,7 +74,7 @@ export default React.createClass({
 		});
 	},
 
-	render() { return this.props.children; },
+	render() { return <div>{this.props.children}</div> },
 
 	/////////////////////
 	// Private Methods //
@@ -251,6 +253,7 @@ export default React.createClass({
 	 *
 	 */
 	getLastActiveTime() {
+		if(this.props.format) return moment(this.state.lastActive).format(this.props.format);
 		return this.state.lastActive;
 	},
 
