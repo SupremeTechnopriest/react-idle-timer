@@ -1,7 +1,7 @@
 # React Idle Timer
 > React.js port of jQuery.idleTimer with some extras.
 
-[![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://nodei.co/npm/react-idle-timer/)
+[![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://npmjs.org/package/react-idle-timer/)
 
 # Installation
 `npm install react-idle-timer`
@@ -46,7 +46,7 @@ export default React.createClass({
 - **idleAction** {*Function*} - Function to call on idle
 - **activeAction** {*Function*} - Function to call on active
 - **element** {*Object*} - Defaults to document, may pass a ref to another element
-- **format** {*String*} - moment.js format string applied to last active time
+- **format** {*String*} - moment.js format string applied to `lastActiveTime`
 
 ## Methods
 
@@ -56,6 +56,6 @@ export default React.createClass({
 - **getRemainingTime()** {*Number*} - Returns the remaining time in milliseconds
 - **getElapsedTime()** {*Number*} - Returns the elapsed time in milliseconds
 - **lastActiveTime()** {*String*} - Returns the last active time as a number or a formatted string if the `format` prop is defined
-- **isIdle()** {*Boolean*} - Returns weather or not user is idle
+- **isIdle()** {*Boolean*} - Returns whether or not user is idle
 
 
