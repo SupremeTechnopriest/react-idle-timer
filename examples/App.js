@@ -1,5 +1,5 @@
 import React from 'react';
-import IdleTimer from '../src/index';
+import IdleTimer from '../build/index';
 
 export default React.createClass({
 

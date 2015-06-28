@@ -50,12 +50,12 @@ export default React.createClass({
 
 ## Methods
 
-- **reset()** {*Void*} - Resets the idleTimer
-- **pause()** {*Void*} - Pauses the idleTimer
-- **resume()** {*Void*} - Resumes a paused idleTimer
-- **getRemainingTime()** {*Number*} - Returns the remaining time in milliseconds
-- **getElapsedTime()** {*Number*} - Returns the elapsed time in milliseconds
-- **lastActiveTime()** {*String*} - Returns the last active time as a number or a formatted string if the `format` prop is defined
+- **reset()** *{Void}* - Resets the idleTimer
+- **pause()** *{Void}* - Pauses the idleTimer
+- **resume()** *{Void}* - Resumes a paused idleTimer
+- **getRemainingTime()** *{Number}* - Returns the remaining time in milliseconds
+- **getElapsedTime()** *{Number}* - Returns the elapsed time in milliseconds
+- **lastActiveTime()** *{String}* - Returns the last active time as a number or a formatted string if the `format` prop is defined
 - **isIdle()** {*Boolean*} - Returns whether or not user is idle
 
 

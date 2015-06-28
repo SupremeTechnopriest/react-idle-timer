@@ -54,7 +54,7 @@ export default React.createClass({
 		return {
 			idle: false,
 			oldDate: +new Date(),
-			lastActive: null,
+			lastActive: +new Date(),
 			remaining: null,
 			tId: null,
 			pageX: null,
@@ -74,7 +74,7 @@ export default React.createClass({
 		});
 	},
 
-	render() { return <div>{this.props.children}</div> },
+	render() { return <div>{this.props.children ? this.props.children : ''}</div> },
 
 	/////////////////////
 	// Private Methods //
