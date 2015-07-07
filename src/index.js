@@ -89,6 +89,9 @@ export default React.createClass({
 
 	_toggleIdleState() {
 
+		// Set the state
+		this.setState({ idle: !this.state.idle });
+
 		// Fire the appropriate action
 		if(!this.state.idle) {
 			this.props.activeAction();
@@ -96,8 +99,6 @@ export default React.createClass({
 			this.props.idleAction();
 		}
 
-		// Set the state
-		this.setState({ idle: !this.state.idle });
 
 	},
 
@@ -138,15 +139,15 @@ export default React.createClass({
             this._toggleIdleState(e);
         }
 
-        // store when user was last active
-        this.state.lastActive = +new Date();
-
-        // update mouse coord
-        this.state.pageX = e.pageX;
-        this.state.pageY = e.pageY;
-
-        // set a new timeout
-        this.state.tId = setTimeout(this._toggleIdleState, this.props.timeout);
+        this.setState({
+        	// store when user was last active
+        	lastActive: +new Date(),
+        	// update mouse coord
+        	pageX: e.pageX,
+        	pageY: e.pageY,
+        	// set a new timeout
+        	tId: setTimeout(this._toggleIdleState, this.props.timeout)
+        });
 
 	},
 
@@ -172,7 +173,7 @@ export default React.createClass({
         	oldDate: +new Date(),
         	lastActive: this.state.oldDate,
         	remaining: null,
-        	tId: !this.state.idle ? setTimeout(this._toggleIdleState, this.props.timeout) : null
+        	tId: setTimeout(this._toggleIdleState, this.props.timeout)
         });
 	},
 
