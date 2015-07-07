@@ -90,7 +90,7 @@ export default React.createClass({
 	_toggleIdleState() {
 
 		// Fire the appropriate action
-		if(this.state.idle) {
+		if(!this.state.idle) {
 			this.props.activeAction();
 		} else {
 			this.props.idleAction();
