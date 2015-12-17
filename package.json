@@ -1,13 +1,18 @@
 {
   "name": "react-idle-timer-babel6",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Activity detection for React.js",
   "main": "build/index.js",
-  "files": [ "build", "examples" ],
+  "files": [
+    "build",
+    "examples"
+  ],
   "scripts": {
     "build": "babel src -d build && babel src_examples -d examples",
     "start": "node examples/server",
-    "test": "npm test"
+    "test": "npm test",
+    "prepublish": "in-publish && npm shrinkwrap || not-in-publish",
+    "postpublish": "rimraf npm-shrinkwrap.json"
   },
   "keywords": [
     "react",
@@ -27,6 +32,7 @@
     "url": "https://github.com/supremetechnopriest/react-idle-timer.git"
   },
   "dependencies": {
+    "in-publish": "^2.0.0",
     "moment": "^2.10.3",
     "react": "^0.14.3",
     "react-dom": "^0.14.3"
