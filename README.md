@@ -6,18 +6,20 @@
 [![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://npmjs.org/package/react-idle-timer/)
 
 # Installation
-`npm install react-idle-timer`
+`npm install react-idle-timer-babel6`
 
 # Usage
 
 > check the examples directory for a working example
 
 ```javascript
-import IdleTimer from 'react-idle-timer';
+import React from 'react'
+import IdleTimer from 'react-idle-timer-babel6';
 
-export default React.createClass({
-
-  displayName: 'YourApp',
+class YourApp extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
   render() {
     return (
@@ -32,10 +34,10 @@ export default React.createClass({
         <h1>All your children</h1>
 
       </IdleTimer>
-    );
+    )
   }
-
-});
+}
+module.exports = YourApp
 
 ```
 
