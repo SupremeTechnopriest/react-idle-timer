@@ -1,32 +1,24 @@
-/**
- * Init.js
- * Initilization of the Application
- *
- * @module   Init.js
- * @author  Randy Lebeau
- *
- */
+'use strict';
 
-var React = require('react'),
-	App = require('./App');
+var _react = require('react');
 
+var _react2 = _interopRequireDefault(_react);
 
-// Display React Tools in dev
-if(process.env.NODE_ENV !== 'production') {
-	global.React = React;
-}
+var _reactDom = require('react-dom');
 
+var _App = require('./App');
 
-// Render Application
-(function() {
+var _App2 = _interopRequireDefault(_App);
 
-	React.render(
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-		<App />,
-		document.getElementById('app-container'),
-		function() {
-			// Callback after Render
-		}
-	);
-
-})();
+(0, _reactDom.render)(_react2.default.createElement(_App2.default, null), document.getElementById('app-container'), function () {
+  return console.log('Rendered!');
+}); /**
+     * Init.js
+     * Initilization of the Application
+     *
+     * @module   Init.js
+     * @author  Randy Lebeau
+     *
+     */

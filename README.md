@@ -1,39 +1,43 @@
 # React Idle Timer
 > React.js port of jQuery.idleTimer with some extras.
 
+:rocket: **Now  with [Babel 6](https://github.com/babel/babel) and [react-transform](https://github.com/gaearon/babel-plugin-react-transform) support**
+
 [![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://npmjs.org/package/react-idle-timer/)
 
 # Installation
-`npm install react-idle-timer`
+`npm install react-idle-timer-babel6`
 
 # Usage
 
 > check the examples directory for a working example
 
 ```javascript
-import IdleTimer from 'react-idle-timer';
+import React from 'react'
+import IdleTimer from 'react-idle-timer-babel6';
 
-export default React.createClass({
+class YourApp extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
-	displayName: 'YourApp',
+  render() {
+    return (
+      <IdleTimer
+        ref="idleTimer"
+        element={document}
+        activeAction={this._onActive}
+        idleAction={this._onIdle}
+        timeout={this.state.timeout}
+        format="MM-DD-YYYY HH:MM:ss.SSS">
 
-	render() {
-		return (
-			<IdleTimer
-				ref="idleTimer"
-				element={document}
-				activeAction={this._onActive}
-				idleAction={this._onIdle}
-				timeout={this.state.timeout}
-				format="MM-DD-YYYY HH:MM:ss.SSS">
+        <h1>All your children</h1>
 
-				<h1>All your children</h1>
-
-			</IdleTimer>
-		);
-	}
-
-});
+      </IdleTimer>
+    )
+  }
+}
+module.exports = YourApp
 
 ```
 

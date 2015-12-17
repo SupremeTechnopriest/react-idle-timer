@@ -2,272 +2,245 @@
  * React Idle Timer
  *
  * @author  Randy Lebeau
- * @class 	IdleTimer
+ * @class   IdleTimer
  *
  */
 
-import React from 'react/addons';
+import React,{ Component, PropTypes } from 'react'
 import moment from 'moment';
+import bindAll from 'lodash.bindall'
 
-export default React.createClass({
+class IdleTimer extends Component {
+  constructor(props) {
+    super(props)
+    this.state =  { idle: false
+                  , oldDate: +new Date()
+                  , lastActive: +new Date()
+                  , remaining: null
+                  , tId: null
+                  , pageX: null
+                  , pageY: null
+                  }
 
-	/////////////////////
-	// React Lifecycle //
-	/////////////////////
+    bindAll(this, ['_toggleIdleState', '_handleEvent', 'reset', 'pause', 'resume', 'getRemainingTime', 'getElapsedTime', 'getLastActiveTime', 'isIdle'])
+  }
 
-	displayName: 'IdleTimer',
+  componentWillMount() {
+    this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent))
+  }
 
-	propTypes: {
-		timeout: React.PropTypes.number, 							// Activity timeout
-		events: React.PropTypes.arrayOf(React.PropTypes.string),	// Activity events to bind
-		idleAction: React.PropTypes.func, 							// Action to call when user becomes inactive
-		activeAction: React.PropTypes.func,							// Action to call when user becomes active
-		element: React.PropTypes.oneOfType([						// Element ref to watch activty on
-			React.PropTypes.object,
-			React.PropTypes.string
-		]),
-		format: React.PropTypes.string
-	},
+  componentWillUnmount() {
+    this.props.events.forEach(e => this.props.element.removeEventListener(e, this._handleEvent))
+  }
 
-	getDefaultProps() {
-		return {
-			timeout: 1000 * 60 * 20, // 20 minutes
-			events: [
-				'mousemove',
-				'keydown',
-				'wheel',
-				'DOMMouseScroll',
-				'mouseWheel',
-				'mousedown',
-				'touchstart',
-				'touchmove',
-				'MSPointerDown',
-				'MSPointerMove'
-			],
-			idleAction: function() {},
-			activeAction: function() {},
-			element: document
-		};
-	},
+  render() {
+    return <div>{this.props.children ? this.props.children : ''}</div>
+  }
 
-	getInitialState() {
-		return {
-			idle: false,
-			oldDate: +new Date(),
-			lastActive: +new Date(),
-			remaining: null,
-			tId: null,
-			pageX: null,
-			pageY: null
-		};
-	},
+  /////////////////////
+  // Private Methods //
+  /////////////////////
 
-	componentWillMount() {
-		this.props.events.forEach((event) => {
-			this.props.element.addEventListener(event, this._handleEvent);
-		});
-	},
+  /**
+   * Toggles the idle state and calls the proper action
+   *
+   * @return {void}
+   *
+   */
 
-	componentWillUnmount() {
-		this.props.events.forEach((event) => {
-			this.props.element.removeEventListener(event, this._handleEvent);
-		});
-	},
+  _toggleIdleState() {
+    // Set the state
+    this.setState({ idle: !this.state.idle });
 
-	render() { return <div>{this.props.children ? this.props.children : ''}</div> },
+    // Fire the appropriate action
+    if(!this.state.idle)
+      this.props.activeAction();
+    else
+      this.props.idleAction();
+  }
 
-	/////////////////////
-	// Private Methods //
-	/////////////////////
+  /**
+   * Event handler for supported event types
+   *
+   * @param  {Object} e event object
+   * @return {void}
+   *
+   */
+  _handleEvent(e) {
 
-	/**
-	 * Toggles the idle state and calls the proper action
-	 *
-	 * @return {void}
-	 *
-	 */
+    // Already idle, ignore events
+    if (this.state.remaining) return
 
-	_toggleIdleState() {
+    // Mousemove event
+    if (e.type === 'mousemove') {
+      // if coord are same, it didn't move
+      if (e.pageX === this.state.pageX && e.pageY === this.state.pageY)
+        return
+      // if coord don't exist how could it move
+      if (typeof e.pageX === 'undefined' && typeof e.pageY === 'undefined')
+        return
+      // under 200 ms is hard to do, and you would have to stop, as continuous activity will bypass this
+      let elapsed = (+new Date()) - this.state.oldDate
+      if (elapsed < 200)
+        return
+    }
 
-		// Set the state
-		this.setState({ idle: !this.state.idle });
+    // clear any existing timeout
+    clearTimeout(this.state.tId)
 
-		// Fire the appropriate action
-		if(!this.state.idle) {
-			this.props.activeAction();
-		} else {
-			this.props.idleAction();
-		}
+    // if the idle timer is enabled, flip
+    if (this.state.idle)
+      this._toggleIdleState(e)
 
+    this.setState({ lastActive: +new Date() // store when user was last active
+                  , pageX: e.pageX  // update mouse coord
+                  , pageY: e.pageY
+                  , tId: setTimeout(this._toggleIdleState, this.props.timeout)  // set a new timeout
+                  })
+  }
 
-	},
+  ////////////////
+  // Public API //
+  ////////////////
 
-	/**
-	 * Event handler for supported event types
-	 *
-	 * @param  {Object} e event object
-	 * @return {void}
-	 *
-	 */
-	_handleEvent(e) {
+  /**
+   * Restore initial settings and restart timer
+   *
+   * @return {Void}
+   *
+   */
 
-		// Already idle, ignore events
-		if (this.state.remaining) return;
+  reset() {
+    // reset timers
+    clearTimeout(this.state.tId);
 
-		// Mousemove event
-		if (e.type === "mousemove") {
-			// if coord are same, it didn't move
-			if (e.pageX === this.state.pageX && e.pageY === this.state.pageY) {
-				return;
-			}
-			// if coord don't exist how could it move
-			if (typeof e.pageX === "undefined" && typeof e.pageY === "undefined") {
-				return;
-			}
-			// under 200 ms is hard to do, and you would have to stop, as continuous activity will bypass this
-			let elapsed = (+new Date()) - this.state.oldDate;
-			if (elapsed < 200) {
-				return;
-			}
-		}
+    // reset settings
+    this.setState({ idle: false
+                  , oldDate: +new Date()
+                  , lastActive: this.state.oldDate
+                  , remaining: null
+                  , tId: setTimeout(this._toggleIdleState, this.props.timeout)
+                  })
+  }
 
-		// clear any existing timeout
-        clearTimeout(this.state.tId);
+  /**
+   * Store remaining time and stop timer.
+   * You can pause from idle or active state.
+   *
+   * @return {Void}
+   *
+   */
+  pause() {
+    // this is already paused
+    if(this.state.remaining !== null)
+      return
 
-        // if the idle timer is enabled, flip
-        if (this.state.idle) {
-            this._toggleIdleState(e);
-        }
+    // clear any existing timeout
+    clearTimeout(this.state.tId)
 
-        this.setState({
-        	// store when user was last active
-        	lastActive: +new Date(),
-        	// update mouse coord
-        	pageX: e.pageX,
-        	pageY: e.pageY,
-        	// set a new timeout
-        	tId: setTimeout(this._toggleIdleState, this.props.timeout)
-        });
+    // define how much is left on the timer
+    this.setState({ remaining: this.props.timeout - ((+new Date()) - this.state.oldDate) })
+  }
 
-	},
+  /**
+   * Resumes a stopped timer
+   *
+   * @return {Void}
+   *
+   */
+  resume() {
+    // this isn't paused yet
+    if(this.state.remaining === null )
+      return
 
-	////////////////
-	// Public API //
-	////////////////
+    // start timer and clear remaining
+    if ( !this.state.idle ) {
+      this.setState({ tId: setTimeout(this._toggleIdleState, this.state.remaining)
+                    , remaining: null
+                    })
+    }
+  }
 
-	/**
-	 * Restore initial settings and restart timer
-	 *
-	 * @return {Void}
-	 *
-	 */
+  /**
+   * Time remaining before idle
+   *
+   * @return {Number} Milliseconds remaining
+   *
+   */
+  getRemainingTime() {
+    // If idle there is no time remaining
+    if ( this.state.idle )
+      return 0
 
-	reset() {
+    // If its paused just return that
+    if ( this.state.remaining != null )
+      return this.state.remaining
 
-        // reset timers
-		clearTimeout(this.state.tId);
+    // Determine remaining, if negative idle didn't finish flipping, just return 0
+    let remaining = this.props.timeout - ((+new Date()) - this.state.lastActive)
+    if (remaining < 0)
+      remaining = 0
 
-		// reset settings
-        this.setState({
-        	idle: false,
-        	oldDate: +new Date(),
-        	lastActive: this.state.oldDate,
-        	remaining: null,
-        	tId: setTimeout(this._toggleIdleState, this.props.timeout)
-        });
-	},
+    // If this is paused return that number, else return current remaining
+    return remaining
+  }
 
-	/**
-	 * Store remaining time and stop timer.
-	 * You can pause from idle or active state.
-	 *
-	 * @return {Void}
-	 *
-	 */
-	pause() {
-		// this is already paused
-        if(this.state.remaining !== null) return
+  /**
+   * How much time has elapsed
+   *
+   * @return {Timestamp}
+   *
+   */
+  getElapsedTime() {
+    return (+new Date()) - this.state.oldDate
+  }
 
-        // clear any existing timeout
-        clearTimeout(this.state.tId);
+  /**
+   * Last time the user was active
+   *
+   * @return {Timestamp}
+   *
+   */
+  getLastActiveTime() {
+    if(this.props.format) return moment(this.state.lastActive).format(this.props.format)
+    return this.state.lastActive
+  }
 
-        // define how much is left on the timer
-        this.setState({
-        	remaining: this.props.timeout - ((+new Date()) - this.state.oldDate)
-        });
-	},
+  /**
+   * Is the user idle
+   *
+   * @return {Boolean}
+   *
+   */
+  isIdle() {
+    return this.state.idle
+  }
+}
 
-	/**
-	 * Resumes a stopped timer
-	 *
-	 * @return {Void}
-	 *
-	 */
-	resume() {
+IdleTimer.propTypes = { timeout: PropTypes.number     // Activity timeout
+                      , events: PropTypes.arrayOf(PropTypes.string)  // Activity events to bind
+                      , idleAction: PropTypes.func    // Action to call when user becomes inactive
+                      , activeAction: PropTypes.func  // Action to call when user becomes active
+                      , element: PropTypes.oneOfType([PropTypes.object, PropTypes.string]) // Element ref to watch activty on
+                      , format: PropTypes.string
+                      }
 
-        // this isn't paused yet
-        if ( this.state.remaining === null ) { return; }
+IdleTimer.defaultProps =  { timeout: 1000 * 60 * 20  // 20 minutes
+                          , events: [ 'mousemove'
+                                    , 'keydown'
+                                    , 'wheel'
+                                    , 'DOMMouseScroll'
+                                    , 'mouseWheel'
+                                    , 'mousedown'
+                                    , 'touchstart'
+                                    , 'touchmove'
+                                    , 'MSPointerDown'
+                                    , 'MSPointerMove'
+                                    ]
+                          , idleAction: () => {}
+                          , activeAction: () => {}
+                          , element: document
+                          }
 
-        // start timer and clear remaining
-        if ( !this.state.idle ) {
-            this.setState({
-            	tId: setTimeout(this._toggleIdleState, this.state.remaining),
-            	remaining: null
-            });
-        }
-	},
-
-	/**
-	 * Time remaining before idle
-	 *
-	 * @return {Number} Milliseconds remaining
-	 *
-	 */
-	getRemainingTime() {
-
-		// If idle there is no time remaining
-		if ( this.state.idle ) { return 0; }
-
-		// If its paused just return that
-		if ( this.state.remaining != null ) { return this.state.remaining; }
-
-		// Determine remaining, if negative idle didn't finish flipping, just return 0
-		let remaining = this.props.timeout - ((+new Date()) - this.state.lastActive);
-		if (remaining < 0) { remaining = 0; }
-
-		// If this is paused return that number, else return current remaining
-		return remaining;
-	},
-
-	/**
-	 * How much time has elapsed
-	 *
-	 * @return {Timestamp}
-	 *
-	 */
-	getElapsedTime() {
-		return (+new Date()) - this.state.oldDate;
-	},
-
-	/**
-	 * Last time the user was active
-	 *
-	 * @return {Timestamp}
-	 *
-	 */
-	getLastActiveTime() {
-		if(this.props.format) return moment(this.state.lastActive).format(this.props.format);
-		return this.state.lastActive;
-	},
-
-	/**
-	 * Is the user idle
-	 *
-	 * @return {Boolean}
-	 *
-	 */
-	isIdle() {
-		return this.state.idle;
-	}
-
-});
+module.exports = IdleTimer
+module.exports['default'] = IdleTimer

@@ -1,4 +1,11 @@
-node_modules
+node_modules/
 .sass-cache
 .DS_Store
 npm-debug.log
+
+# Unnecessary unless installing from github source instead of npm
+npm-shrinkwrap.json
+
+# These go to npm, unnecessary for .gitignore
+build/
+examples/
