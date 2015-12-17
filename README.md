@@ -6,7 +6,7 @@
 [![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://npmjs.org/package/react-idle-timer/)
 
 # Installation
-`npm install react-idle-timer-babel6`
+`npm install react-idle-timer`
 
 # Usage
 
@@ -14,7 +14,7 @@
 
 ```javascript
 import React from 'react'
-import IdleTimer from 'react-idle-timer-babel6';
+import IdleTimer from 'react-idle-timer';
 
 class YourApp extends React.Component {
   constructor(props) {
