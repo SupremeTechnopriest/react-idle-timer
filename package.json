@@ -3,10 +3,10 @@
   "version": "1.2.0",
   "description": "Activity detection for React.js",
   "main": "build/index.js",
-  "files": [ "build" ],
+  "files": [ "build", "examples" ],
   "scripts": {
     "build": "babel src -d build && babel src_examples -d examples",
-    "start": "npm run build && node examples/server",
+    "start": "node examples/server",
     "test": "npm test"
   },
   "keywords": [
