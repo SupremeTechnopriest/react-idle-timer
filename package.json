@@ -10,7 +10,7 @@
   "scripts": {
     "clean": "rimraf build && rimraf examples/App.js && rimraf examples/init.js && rimraf examples/server.js",
     "build": "babel src -d build && babel src_examples -d examples",
-    "rebuild": "npm run clean && npm run build"
+    "rebuild": "npm run clean && npm run build",
     "start": "node examples/server",
     "test": "npm test",
     "prepublish": "in-publish && npm shrinkwrap || not-in-publish",
