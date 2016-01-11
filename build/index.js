@@ -1,22 +1,10 @@
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _redboxReact2 = require('redbox-react');
+var _react = require('react');
 
-var _redboxReact3 = _interopRequireDefault(_redboxReact2);
-
-var _reactTransformCatchErrors3 = require('react-transform-catch-errors');
-
-var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
-
-var _react2 = require('react');
-
-var _react3 = _interopRequireDefault(_react2);
-
-var _reactTransformHmr3 = require('react-transform-hmr');
-
-var _reactTransformHmr4 = _interopRequireDefault(_reactTransformHmr3);
+var _react2 = _interopRequireDefault(_react);
 
 var _moment = require('moment');
 
@@ -32,41 +20,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * React Idle Timer
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @author  Randy Lebeau
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @class   IdleTimer
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
-var _components = {
-  IdleTimer: {
-    displayName: 'IdleTimer'
-  }
-};
-
-var _reactTransformHmr2 = (0, _reactTransformHmr4.default)({
-  filename: 'src/index.js',
-  components: _components,
-  locals: [module],
-  imports: [_react3.default]
-});
-
-var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
-  filename: 'src/index.js',
-  components: _components,
-  locals: [],
-  imports: [_react3.default, _redboxReact3.default]
-});
-
-function _wrapComponent(id) {
-  return function (Component) {
-    return _reactTransformHmr2(_reactTransformCatchErrors2(Component, id), id);
-  };
-} /**
-   * React Idle Timer
-   *
-   * @author  Randy Lebeau
-   * @class   IdleTimer
-   *
-   */
-
-var IdleTimer = _wrapComponent('IdleTimer')((function (_Component) {
+var IdleTimer = function (_Component) {
   _inherits(IdleTimer, _Component);
 
   function IdleTimer(props) {
@@ -108,7 +70,7 @@ var IdleTimer = _wrapComponent('IdleTimer')((function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      return _react3.default.createElement(
+      return _react2.default.createElement(
         'div',
         null,
         this.props.children ? this.props.children : ''
@@ -309,14 +271,14 @@ var IdleTimer = _wrapComponent('IdleTimer')((function (_Component) {
   }]);
 
   return IdleTimer;
-})(_react2.Component));
+}(_react.Component);
 
-IdleTimer.propTypes = { timeout: _react2.PropTypes.number // Activity timeout
-  , events: _react2.PropTypes.arrayOf(_react2.PropTypes.string) // Activity events to bind
-  , idleAction: _react2.PropTypes.func // Action to call when user becomes inactive
-  , activeAction: _react2.PropTypes.func // Action to call when user becomes active
-  , element: _react2.PropTypes.oneOfType([_react2.PropTypes.object, _react2.PropTypes.string]) // Element ref to watch activty on
-  , format: _react2.PropTypes.string
+IdleTimer.propTypes = { timeout: _react.PropTypes.number // Activity timeout
+  , events: _react.PropTypes.arrayOf(_react.PropTypes.string) // Activity events to bind
+  , idleAction: _react.PropTypes.func // Action to call when user becomes inactive
+  , activeAction: _react.PropTypes.func // Action to call when user becomes active
+  , element: _react.PropTypes.oneOfType([_react.PropTypes.object, _react.PropTypes.string]) // Element ref to watch activty on
+  , format: _react.PropTypes.string
 };
 
 IdleTimer.defaultProps = { timeout: 1000 * 60 * 20 // 20 minutes
