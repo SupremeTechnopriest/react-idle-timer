@@ -1,6 +1,6 @@
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _redboxReact2 = require('redbox-react');
 
@@ -60,7 +60,7 @@ function _wrapComponent(id) {
   };
 }
 
-var App = _wrapComponent('App')((function (_Component) {
+var App = _wrapComponent('App')(function (_Component) {
   _inherits(App, _Component);
 
   function App(props) {
@@ -199,7 +199,7 @@ var App = _wrapComponent('App')((function (_Component) {
   }]);
 
   return App;
-})(_react2.Component));
+}(_react2.Component));
 
 module.exports = App;
 module.exports['default'] = App;
