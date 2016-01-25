@@ -34,7 +34,7 @@ class IdleTimer extends Component {
   }
 
   render() {
-    return <div>{this.props.children ? this.props.children : ''}</div>
+    return <span>{this.props.children ? this.props.children : ''}</span>
   }
 
   /////////////////////
