@@ -27,14 +27,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var app = (0, _express2.default)();
 var compiler = (0, _webpack2.default)(_webpackDev2.default);
 
-app.use((0, _webpackDevMiddleware2.default)(compiler, { noInfo: true,
-  publicPath: _webpackDev2.default.output.publicPath
+app.use((0, _webpackDevMiddleware2.default)(compiler, {
+	noInfo: true,
+	publicPath: _webpackDev2.default.output.publicPath
 }));
+
 app.use((0, _webpackHotMiddleware2.default)(compiler));
 app.get('*', function (req, res) {
-  return res.sendFile((0, _path.join)(__dirname, 'index.html'));
+	return res.sendFile((0, _path.join)(__dirname, 'index.html'));
 });
 
 app.listen(3000, 'localhost', function (err) {
-  if (err) console.log(err);else console.log('Listening at http://localhost:3000');
+	if (err) return console.log(err);
+	console.log('Listening at http://localhost:3000');
 });

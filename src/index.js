@@ -6,35 +6,58 @@
  *
  */
 
-import React,{ Component, PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
-import bindAll from 'lodash.bindall'
+import bindAll from 'lodash.bindall';
 
-class IdleTimer extends Component {
+export default class IdleTimer extends Component {
+
   constructor(props) {
-    super(props)
-    this.state =  { idle: false
-                  , oldDate: +new Date()
-                  , lastActive: +new Date()
-                  , remaining: null
-                  , tId: null
-                  , pageX: null
-                  , pageY: null
-                  }
-
+    super(props);
     bindAll(this, ['_toggleIdleState', '_handleEvent', 'reset', 'pause', 'resume', 'getRemainingTime', 'getElapsedTime', 'getLastActiveTime', 'isIdle'])
+
   }
+
+  static propTypes = {
+    timeout: PropTypes.number, // Activity timeout
+    events: PropTypes.arrayOf(PropTypes.string), // Activity events to bind
+    idleAction: PropTypes.func, // Action to call when user becomes inactive
+    activeAction: PropTypes.func, // Action to call when user becomes active
+    element: PropTypes.oneOfType([PropTypes.object, PropTypes.string]), // Element ref to watch activty on
+    format: PropTypes.string
+  };
+
+  static defaultProps = {
+      timeout: 1000 * 60 * 20, // 20 minutes
+      events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
+      idleAction: () => {},
+      activeAction: () => {},
+      element: document
+  };
+
+  state = {
+    idle: false,
+    oldDate: +new Date(),
+    lastActive: +new Date(),
+    remaining: null,
+    tId: null,
+    pageX: null,
+    pageY: null
+  };
 
   componentWillMount() {
     this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent))
   }
 
   componentWillUnmount() {
-    this.props.events.forEach(e => this.props.element.removeEventListener(e, this._handleEvent))
+    // Clear timeout to prevent delayed state changes
+    clearTimeout(this.state.tId);
+    // Unbind all events
+    this.props.events.forEach(e => this.props.element.removeEventListener(e, this._handleEvent));
   }
 
   render() {
-    return <div>{this.props.children ? this.props.children : ''}</div>
+    return this.props.children ? this.props.children : '';
   }
 
   /////////////////////
@@ -50,10 +73,12 @@ class IdleTimer extends Component {
 
   _toggleIdleState() {
     // Set the state
-    this.setState({ idle: !this.state.idle });
+    this.setState({
+      idle: !this.state.idle
+    });
 
     // Fire the appropriate action
-    if(!this.state.idle)
+    if (!this.state.idle)
       this.props.activeAction();
     else
       this.props.idleAction();
@@ -76,10 +101,10 @@ class IdleTimer extends Component {
       // if coord are same, it didn't move
       if (e.pageX === this.state.pageX && e.pageY === this.state.pageY)
         return
-      // if coord don't exist how could it move
+        // if coord don't exist how could it move
       if (typeof e.pageX === 'undefined' && typeof e.pageY === 'undefined')
         return
-      // under 200 ms is hard to do, and you would have to stop, as continuous activity will bypass this
+        // under 200 ms is hard to do, and you would have to stop, as continuous activity will bypass this
       let elapsed = (+new Date()) - this.state.oldDate
       if (elapsed < 200)
         return
@@ -92,11 +117,15 @@ class IdleTimer extends Component {
     if (this.state.idle)
       this._toggleIdleState(e)
 
-    this.setState({ lastActive: +new Date() // store when user was last active
-                  , pageX: e.pageX  // update mouse coord
-                  , pageY: e.pageY
-                  , tId: setTimeout(this._toggleIdleState, this.props.timeout)  // set a new timeout
-                  })
+    this.setState({
+      lastActive: +new Date() // store when user was last active
+        ,
+      pageX: e.pageX // update mouse coord
+        ,
+      pageY: e.pageY,
+      tId: setTimeout(this._toggleIdleState, this.props.timeout) // set a new timeout
+    });
+
   }
 
   ////////////////
@@ -115,12 +144,13 @@ class IdleTimer extends Component {
     clearTimeout(this.state.tId);
 
     // reset settings
-    this.setState({ idle: false
-                  , oldDate: +new Date()
-                  , lastActive: this.state.oldDate
-                  , remaining: null
-                  , tId: setTimeout(this._toggleIdleState, this.props.timeout)
-                  })
+    this.setState({
+      idle: false,
+      oldDate: +new Date(),
+      lastActive: this.state.oldDate,
+      remaining: null,
+      tId: setTimeout(this._toggleIdleState, this.props.timeout)
+    })
   }
 
   /**
@@ -132,14 +162,16 @@ class IdleTimer extends Component {
    */
   pause() {
     // this is already paused
-    if(this.state.remaining !== null)
+    if (this.state.remaining !== null)
       return
 
     // clear any existing timeout
     clearTimeout(this.state.tId)
 
     // define how much is left on the timer
-    this.setState({ remaining: this.props.timeout - ((+new Date()) - this.state.oldDate) })
+    this.setState({
+      remaining: this.props.timeout - ((+new Date()) - this.state.oldDate)
+    })
   }
 
   /**
@@ -150,14 +182,15 @@ class IdleTimer extends Component {
    */
   resume() {
     // this isn't paused yet
-    if(this.state.remaining === null )
+    if (this.state.remaining === null)
       return
 
     // start timer and clear remaining
-    if ( !this.state.idle ) {
-      this.setState({ tId: setTimeout(this._toggleIdleState, this.state.remaining)
-                    , remaining: null
-                    })
+    if (!this.state.idle) {
+      this.setState({
+        tId: setTimeout(this._toggleIdleState, this.state.remaining),
+        remaining: null
+      })
     }
   }
 
@@ -169,11 +202,11 @@ class IdleTimer extends Component {
    */
   getRemainingTime() {
     // If idle there is no time remaining
-    if ( this.state.idle )
+    if (this.state.idle)
       return 0
 
     // If its paused just return that
-    if ( this.state.remaining != null )
+    if (this.state.remaining != null)
       return this.state.remaining
 
     // Determine remaining, if negative idle didn't finish flipping, just return 0
@@ -202,7 +235,7 @@ class IdleTimer extends Component {
    *
    */
   getLastActiveTime() {
-    if(this.props.format) return moment(this.state.lastActive).format(this.props.format)
+    if (this.props.format) return moment(this.state.lastActive).format(this.props.format)
     return this.state.lastActive
   }
 
@@ -215,32 +248,5 @@ class IdleTimer extends Component {
   isIdle() {
     return this.state.idle
   }
+
 }
-
-IdleTimer.propTypes = { timeout: PropTypes.number     // Activity timeout
-                      , events: PropTypes.arrayOf(PropTypes.string)  // Activity events to bind
-                      , idleAction: PropTypes.func    // Action to call when user becomes inactive
-                      , activeAction: PropTypes.func  // Action to call when user becomes active
-                      , element: PropTypes.oneOfType([PropTypes.object, PropTypes.string]) // Element ref to watch activty on
-                      , format: PropTypes.string
-                      }
-
-IdleTimer.defaultProps =  { timeout: 1000 * 60 * 20  // 20 minutes
-                          , events: [ 'mousemove'
-                                    , 'keydown'
-                                    , 'wheel'
-                                    , 'DOMMouseScroll'
-                                    , 'mouseWheel'
-                                    , 'mousedown'
-                                    , 'touchstart'
-                                    , 'touchmove'
-                                    , 'MSPointerDown'
-                                    , 'MSPointerMove'
-                                    ]
-                          , idleAction: () => {}
-                          , activeAction: () => {}
-                          , element: document
-                          }
-
-module.exports = IdleTimer
-module.exports['default'] = IdleTimer
