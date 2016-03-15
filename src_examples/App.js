@@ -51,6 +51,8 @@ export default class App extends Component {
             <h1>Idle: {this.state.isIdle.toString()}</h1>
           </div>
 
+          <IdleTimer />
+
           <div>
             <button onClick={this._reset}>RESET</button>
             <button onClick={this._pause}>PAUSE</button>

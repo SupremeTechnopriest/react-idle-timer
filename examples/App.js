@@ -151,6 +151,7 @@ var App = _wrapComponent('App')(function (_Component) {
               this.state.isIdle.toString()
             )
           ),
+          _react3.default.createElement(_index2.default, null),
           _react3.default.createElement(
             'div',
             null,

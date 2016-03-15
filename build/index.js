@@ -79,7 +79,7 @@ var IdleTimer = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      return this.props.children ? this.props.children : '';
+      return this.props.children ? this.props.children : null;
     }
 
     /////////////////////
