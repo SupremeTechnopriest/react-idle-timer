@@ -112,6 +112,7 @@ var App = _wrapComponent('App')(function (_Component) {
           activeAction: this._onActive,
           idleAction: this._onIdle,
           timeout: this.state.timeout,
+          startOnLoad: true,
           format: 'MM-DD-YYYY HH:MM:ss.SSS' },
         _react3.default.createElement(
           'div',

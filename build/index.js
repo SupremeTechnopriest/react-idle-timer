@@ -65,6 +65,11 @@ var IdleTimer = function (_Component) {
       });
     }
   }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      if (this.props.startOnLoad) this.reset();
+    }
+  }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       var _this3 = this;
@@ -293,13 +298,15 @@ IdleTimer.propTypes = {
   idleAction: _react.PropTypes.func, // Action to call when user becomes inactive
   activeAction: _react.PropTypes.func, // Action to call when user becomes active
   element: _react.PropTypes.oneOfType([_react.PropTypes.object, _react.PropTypes.string]), // Element ref to watch activty on
-  format: _react.PropTypes.string
+  format: _react.PropTypes.string,
+  startOnLoad: _react.PropTypes.bool
 };
 IdleTimer.defaultProps = {
   timeout: 1000 * 60 * 20, // 20 minutes
   events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
   idleAction: function idleAction() {},
   activeAction: function activeAction() {},
-  element: document
+  element: document,
+  startOnLoad: true
 };
 exports.default = IdleTimer;

@@ -51,6 +51,7 @@ module.exports = YourApp
 - **activeAction** {*Function*} - Function to call on active
 - **element** {*Object*} - Defaults to document, may pass a ref to another element
 - **format** {*String*} - moment.js format string applied to `lastActiveTime`
+- **startOnLoad** {*Boolean*} - Start the timer on component load.  Defaults to `true`. Set to false to wait for user action before starting timer.
 
 ## Methods
 

@@ -24,7 +24,8 @@ export default class IdleTimer extends Component {
     idleAction: PropTypes.func, // Action to call when user becomes inactive
     activeAction: PropTypes.func, // Action to call when user becomes active
     element: PropTypes.oneOfType([PropTypes.object, PropTypes.string]), // Element ref to watch activty on
-    format: PropTypes.string
+    format: PropTypes.string,
+    startOnLoad: PropTypes.bool
   };
 
   static defaultProps = {
@@ -32,7 +33,8 @@ export default class IdleTimer extends Component {
       events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
       idleAction: () => {},
       activeAction: () => {},
-      element: document
+      element: document,
+      startOnLoad: true
   };
 
   state = {
@@ -47,6 +49,10 @@ export default class IdleTimer extends Component {
 
   componentWillMount() {
     this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent))
+  }
+
+  componentDidMount() {
+    if(this.props.startOnLoad) this.reset();
   }
 
   componentWillUnmount() {
@@ -182,8 +188,7 @@ export default class IdleTimer extends Component {
    */
   resume() {
     // this isn't paused yet
-    if (this.state.remaining === null)
-      return
+    if (this.state.remaining === null) return;
 
     // start timer and clear remaining
     if (!this.state.idle) {

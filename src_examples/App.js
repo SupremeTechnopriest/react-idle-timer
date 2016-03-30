@@ -39,6 +39,7 @@ export default class App extends Component {
         activeAction={this._onActive}
         idleAction={this._onIdle}
         timeout={this.state.timeout}
+        startOnLoad={true}
         format="MM-DD-YYYY HH:MM:ss.SSS">
 
         <div>
