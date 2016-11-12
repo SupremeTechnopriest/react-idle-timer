@@ -1,10 +1,12 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
@@ -38,7 +40,7 @@ var IdleTimer = function (_Component) {
   function IdleTimer(props) {
     _classCallCheck(this, IdleTimer);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(IdleTimer).call(this, props));
+    var _this = _possibleConstructorReturn(this, (IdleTimer.__proto__ || Object.getPrototypeOf(IdleTimer)).call(this, props));
 
     _this.state = {
       idle: false,
@@ -51,7 +53,6 @@ var IdleTimer = function (_Component) {
     };
 
     (0, _lodash2.default)(_this, ['_toggleIdleState', '_handleEvent', 'reset', 'pause', 'resume', 'getRemainingTime', 'getElapsedTime', 'getLastActiveTime', 'isIdle']);
-
     return _this;
   }
 
@@ -61,7 +62,7 @@ var IdleTimer = function (_Component) {
       var _this2 = this;
 
       this.props.events.forEach(function (e) {
-        return _this2.props.element.addEventListener(e, _this2._handleEvent);
+        if (_this2.props.element) _this2.props.element.addEventListener(e, _this2._handleEvent);
       });
     }
   }, {
@@ -78,7 +79,7 @@ var IdleTimer = function (_Component) {
       clearTimeout(this.state.tId);
       // Unbind all events
       this.props.events.forEach(function (e) {
-        return _this3.props.element.removeEventListener(e, _this3._handleEvent);
+        if (_this3.props.element) _this3.props.element.removeEventListener(e, _this3._handleEvent);
       });
     }
   }, {
@@ -306,7 +307,7 @@ IdleTimer.defaultProps = {
   events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
   idleAction: function idleAction() {},
   activeAction: function activeAction() {},
-  element: (typeof document !== "undefined")? document : undefined,
+  element: (typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object' ? document : undefined,
   startOnLoad: true
 };
 exports.default = IdleTimer;
