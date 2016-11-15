@@ -15,7 +15,6 @@ export default class IdleTimer extends Component {
   constructor(props) {
     super(props);
     bindAll(this, ['_toggleIdleState', '_handleEvent', 'reset', 'pause', 'resume', 'getRemainingTime', 'getElapsedTime', 'getLastActiveTime', 'isIdle'])
-
   }
 
   static propTypes = {
@@ -33,7 +32,7 @@ export default class IdleTimer extends Component {
       events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
       idleAction: () => {},
       activeAction: () => {},
-      element: document,
+      element: typeof window === 'object' ? document : {},
       startOnLoad: true
   };
 
@@ -48,6 +47,8 @@ export default class IdleTimer extends Component {
   };
 
   componentWillMount() {
+    if(typeof window !== 'object')
+      return
     this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent))
   }
 
@@ -56,6 +57,8 @@ export default class IdleTimer extends Component {
   }
 
   componentWillUnmount() {
+    if(typeof window !== 'object')
+       return
     // Clear timeout to prevent delayed state changes
     clearTimeout(this.state.tId);
     // Unbind all events
