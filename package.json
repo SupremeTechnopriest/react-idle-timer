@@ -12,7 +12,7 @@
     "build": "NODE_ENV=production babel src -d build && babel src_examples -d examples",
     "rebuild": "npm run clean && npm run build",
     "start": "NODE_ENV=development node examples/server",
-    "test": "npm test",
+    "test": "eslint src",
     "release": "standard-version",
     "package": "npm run rebuild && npm version patch && npm publish --tag latest"
   },
