@@ -32,7 +32,7 @@ export default class IdleTimer extends Component {
     events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
     idleAction: () => {},
     activeAction: () => {},
-    element: typeof document === 'object' ? document : undefined,
+    element: typeof window === 'object' ? document : {},
     startOnLoad: true
   };
 
@@ -47,22 +47,20 @@ export default class IdleTimer extends Component {
   };
 
   componentWillMount() {
-    this.props.events.forEach(e => {
-      if (this.props.element) this.props.element.addEventListener(e, this._handleEvent);
-    })
+    if (typeof window !== 'object') return;
+    this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent));
   }
 
   componentDidMount() {
-    if(this.props.startOnLoad) this.reset();
+    if (this.props.startOnLoad) this.reset();
   }
 
   componentWillUnmount() {
+    if (typeof window !== 'object') return;
     // Clear timeout to prevent delayed state changes
     clearTimeout(this.state.tId);
     // Unbind all events
-    this.props.events.forEach(e => {
-      if (this.props.element) this.props.element.removeEventListener(e, this._handleEvent);
-    })
+    this.props.events.forEach(e => this.props.element.removeEventListener(e, this._handleEvent));
   }
 
   render() {
@@ -256,5 +254,4 @@ export default class IdleTimer extends Component {
   isIdle() {
     return this.state.idle
   }
-
 }

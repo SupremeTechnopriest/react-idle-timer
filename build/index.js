@@ -61,8 +61,9 @@ var IdleTimer = function (_Component) {
     value: function componentWillMount() {
       var _this2 = this;
 
+      if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== 'object') return;
       this.props.events.forEach(function (e) {
-        if (_this2.props.element) _this2.props.element.addEventListener(e, _this2._handleEvent);
+        return _this2.props.element.addEventListener(e, _this2._handleEvent);
       });
     }
   }, {
@@ -75,11 +76,12 @@ var IdleTimer = function (_Component) {
     value: function componentWillUnmount() {
       var _this3 = this;
 
+      if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== 'object') return;
       // Clear timeout to prevent delayed state changes
       clearTimeout(this.state.tId);
       // Unbind all events
       this.props.events.forEach(function (e) {
-        if (_this3.props.element) _this3.props.element.removeEventListener(e, _this3._handleEvent);
+        return _this3.props.element.removeEventListener(e, _this3._handleEvent);
       });
     }
   }, {
@@ -307,7 +309,7 @@ IdleTimer.defaultProps = {
   events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
   idleAction: function idleAction() {},
   activeAction: function activeAction() {},
-  element: (typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object' ? document : undefined,
+  element: (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' ? document : {},
   startOnLoad: true
 };
 exports.default = IdleTimer;
