@@ -15,7 +15,6 @@ export default class IdleTimer extends Component {
   constructor(props) {
     super(props);
     bindAll(this, ['_toggleIdleState', '_handleEvent', 'reset', 'pause', 'resume', 'getRemainingTime', 'getElapsedTime', 'getLastActiveTime', 'isIdle'])
-
   }
 
   static propTypes = {
@@ -29,12 +28,12 @@ export default class IdleTimer extends Component {
   };
 
   static defaultProps = {
-      timeout: 1000 * 60 * 20, // 20 minutes
-      events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
-      idleAction: () => {},
-      activeAction: () => {},
-      element: document,
-      startOnLoad: true
+    timeout: 1000 * 60 * 20, // 20 minutes
+    events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
+    idleAction: () => {},
+    activeAction: () => {},
+    element: typeof window === 'object' ? document : {},
+    startOnLoad: true
   };
 
   state = {
@@ -48,14 +47,16 @@ export default class IdleTimer extends Component {
   };
 
   componentWillMount() {
-    this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent))
+    if (typeof window !== 'object') return;
+    this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent));
   }
 
   componentDidMount() {
-    if(this.props.startOnLoad) this.reset();
+    if (this.props.startOnLoad) this.reset();
   }
 
   componentWillUnmount() {
+    if (typeof window !== 'object') return;
     // Clear timeout to prevent delayed state changes
     clearTimeout(this.state.tId);
     // Unbind all events
@@ -253,5 +254,4 @@ export default class IdleTimer extends Component {
   isIdle() {
     return this.state.idle
   }
-
 }
