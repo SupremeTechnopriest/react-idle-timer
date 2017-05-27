@@ -1,18 +1,18 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _moment = require('moment');
+var _format = require('date-fns/format');
 
-var _moment2 = _interopRequireDefault(_moment);
+var _format2 = _interopRequireDefault(_format);
 
 var _lodash = require('lodash.bindall');
 
@@ -38,7 +38,7 @@ var IdleTimer = function (_Component) {
   function IdleTimer(props) {
     _classCallCheck(this, IdleTimer);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(IdleTimer).call(this, props));
+    var _this = _possibleConstructorReturn(this, (IdleTimer.__proto__ || Object.getPrototypeOf(IdleTimer)).call(this, props));
 
     _this.state = {
       idle: false,
@@ -271,7 +271,7 @@ var IdleTimer = function (_Component) {
   }, {
     key: 'getLastActiveTime',
     value: function getLastActiveTime() {
-      if (this.props.format) return (0, _moment2.default)(this.state.lastActive).format(this.props.format);
+      if (this.props.format) return (0, _format2.default)(this.state.lastActive, this.props.format);
       return this.state.lastActive;
     }
 
@@ -306,7 +306,7 @@ IdleTimer.defaultProps = {
   events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
   idleAction: function idleAction() {},
   activeAction: function activeAction() {},
-  element: (typeof document !== "undefined")? document : undefined,
+  element: document,
   startOnLoad: true
 };
 exports.default = IdleTimer;
