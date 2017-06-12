@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import format from 'date-fns/format'
 import bindAll from 'lodash.bindall';
 
 export default class IdleTimer extends Component {
@@ -241,7 +241,7 @@ export default class IdleTimer extends Component {
    *
    */
   getLastActiveTime() {
-    if (this.props.format) return moment(this.state.lastActive).format(this.props.format)
+    if (this.props.format) return format(this.state.lastActive, this.props.format)
     return this.state.lastActive
   }
 

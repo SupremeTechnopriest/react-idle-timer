@@ -14,9 +14,9 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _moment = require('moment');
+var _format = require('date-fns/format');
 
-var _moment2 = _interopRequireDefault(_moment);
+var _format2 = _interopRequireDefault(_format);
 
 var _lodash = require('lodash.bindall');
 
@@ -275,7 +275,7 @@ var IdleTimer = function (_Component) {
   }, {
     key: 'getLastActiveTime',
     value: function getLastActiveTime() {
-      if (this.props.format) return (0, _moment2.default)(this.state.lastActive).format(this.props.format);
+      if (this.props.format) return (0, _format2.default)(this.state.lastActive, this.props.format);
       return this.state.lastActive;
     }
 
