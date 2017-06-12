@@ -1,10 +1,10 @@
 'use strict';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
@@ -15,8 +15,6 @@ var _propTypes = require('prop-types');
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _format = require('date-fns/format');
-
-var _format2 = _interopRequireDefault(_format);
 
 var _format2 = _interopRequireDefault(_format);
 
@@ -38,7 +36,7 @@ var IdleTimer = function (_Component) {
   _inherits(IdleTimer, _Component);
 
   function IdleTimer() {
-    var _ref;
+    var _Object$getPrototypeO;
 
     var _temp, _this, _ret;
 
@@ -48,7 +46,7 @@ var IdleTimer = function (_Component) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = IdleTimer.__proto__ || Object.getPrototypeOf(IdleTimer)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(IdleTimer)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
       idle: false,
       oldDate: +new Date(),
       lastActive: +new Date(),
@@ -81,19 +79,17 @@ var IdleTimer = function (_Component) {
       }
 
       // clear any existing timeout
-      clearTimeout(_this.state.tId);
+      clearTimeout(_this.state.tId
 
       // if the idle timer is enabled, flip
-      if (_this.state.idle) _this._toggleIdleState(e);
+      );if (_this.state.idle) _this._toggleIdleState(e);
 
       _this.setState({
-        lastActive: +new Date() // store when user was last active
-
-        , pageX: e.pageX // update mouse coord
-
-        , pageY: e.pageY,
-        tId: setTimeout(_this._toggleIdleState, _this.props.timeout) // set a new timeout
-      });
+        lastActive: +new Date(), // store when user was last active
+        pageX: e.pageX, // update mouse coord
+        pageY: e.pageY,
+        tId: setTimeout(_this._toggleIdleState, _this.props.timeout // set a new timeout
+        ) });
     }, _this.reset = function () {
       // reset timers
       clearTimeout(_this.state.tId);
@@ -111,10 +107,10 @@ var IdleTimer = function (_Component) {
       if (_this.state.remaining !== null) return;
 
       // clear any existing timeout
-      clearTimeout(_this.state.tId);
+      clearTimeout(_this.state.tId
 
       // define how much is left on the timer
-      _this.setState({
+      );_this.setState({
         remaining: _this.props.timeout - (+new Date() - _this.state.oldDate)
       });
     }, _this.resume = function () {
@@ -253,6 +249,7 @@ var IdleTimer = function (_Component) {
      * @return {Timestamp}
      *
      */
+
 
     /**
      * Is the user idle
