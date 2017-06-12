@@ -6,8 +6,9 @@
  *
  */
 
-import React, { Component, PropTypes } from 'react';
-import format from 'date-fns/format';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import format from 'date-fns/format'
 
 export default class IdleTimer extends Component {
   static propTypes = {
@@ -116,10 +117,8 @@ export default class IdleTimer extends Component {
       this._toggleIdleState(e)
 
     this.setState({
-      lastActive: +new Date() // store when user was last active
-        ,
-      pageX: e.pageX // update mouse coord
-        ,
+      lastActive: +new Date(), // store when user was last active
+      pageX: e.pageX, // update mouse coord
       pageY: e.pageY,
       tId: setTimeout(this._toggleIdleState, this.props.timeout) // set a new timeout
     });
