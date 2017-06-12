@@ -34,9 +34,9 @@
     "url": "https://github.com/supremetechnopriest/react-idle-timer.git"
   },
   "dependencies": {
+    "date-fns": "^1.28.5",
     "in-publish": "^2.0.0",
-    "lodash.bindall": "^3.1.0",
-    "moment": "^2.10.3"
+    "lodash.bindall": "^3.1.0"
   },
   "peerDependencies": {
     "react": "^15.x.x",
