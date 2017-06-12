@@ -18,9 +18,7 @@ var _format = require('date-fns/format');
 
 var _format2 = _interopRequireDefault(_format);
 
-var _lodash = require('lodash.bindall');
-
-var _lodash2 = _interopRequireDefault(_lodash);
+var _format2 = _interopRequireDefault(_format);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39,12 +37,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var IdleTimer = function (_Component) {
   _inherits(IdleTimer, _Component);
 
-  function IdleTimer(props) {
+  function IdleTimer() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, IdleTimer);
 
-    var _this = _possibleConstructorReturn(this, (IdleTimer.__proto__ || Object.getPrototypeOf(IdleTimer)).call(this, props));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
 
-    _this.state = {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = IdleTimer.__proto__ || Object.getPrototypeOf(IdleTimer)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
       idle: false,
       oldDate: +new Date(),
       lastActive: +new Date(),
@@ -52,11 +56,99 @@ var IdleTimer = function (_Component) {
       tId: null,
       pageX: null,
       pageY: null
-    };
+    }, _this._toggleIdleState = function () {
+      // Set the state
+      _this.setState({
+        idle: !_this.state.idle
+      });
 
-    (0, _lodash2.default)(_this, ['_toggleIdleState', '_handleEvent', 'reset', 'pause', 'resume', 'getRemainingTime', 'getElapsedTime', 'getLastActiveTime', 'isIdle']);
+      // Fire the appropriate action
+      if (!_this.state.idle) _this.props.activeAction();else _this.props.idleAction();
+    }, _this._handleEvent = function (e) {
 
-    return _this;
+      // Already idle, ignore events
+      if (_this.state.remaining) return;
+
+      // Mousemove event
+      if (e.type === 'mousemove') {
+        // if coord are same, it didn't move
+        if (e.pageX === _this.state.pageX && e.pageY === _this.state.pageY) return;
+        // if coord don't exist how could it move
+        if (typeof e.pageX === 'undefined' && typeof e.pageY === 'undefined') return;
+        // under 200 ms is hard to do, and you would have to stop, as continuous activity will bypass this
+        var elapsed = +new Date() - _this.state.oldDate;
+        if (elapsed < 200) return;
+      }
+
+      // clear any existing timeout
+      clearTimeout(_this.state.tId);
+
+      // if the idle timer is enabled, flip
+      if (_this.state.idle) _this._toggleIdleState(e);
+
+      _this.setState({
+        lastActive: +new Date() // store when user was last active
+
+        , pageX: e.pageX // update mouse coord
+
+        , pageY: e.pageY,
+        tId: setTimeout(_this._toggleIdleState, _this.props.timeout) // set a new timeout
+      });
+    }, _this.reset = function () {
+      // reset timers
+      clearTimeout(_this.state.tId);
+
+      // reset settings
+      _this.setState({
+        idle: false,
+        oldDate: +new Date(),
+        lastActive: _this.state.oldDate,
+        remaining: null,
+        tId: setTimeout(_this._toggleIdleState, _this.props.timeout)
+      });
+    }, _this.pause = function () {
+      // this is already paused
+      if (_this.state.remaining !== null) return;
+
+      // clear any existing timeout
+      clearTimeout(_this.state.tId);
+
+      // define how much is left on the timer
+      _this.setState({
+        remaining: _this.props.timeout - (+new Date() - _this.state.oldDate)
+      });
+    }, _this.resume = function () {
+      // this isn't paused yet
+      if (_this.state.remaining === null) return;
+
+      // start timer and clear remaining
+      if (!_this.state.idle) {
+        _this.setState({
+          tId: setTimeout(_this._toggleIdleState, _this.state.remaining),
+          remaining: null
+        });
+      }
+    }, _this.getRemainingTime = function () {
+      // If idle there is no time remaining
+      if (_this.state.idle) return 0;
+
+      // If its paused just return that
+      if (_this.state.remaining != null) return _this.state.remaining;
+
+      // Determine remaining, if negative idle didn't finish flipping, just return 0
+      var remaining = _this.props.timeout - (+new Date() - _this.state.lastActive);
+      if (remaining < 0) remaining = 0;
+
+      // If this is paused return that number, else return current remaining
+      return remaining;
+    }, _this.getElapsedTime = function () {
+      return +new Date() - _this.state.oldDate;
+    }, _this.getLastActiveTime = function () {
+      if (_this.props.format) return (0, _format2.default)(_this.state.lastActive, _this.props.format);
+      return _this.state.lastActive;
+    }, _this.isIdle = function () {
+      return _this.state.idle;
+    }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(IdleTimer, [{
@@ -102,18 +194,6 @@ var IdleTimer = function (_Component) {
      *
      */
 
-  }, {
-    key: '_toggleIdleState',
-    value: function _toggleIdleState() {
-      // Set the state
-      this.setState({
-        idle: !this.state.idle
-      });
-
-      // Fire the appropriate action
-      if (!this.state.idle) this.props.activeAction();else this.props.idleAction();
-    }
-
     /**
      * Event handler for supported event types
      *
@@ -122,39 +202,6 @@ var IdleTimer = function (_Component) {
      *
      */
 
-  }, {
-    key: '_handleEvent',
-    value: function _handleEvent(e) {
-
-      // Already idle, ignore events
-      if (this.state.remaining) return;
-
-      // Mousemove event
-      if (e.type === 'mousemove') {
-        // if coord are same, it didn't move
-        if (e.pageX === this.state.pageX && e.pageY === this.state.pageY) return;
-        // if coord don't exist how could it move
-        if (typeof e.pageX === 'undefined' && typeof e.pageY === 'undefined') return;
-        // under 200 ms is hard to do, and you would have to stop, as continuous activity will bypass this
-        var elapsed = +new Date() - this.state.oldDate;
-        if (elapsed < 200) return;
-      }
-
-      // clear any existing timeout
-      clearTimeout(this.state.tId);
-
-      // if the idle timer is enabled, flip
-      if (this.state.idle) this._toggleIdleState(e);
-
-      this.setState({
-        lastActive: +new Date() // store when user was last active
-
-        , pageX: e.pageX // update mouse coord
-
-        , pageY: e.pageY,
-        tId: setTimeout(this._toggleIdleState, this.props.timeout) // set a new timeout
-      });
-    }
 
     ////////////////
     // Public API //
@@ -167,22 +214,6 @@ var IdleTimer = function (_Component) {
      *
      */
 
-  }, {
-    key: 'reset',
-    value: function reset() {
-      // reset timers
-      clearTimeout(this.state.tId);
-
-      // reset settings
-      this.setState({
-        idle: false,
-        oldDate: +new Date(),
-        lastActive: this.state.oldDate,
-        remaining: null,
-        tId: setTimeout(this._toggleIdleState, this.props.timeout)
-      });
-    }
-
     /**
      * Store remaining time and stop timer.
      * You can pause from idle or active state.
@@ -191,20 +222,6 @@ var IdleTimer = function (_Component) {
      *
      */
 
-  }, {
-    key: 'pause',
-    value: function pause() {
-      // this is already paused
-      if (this.state.remaining !== null) return;
-
-      // clear any existing timeout
-      clearTimeout(this.state.tId);
-
-      // define how much is left on the timer
-      this.setState({
-        remaining: this.props.timeout - (+new Date() - this.state.oldDate)
-      });
-    }
 
     /**
      * Resumes a stopped timer
@@ -213,20 +230,6 @@ var IdleTimer = function (_Component) {
      *
      */
 
-  }, {
-    key: 'resume',
-    value: function resume() {
-      // this isn't paused yet
-      if (this.state.remaining === null) return;
-
-      // start timer and clear remaining
-      if (!this.state.idle) {
-        this.setState({
-          tId: setTimeout(this._toggleIdleState, this.state.remaining),
-          remaining: null
-        });
-      }
-    }
 
     /**
      * Time remaining before idle
@@ -235,22 +238,6 @@ var IdleTimer = function (_Component) {
      *
      */
 
-  }, {
-    key: 'getRemainingTime',
-    value: function getRemainingTime() {
-      // If idle there is no time remaining
-      if (this.state.idle) return 0;
-
-      // If its paused just return that
-      if (this.state.remaining != null) return this.state.remaining;
-
-      // Determine remaining, if negative idle didn't finish flipping, just return 0
-      var remaining = this.props.timeout - (+new Date() - this.state.lastActive);
-      if (remaining < 0) remaining = 0;
-
-      // If this is paused return that number, else return current remaining
-      return remaining;
-    }
 
     /**
      * How much time has elapsed
@@ -259,11 +246,6 @@ var IdleTimer = function (_Component) {
      *
      */
 
-  }, {
-    key: 'getElapsedTime',
-    value: function getElapsedTime() {
-      return +new Date() - this.state.oldDate;
-    }
 
     /**
      * Last time the user was active
@@ -272,13 +254,6 @@ var IdleTimer = function (_Component) {
      *
      */
 
-  }, {
-    key: 'getLastActiveTime',
-    value: function getLastActiveTime() {
-      if (this.props.format) return (0, _format2.default)(this.state.lastActive, this.props.format);
-      return this.state.lastActive;
-    }
-
     /**
      * Is the user idle
      *
@@ -286,11 +261,6 @@ var IdleTimer = function (_Component) {
      *
      */
 
-  }, {
-    key: 'isIdle',
-    value: function isIdle() {
-      return this.state.idle;
-    }
   }]);
 
   return IdleTimer;
