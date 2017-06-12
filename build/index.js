@@ -10,6 +10,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _format = require('date-fns/format');
 
 var _format2 = _interopRequireDefault(_format);
@@ -293,13 +297,13 @@ var IdleTimer = function (_Component) {
 }(_react.Component);
 
 IdleTimer.propTypes = {
-  timeout: _react.PropTypes.number, // Activity timeout
-  events: _react.PropTypes.arrayOf(_react.PropTypes.string), // Activity events to bind
-  idleAction: _react.PropTypes.func, // Action to call when user becomes inactive
-  activeAction: _react.PropTypes.func, // Action to call when user becomes active
-  element: _react.PropTypes.oneOfType([_react.PropTypes.object, _react.PropTypes.string]), // Element ref to watch activty on
-  format: _react.PropTypes.string,
-  startOnLoad: _react.PropTypes.bool
+  timeout: _propTypes2.default.number, // Activity timeout
+  events: _propTypes2.default.arrayOf(_propTypes2.default.string), // Activity events to bind
+  idleAction: _propTypes2.default.func, // Action to call when user becomes inactive
+  activeAction: _propTypes2.default.func, // Action to call when user becomes active
+  element: _propTypes2.default.oneOfType([_propTypes2.default.object, _propTypes2.default.string]), // Element ref to watch activty on
+  format: _propTypes2.default.string,
+  startOnLoad: _propTypes2.default.bool
 };
 IdleTimer.defaultProps = {
   timeout: 1000 * 60 * 20, // 20 minutes
