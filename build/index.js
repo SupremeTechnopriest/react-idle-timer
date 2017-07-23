@@ -277,7 +277,7 @@ IdleTimer.defaultProps = {
   events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
   idleAction: function idleAction() {},
   activeAction: function activeAction() {},
-  element: document,
+  element: (typeof window === 'undefined' ? 'undefined' : typeof (window)) === 'object' ? document : {},
   startOnLoad: true
 };
 exports.default = IdleTimer;
