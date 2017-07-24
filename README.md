@@ -1,7 +1,7 @@
 # React Idle Timer
 > React.js port of jQuery.idleTimer with some extras.
 
-:rocket: **Now  with [Babel 6](https://github.com/babel/babel) and [react-transform](https://github.com/gaearon/babel-plugin-react-transform) support**
+:rocket: ** Now Supports Isomorphic React!**
 
 [![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://npmjs.org/package/react-idle-timer/)
 
@@ -10,7 +10,7 @@
 
 # Usage
 
-> check the examples directory for a working example
+> Run `npm run build` to build the examples found in `src_examples`
 
 ```javascript
 import React from 'react'
@@ -62,5 +62,3 @@ module.exports = YourApp
 - **getElapsedTime()** *{Number}* - Returns the elapsed time in milliseconds
 - **lastActiveTime()** *{String}* - Returns the last active time as a number or a formatted string if the `format` prop is defined
 - **isIdle()** {*Boolean*} - Returns whether or not user is idle
-
-
