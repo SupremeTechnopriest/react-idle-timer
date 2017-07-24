@@ -26,7 +26,7 @@ export default class IdleTimer extends Component {
       events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
       idleAction: () => {},
       activeAction: () => {},
-      element: document,
+      element: (typeof window === 'undefined' ? 'undefined' : typeof (window)) === 'object' ? document : {},
       startOnLoad: true
   };
 
