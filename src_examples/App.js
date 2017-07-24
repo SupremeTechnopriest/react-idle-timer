@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import IdleTimer from '../build/index'
-import bindAll from 'lodash.bindall'
 
 export default class App extends Component {
 
@@ -13,7 +12,6 @@ export default class App extends Component {
       lastActive: null,
       elapsed: null
     }
-    bindAll(this, ['_onActive', '_onIdle', '_changeTimeout', '_reset', '_pause', '_resume'])
   }
 
   componentDidMount() {
@@ -43,7 +41,7 @@ export default class App extends Component {
         format="MM-DD-YYYY HH:MM:ss.SSS">
 
         <div>
-        
+
           <div>
             <h1>Timeout: {this.state.timeout}ms</h1>
             <h1>Time Remaining: {this.state.remaining}</h1>
@@ -66,29 +64,29 @@ export default class App extends Component {
     )
   }
 
-  _onActive() {
+  _onActive = () => {
     this.setState({ isIdle: false });
   }
 
-  _onIdle() {
+  _onIdle = () => {
     this.setState({ isIdle: true });
   }
 
-  _changeTimeout() {
+  _changeTimeout = () => {
     this.setState({
       timeout: this.refs.timeoutInput.state.value()
     });
   }
 
-  _reset() {
+  _reset = () => {
     this.refs.idleTimer.reset();
   }
 
-  _pause() {
+  _pause = () => {
     this.refs.idleTimer.pause();
   }
 
-  _resume() {
+  _resume = () => {
     this.refs.idleTimer.resume();
   }
 

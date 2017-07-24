@@ -26,10 +26,6 @@ var _index = require('../build/index');
 
 var _index2 = _interopRequireDefault(_index);
 
-var _lodash = require('lodash.bindall');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -72,6 +68,32 @@ var App = _wrapComponent('App')(function (_Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 
+    _this._onActive = function () {
+      _this.setState({ isIdle: false });
+    };
+
+    _this._onIdle = function () {
+      _this.setState({ isIdle: true });
+    };
+
+    _this._changeTimeout = function () {
+      _this.setState({
+        timeout: _this.refs.timeoutInput.state.value()
+      });
+    };
+
+    _this._reset = function () {
+      _this.refs.idleTimer.reset();
+    };
+
+    _this._pause = function () {
+      _this.refs.idleTimer.pause();
+    };
+
+    _this._resume = function () {
+      _this.refs.idleTimer.resume();
+    };
+
     _this.state = {
       timeout: 3000,
       remaining: null,
@@ -79,7 +101,6 @@ var App = _wrapComponent('App')(function (_Component) {
       lastActive: null,
       elapsed: null
     };
-    (0, _lodash2.default)(_this, ['_onActive', '_onIdle', '_changeTimeout', '_reset', '_pause', '_resume']);
     return _this;
   }
 
@@ -174,38 +195,6 @@ var App = _wrapComponent('App')(function (_Component) {
           )
         )
       );
-    }
-  }, {
-    key: '_onActive',
-    value: function _onActive() {
-      this.setState({ isIdle: false });
-    }
-  }, {
-    key: '_onIdle',
-    value: function _onIdle() {
-      this.setState({ isIdle: true });
-    }
-  }, {
-    key: '_changeTimeout',
-    value: function _changeTimeout() {
-      this.setState({
-        timeout: this.refs.timeoutInput.state.value()
-      });
-    }
-  }, {
-    key: '_reset',
-    value: function _reset() {
-      this.refs.idleTimer.reset();
-    }
-  }, {
-    key: '_pause',
-    value: function _pause() {
-      this.refs.idleTimer.pause();
-    }
-  }, {
-    key: '_resume',
-    value: function _resume() {
-      this.refs.idleTimer.resume();
     }
   }]);
 

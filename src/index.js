@@ -6,17 +6,11 @@
  *
  */
 
-import React, { Component, PropTypes } from 'react';
-import moment from 'moment';
-import bindAll from 'lodash.bindall';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import format from 'date-fns/format'
 
 export default class IdleTimer extends Component {
-
-  constructor(props) {
-    super(props);
-    bindAll(this, ['_toggleIdleState', '_handleEvent', 'reset', 'pause', 'resume', 'getRemainingTime', 'getElapsedTime', 'getLastActiveTime', 'isIdle'])
-  }
-
   static propTypes = {
     timeout: PropTypes.number, // Activity timeout
     events: PropTypes.arrayOf(PropTypes.string), // Activity events to bind
@@ -80,7 +74,7 @@ export default class IdleTimer extends Component {
    *
    */
 
-  _toggleIdleState() {
+  _toggleIdleState = () => {
     // Set the state
     this.setState({
       idle: !this.state.idle
@@ -100,7 +94,7 @@ export default class IdleTimer extends Component {
    * @return {void}
    *
    */
-  _handleEvent(e) {
+  _handleEvent = (e) => {
 
     // Already idle, ignore events
     if (this.state.remaining) return
@@ -127,10 +121,8 @@ export default class IdleTimer extends Component {
       this._toggleIdleState(e)
 
     this.setState({
-      lastActive: +new Date() // store when user was last active
-        ,
-      pageX: e.pageX // update mouse coord
-        ,
+      lastActive: +new Date(), // store when user was last active
+      pageX: e.pageX, // update mouse coord
       pageY: e.pageY,
       tId: setTimeout(this._toggleIdleState, this.props.timeout) // set a new timeout
     });
@@ -148,7 +140,7 @@ export default class IdleTimer extends Component {
    *
    */
 
-  reset() {
+  reset = () => {
     // reset timers
     clearTimeout(this.state.tId);
 
@@ -169,7 +161,7 @@ export default class IdleTimer extends Component {
    * @return {Void}
    *
    */
-  pause() {
+  pause = () => {
     // this is already paused
     if (this.state.remaining !== null)
       return
@@ -189,7 +181,7 @@ export default class IdleTimer extends Component {
    * @return {Void}
    *
    */
-  resume() {
+  resume = () => {
     // this isn't paused yet
     if (this.state.remaining === null) return;
 
@@ -208,7 +200,7 @@ export default class IdleTimer extends Component {
    * @return {Number} Milliseconds remaining
    *
    */
-  getRemainingTime() {
+  getRemainingTime = () => {
     // If idle there is no time remaining
     if (this.state.idle)
       return 0
@@ -232,7 +224,7 @@ export default class IdleTimer extends Component {
    * @return {Timestamp}
    *
    */
-  getElapsedTime() {
+  getElapsedTime = () => {
     return (+new Date()) - this.state.oldDate
   }
 
@@ -242,8 +234,8 @@ export default class IdleTimer extends Component {
    * @return {Timestamp}
    *
    */
-  getLastActiveTime() {
-    if (this.props.format) return moment(this.state.lastActive).format(this.props.format)
+  getLastActiveTime = () => {
+    if (this.props.format) return format(this.state.lastActive, this.props.format)
     return this.state.lastActive
   }
 
@@ -253,7 +245,7 @@ export default class IdleTimer extends Component {
    * @return {Boolean}
    *
    */
-  isIdle() {
+  isIdle = () => {
     return this.state.idle
   }
 
