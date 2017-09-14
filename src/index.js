@@ -35,10 +35,11 @@ export default class IdleTimer extends Component {
     oldDate: +new Date(),
     lastActive: +new Date(),
     remaining: null,
-    tId: null,
     pageX: null,
     pageY: null
   };
+
+  tId = null;
 
   componentWillMount() {
     this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent))
@@ -50,7 +51,7 @@ export default class IdleTimer extends Component {
 
   componentWillUnmount() {
     // Clear timeout to prevent delayed state changes
-    clearTimeout(this.state.tId);
+    clearTimeout(this.tId);
     // Unbind all events
     this.props.events.forEach(e => this.props.element.removeEventListener(e, this._handleEvent));
   }
@@ -110,7 +111,7 @@ export default class IdleTimer extends Component {
     }
 
     // clear any existing timeout
-    clearTimeout(this.state.tId)
+    clearTimeout(this.tId)
 
     // if the idle timer is enabled, flip
     if (this.state.idle)
@@ -138,7 +139,7 @@ export default class IdleTimer extends Component {
 
   reset = () => {
     // reset timers
-    clearTimeout(this.state.tId);
+    clearTimeout(this.tId);
 
     // reset settings
     this.setState({
@@ -163,7 +164,7 @@ export default class IdleTimer extends Component {
       return
 
     // clear any existing timeout
-    clearTimeout(this.state.tId)
+    clearTimeout(this.tId)
 
     // define how much is left on the timer
     this.setState({

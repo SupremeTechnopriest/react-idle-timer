@@ -53,10 +53,9 @@ var IdleTimer = function (_Component) {
       oldDate: +new Date(),
       lastActive: +new Date(),
       remaining: null,
-      tId: null,
       pageX: null,
       pageY: null
-    }, _this._toggleIdleState = function () {
+    }, _this.tId = null, _this._toggleIdleState = function () {
       // Set the state
       _this.setState({
         idle: !_this.state.idle
@@ -81,7 +80,7 @@ var IdleTimer = function (_Component) {
       }
 
       // clear any existing timeout
-      clearTimeout(_this.state.tId
+      clearTimeout(_this.tId
 
       // if the idle timer is enabled, flip
       );if (_this.state.idle) _this._toggleIdleState(e);
@@ -94,7 +93,7 @@ var IdleTimer = function (_Component) {
         ) });
     }, _this.reset = function () {
       // reset timers
-      clearTimeout(_this.state.tId);
+      clearTimeout(_this.tId);
 
       // reset settings
       _this.setState({
@@ -109,7 +108,7 @@ var IdleTimer = function (_Component) {
       if (_this.state.remaining !== null) return;
 
       // clear any existing timeout
-      clearTimeout(_this.state.tId
+      clearTimeout(_this.tId
 
       // define how much is left on the timer
       );_this.setState({
@@ -169,7 +168,7 @@ var IdleTimer = function (_Component) {
       var _this3 = this;
 
       // Clear timeout to prevent delayed state changes
-      clearTimeout(this.state.tId);
+      clearTimeout(this.tId);
       // Unbind all events
       this.props.events.forEach(function (e) {
         return _this3.props.element.removeEventListener(e, _this3._handleEvent);
