@@ -46,7 +46,9 @@ export default class IdleTimer extends Component {
   }
 
   componentDidMount() {
-    if(this.props.startOnLoad) this.reset();
+    if(this.props.startOnLoad) {
+      this.reset();
+    }
   }
 
   componentWillUnmount() {
@@ -71,7 +73,7 @@ export default class IdleTimer extends Component {
    *
    */
 
-  _toggleIdleState = () => {
+  _toggleIdleState() {
     // Set the state
     this.setState({
       idle: !this.state.idle
@@ -105,7 +107,7 @@ export default class IdleTimer extends Component {
       if (typeof e.pageX === 'undefined' && typeof e.pageY === 'undefined')
         return
         // under 200 ms is hard to do, and you would have to stop, as continuous activity will bypass this
-      let elapsed = (+new Date()) - this.state.oldDate
+      let elapsed = this.getElapsedTime();
       if (elapsed < 200)
         return
     }
@@ -114,15 +116,17 @@ export default class IdleTimer extends Component {
     clearTimeout(this.tId)
 
     // if the idle timer is enabled, flip
-    if (this.state.idle)
+    if (this.state.idle) {
       this._toggleIdleState(e)
+    }
 
     this.setState({
       lastActive: +new Date(), // store when user was last active
       pageX: e.pageX, // update mouse coord
-      pageY: e.pageY,
-      tId: setTimeout(this._toggleIdleState, this.props.timeout) // set a new timeout
+      pageY: e.pageY
     });
+
+    this.tId = setTimeout(this._toggleIdleState.bind(this), this.props.timeout) // set a new timeout
 
   }
 
@@ -137,7 +141,7 @@ export default class IdleTimer extends Component {
    *
    */
 
-  reset = () => {
+  reset() {
     // reset timers
     clearTimeout(this.tId);
 
@@ -146,9 +150,11 @@ export default class IdleTimer extends Component {
       idle: false,
       oldDate: +new Date(),
       lastActive: this.state.oldDate,
-      remaining: null,
-      tId: setTimeout(this._toggleIdleState, this.props.timeout)
-    })
+      remaining: null
+    });
+
+    // Set timeout
+    this.tId = setTimeout(this._toggleIdleState.bind(this), this.props.timeout)
   }
 
   /**
@@ -158,17 +164,20 @@ export default class IdleTimer extends Component {
    * @return {Void}
    *
    */
-  pause = () => {
+  pause() {
     // this is already paused
-    if (this.state.remaining !== null)
+    if (this.state.remaining !== null) {
       return
+    }
+
+    console.log('pausing');
 
     // clear any existing timeout
     clearTimeout(this.tId)
 
     // define how much is left on the timer
     this.setState({
-      remaining: this.props.timeout - ((+new Date()) - this.state.oldDate)
+      remaining: this.getRemainingTime()
     })
   }
 
@@ -178,16 +187,19 @@ export default class IdleTimer extends Component {
    * @return {Void}
    *
    */
-  resume = () => {
+  resume() {
     // this isn't paused yet
-    if (this.state.remaining === null) return;
+    if (this.state.remaining === null) {
+      return;
+    }
 
     // start timer and clear remaining
     if (!this.state.idle) {
       this.setState({
-        tId: setTimeout(this._toggleIdleState, this.state.remaining),
         remaining: null
-      })
+      });
+      // Set a new timeout
+      this.tId = setTimeout(this._toggleIdleState.bind(this), this.state.remaining)
     }
   }
 
@@ -197,19 +209,22 @@ export default class IdleTimer extends Component {
    * @return {Number} Milliseconds remaining
    *
    */
-  getRemainingTime = () => {
+  getRemainingTime() {
     // If idle there is no time remaining
-    if (this.state.idle)
+    if (this.state.idle) {
       return 0
+    }
 
     // If its paused just return that
-    if (this.state.remaining != null)
+    if (this.state.remaining !== null) {
       return this.state.remaining
+    }
 
     // Determine remaining, if negative idle didn't finish flipping, just return 0
     let remaining = this.props.timeout - ((+new Date()) - this.state.lastActive)
-    if (remaining < 0)
+    if (remaining < 0) {
       remaining = 0
+    }
 
     // If this is paused return that number, else return current remaining
     return remaining
@@ -221,7 +236,7 @@ export default class IdleTimer extends Component {
    * @return {Timestamp}
    *
    */
-  getElapsedTime = () => {
+  getElapsedTime() {
     return (+new Date()) - this.state.oldDate
   }
 
@@ -231,8 +246,10 @@ export default class IdleTimer extends Component {
    * @return {Timestamp}
    *
    */
-  getLastActiveTime = () => {
-    if (this.props.format) return format(this.state.lastActive, this.props.format)
+  getLastActiveTime() {
+    if (this.props.format) {
+      return format(this.state.lastActive, this.props.format)
+    }
     return this.state.lastActive
   }
 
@@ -242,7 +259,7 @@ export default class IdleTimer extends Component {
    * @return {Boolean}
    *
    */
-  isIdle = () => {
+  isIdle() {
     return this.state.idle
   }
 
