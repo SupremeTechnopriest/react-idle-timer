@@ -2,6 +2,10 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _redboxReact2 = require('redbox-react');
 
 var _redboxReact3 = _interopRequireDefault(_redboxReact2);
@@ -21,10 +25,6 @@ var _reactTransformHmr4 = _interopRequireDefault(_reactTransformHmr3);
 var _index = require('../build/index');
 
 var _index2 = _interopRequireDefault(_index);
-
-var _lodash = require('lodash.bindall');
-
-var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68,13 +68,39 @@ var App = _wrapComponent('App')(function (_Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 
-    _this.state = { timeout: 3000,
+    _this._onActive = function () {
+      _this.setState({ isIdle: false });
+    };
+
+    _this._onIdle = function () {
+      _this.setState({ isIdle: true });
+    };
+
+    _this._changeTimeout = function () {
+      _this.setState({
+        timeout: _this.refs.timeoutInput.state.value()
+      });
+    };
+
+    _this._reset = function () {
+      _this.refs.idleTimer.reset();
+    };
+
+    _this._pause = function () {
+      _this.refs.idleTimer.pause();
+    };
+
+    _this._resume = function () {
+      _this.refs.idleTimer.resume();
+    };
+
+    _this.state = {
+      timeout: 3000,
       remaining: null,
       isIdle: false,
       lastActive: null,
       elapsed: null
     };
-    (0, _lodash2.default)(_this, ['_onActive', '_onIdle', '_changeTimeout', '_reset', '_pause', '_resume']);
     return _this;
   }
 
@@ -107,99 +133,72 @@ var App = _wrapComponent('App')(function (_Component) {
           activeAction: this._onActive,
           idleAction: this._onIdle,
           timeout: this.state.timeout,
+          startOnLoad: true,
           format: 'MM-DD-YYYY HH:MM:ss.SSS' },
         _react3.default.createElement(
           'div',
           null,
           _react3.default.createElement(
-            'h1',
+            'div',
             null,
-            'Timeout: ',
-            this.state.timeout,
-            'ms'
+            _react3.default.createElement(
+              'h1',
+              null,
+              'Timeout: ',
+              this.state.timeout,
+              'ms'
+            ),
+            _react3.default.createElement(
+              'h1',
+              null,
+              'Time Remaining: ',
+              this.state.remaining
+            ),
+            _react3.default.createElement(
+              'h1',
+              null,
+              'Time Elapsed: ',
+              this.state.elapsed
+            ),
+            _react3.default.createElement(
+              'h1',
+              null,
+              'Last Active: ',
+              this.state.lastActive
+            ),
+            _react3.default.createElement(
+              'h1',
+              null,
+              'Idle: ',
+              this.state.isIdle.toString()
+            )
           ),
+          _react3.default.createElement(_index2.default, null),
           _react3.default.createElement(
-            'h1',
+            'div',
             null,
-            'Time Remaining: ',
-            this.state.remaining
-          ),
-          _react3.default.createElement(
-            'h1',
-            null,
-            'Time Elapsed: ',
-            this.state.elapsed
-          ),
-          _react3.default.createElement(
-            'h1',
-            null,
-            'Last Active: ',
-            this.state.lastActive
-          ),
-          _react3.default.createElement(
-            'h1',
-            null,
-            'Idle: ',
-            this.state.isIdle.toString()
-          )
-        ),
-        _react3.default.createElement(
-          'div',
-          null,
-          _react3.default.createElement(
-            'button',
-            { onClick: this._reset },
-            'RESET'
-          ),
-          _react3.default.createElement(
-            'button',
-            { onClick: this._pause },
-            'PAUSE'
-          ),
-          _react3.default.createElement(
-            'button',
-            { onClick: this._resume },
-            'RESUME'
+            _react3.default.createElement(
+              'button',
+              { onClick: this._reset },
+              'RESET'
+            ),
+            _react3.default.createElement(
+              'button',
+              { onClick: this._pause },
+              'PAUSE'
+            ),
+            _react3.default.createElement(
+              'button',
+              { onClick: this._resume },
+              'RESUME'
+            )
           )
         )
       );
-    }
-  }, {
-    key: '_onActive',
-    value: function _onActive() {
-      this.setState({ isIdle: false });
-    }
-  }, {
-    key: '_onIdle',
-    value: function _onIdle() {
-      this.setState({ isIdle: true });
-    }
-  }, {
-    key: '_changeTimeout',
-    value: function _changeTimeout() {
-      this.setState({
-        timeout: this.refs.timeoutInput.state.value()
-      });
-    }
-  }, {
-    key: '_reset',
-    value: function _reset() {
-      this.refs.idleTimer.reset();
-    }
-  }, {
-    key: '_pause',
-    value: function _pause() {
-      this.refs.idleTimer.pause();
-    }
-  }, {
-    key: '_resume',
-    value: function _resume() {
-      this.refs.idleTimer.resume();
     }
   }]);
 
   return App;
 }(_react2.Component));
 
-module.exports = App;
-module.exports['default'] = App;
+exports.default = App;
