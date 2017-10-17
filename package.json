@@ -36,12 +36,12 @@
   "dependencies": {
     "date-fns": "^1.28.5",
     "prop-types": "^15.5.10",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   },
   "peerDependencies": {
-    "react": "^15.x.x",
-    "react-dom": "^15.x.x",
+    "react": "^16.x.x",
+    "react-dom": "^16.x.x",
     "prop-types": "^15.x.x"
   },
   "devDependencies": {
