@@ -1,7 +1,8 @@
 # React Idle Timer
 > React.js port of jQuery.idleTimer with some extras.
 
-:rocket: ** Now Supports Isomorphic React!**
+⚡️ ** Updated for React 16**<br/>
+🚀 ** Now Supports Isomorphic React!**
 
 [![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://npmjs.org/package/react-idle-timer/)
 
