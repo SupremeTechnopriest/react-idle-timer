@@ -1,12 +1,12 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
@@ -38,7 +38,7 @@ var IdleTimer = function (_Component) {
   _inherits(IdleTimer, _Component);
 
   function IdleTimer() {
-    var _Object$getPrototypeO;
+    var _ref;
 
     var _temp, _this, _ret;
 
@@ -48,7 +48,7 @@ var IdleTimer = function (_Component) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(IdleTimer)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = IdleTimer.__proto__ || Object.getPrototypeOf(IdleTimer)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
       idle: false,
       oldDate: +new Date(),
       lastActive: +new Date(),
@@ -72,10 +72,10 @@ var IdleTimer = function (_Component) {
       }
 
       // clear any existing timeout
-      clearTimeout(_this.tId
+      clearTimeout(_this.tId);
 
       // if the idle timer is enabled, flip
-      );if (_this.state.idle) {
+      if (_this.state.idle) {
         _this._toggleIdleState(e);
       }
 
@@ -85,9 +85,7 @@ var IdleTimer = function (_Component) {
         pageY: e.pageY
       });
 
-      _this.tId = setTimeout(_this._toggleIdleState.bind(_this), _this.props.timeout // set a new timeout
-
-      );
+      _this.tId = setTimeout(_this._toggleIdleState.bind(_this), _this.props.timeout); // set a new timeout
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -96,6 +94,7 @@ var IdleTimer = function (_Component) {
     value: function componentWillMount() {
       var _this2 = this;
 
+      if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== 'object') return;
       this.props.events.forEach(function (e) {
         return _this2.props.element.addEventListener(e, _this2._handleEvent);
       });
@@ -112,6 +111,7 @@ var IdleTimer = function (_Component) {
     value: function componentWillUnmount() {
       var _this3 = this;
 
+      if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== 'object') return;
       // Clear timeout to prevent delayed state changes
       clearTimeout(this.tId);
       // Unbind all events
@@ -206,10 +206,10 @@ var IdleTimer = function (_Component) {
       console.log('pausing');
 
       // clear any existing timeout
-      clearTimeout(this.tId
+      clearTimeout(this.tId);
 
       // define how much is left on the timer
-      );this.setState({
+      this.setState({
         remaining: this.getRemainingTime()
       });
     }
