@@ -170,8 +170,6 @@ export default class IdleTimer extends Component {
       return
     }
 
-    console.log('pausing');
-
     // clear any existing timeout
     clearTimeout(this.tId)
 
