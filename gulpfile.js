@@ -10,7 +10,6 @@ var path = require('path'),
     webpack = require('webpack'),
     WebpackDevServer = require('webpack-dev-server'),
     WebpackDevConfig = require('./webpack.dev.config'),
-    jest = require('gulp-jest'),
     eslint = require('gulp-eslint'),
     del = require('del'),
     babel = require('gulp-babel'),
@@ -32,17 +31,6 @@ gulp.task('del', function(cb) {
 //////////
 // Test //
 //////////
-
-gulp.task('jest', function() {
-    return gulp.src('./src/__tests__/*.js')
-        .pipe(babel())
-        .pipe(jest({
-            scriptPreprocessor: __dirname + "/preprocessor.js",
-            unmockedModulePathPatterns: [
-                "node_modules/react"
-            ]
-        }));
-});
 
 //////////
 // LINT //
@@ -95,6 +83,6 @@ gulp.task('default', ['build-dev']);
 
 gulp.task('clean', ['del']);
 
-gulp.task('test', ['lint', 'jest'], function() {
+gulp.task('test', ['lint'], function() {
     process.exit();
 });

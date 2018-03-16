@@ -42,16 +42,18 @@ export default class IdleTimer extends Component {
   tId = null;
 
   componentWillMount() {
+    if (typeof window !== 'object') return;
     this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent))
   }
 
   componentDidMount() {
-    if(this.props.startOnLoad) {
+    if (this.props.startOnLoad) {
       this.reset();
     }
   }
 
   componentWillUnmount() {
+    if (typeof window !== 'object') return;
     // Clear timeout to prevent delayed state changes
     clearTimeout(this.tId);
     // Unbind all events
