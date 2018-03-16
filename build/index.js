@@ -203,8 +203,6 @@ var IdleTimer = function (_Component) {
         return;
       }
 
-      console.log('pausing');
-
       // clear any existing timeout
       clearTimeout(this.tId);
 
