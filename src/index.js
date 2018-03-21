@@ -23,7 +23,7 @@ export default class IdleTimer extends Component {
 
   static defaultProps = {
       timeout: 1000 * 60 * 20, // 20 minutes
-      events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mouseWheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
+      events: ['mousemove', 'keydown', 'wheel', 'DOMMouseScroll', 'mousewheel', 'mousedown', 'touchstart', 'touchmove', 'MSPointerDown', 'MSPointerMove'],
       idleAction: () => {},
       activeAction: () => {},
       element: (typeof window === 'undefined' ? 'undefined' : typeof (window)) === 'object' ? document : {},
