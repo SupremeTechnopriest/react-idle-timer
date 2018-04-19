@@ -16,10 +16,6 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _format = require('date-fns/format');
-
-var _format2 = _interopRequireDefault(_format);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -290,9 +286,6 @@ var IdleTimer = function (_Component) {
   }, {
     key: 'getLastActiveTime',
     value: function getLastActiveTime() {
-      if (this.props.format) {
-        return (0, _format2.default)(this.state.lastActive, this.props.format);
-      }
       return this.state.lastActive;
     }
 
@@ -319,7 +312,6 @@ IdleTimer.propTypes = {
   idleAction: _propTypes2.default.func, // Action to call when user becomes inactive
   activeAction: _propTypes2.default.func, // Action to call when user becomes active
   element: _propTypes2.default.oneOfType([_propTypes2.default.object, _propTypes2.default.string]), // Element ref to watch activty on
-  format: _propTypes2.default.string,
   startOnLoad: _propTypes2.default.bool
 };
 IdleTimer.defaultProps = {

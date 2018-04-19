@@ -1,6 +1,8 @@
 # React Idle Timer
 > React.js port of jQuery.idleTimer with some extras.
 
+⚠️ We dropped support for date formatting in version 3.  React idle timer returns raw date objects and you can use which ever library you like to format it. If you would like to continue using the built in formatter, stick with version 2.
+
 ⚡️ **Updated for React 16**<br/>
 🚀 **Now Supports Isomorphic React!**
 

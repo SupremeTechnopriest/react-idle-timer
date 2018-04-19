@@ -26,6 +26,10 @@ var _index = require('../build/index');
 
 var _index2 = _interopRequireDefault(_index);
 
+var _format = require('date-fns/format');
+
+var _format2 = _interopRequireDefault(_format);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -133,8 +137,7 @@ var App = _wrapComponent('App')(function (_Component) {
           activeAction: this._onActive,
           idleAction: this._onIdle,
           timeout: this.state.timeout,
-          startOnLoad: true,
-          format: 'MM-DD-YYYY HH:MM:ss.SSS' },
+          startOnLoad: true },
         _react3.default.createElement(
           'div',
           null,
@@ -164,7 +167,7 @@ var App = _wrapComponent('App')(function (_Component) {
               'h1',
               null,
               'Last Active: ',
-              this.state.lastActive
+              (0, _format2.default)(this.state.lastActive, 'MM-DD-YYYY HH:MM:ss.SSS')
             ),
             _react3.default.createElement(
               'h1',
