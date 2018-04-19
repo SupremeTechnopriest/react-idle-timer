@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import IdleTimer from '../build/index'
+import format from 'date-fns/format'
 
 export default class App extends Component {
 
@@ -31,22 +32,19 @@ export default class App extends Component {
   }
 
   render() {
-    return(
+    return (
       <IdleTimer
         ref="idleTimer"
         activeAction={this._onActive}
         idleAction={this._onIdle}
         timeout={this.state.timeout}
-        startOnLoad={true}
-        format="MM-DD-YYYY HH:MM:ss.SSS">
-
+        startOnLoad>
         <div>
-
           <div>
             <h1>Timeout: {this.state.timeout}ms</h1>
             <h1>Time Remaining: {this.state.remaining}</h1>
             <h1>Time Elapsed: {this.state.elapsed}</h1>
-            <h1>Last Active: {this.state.lastActive}</h1>
+            <h1>Last Active: {format(this.state.lastActive, 'MM-DD-YYYY HH:MM:ss.SSS')}</h1>
             <h1>Idle: {this.state.isIdle.toString()}</h1>
           </div>
 

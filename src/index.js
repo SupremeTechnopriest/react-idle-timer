@@ -8,7 +8,6 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import format from 'date-fns/format'
 
 export default class IdleTimer extends Component {
   static propTypes = {
@@ -17,7 +16,6 @@ export default class IdleTimer extends Component {
     idleAction: PropTypes.func, // Action to call when user becomes inactive
     activeAction: PropTypes.func, // Action to call when user becomes active
     element: PropTypes.oneOfType([PropTypes.object, PropTypes.string]), // Element ref to watch activty on
-    format: PropTypes.string,
     startOnLoad: PropTypes.bool
   };
 
@@ -247,9 +245,6 @@ export default class IdleTimer extends Component {
    *
    */
   getLastActiveTime() {
-    if (this.props.format) {
-      return format(this.state.lastActive, this.props.format)
-    }
     return this.state.lastActive
   }
 

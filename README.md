@@ -29,8 +29,7 @@ class YourApp extends React.Component {
         element={document}
         activeAction={this._onActive}
         idleAction={this._onIdle}
-        timeout={this.state.timeout}
-        format="MM-DD-YYYY HH:MM:ss.SSS">
+        timeout={this.state.timeout}>
 
         <h1>All your children</h1>
 
@@ -51,7 +50,6 @@ module.exports = YourApp
 - **idleAction** {*Function*} - Function to call on idle
 - **activeAction** {*Function*} - Function to call on active
 - **element** {*Object*} - Defaults to document, may pass a ref to another element
-- **format** {*String*} - moment.js format string applied to `lastActiveTime`
 - **startOnLoad** {*Boolean*} - Start the timer on component load.  Defaults to `true`. Set to false to wait for user action before starting timer.
 
 ## Methods
@@ -61,5 +59,5 @@ module.exports = YourApp
 - **resume()** *{Void}* - Resumes a paused idleTimer
 - **getRemainingTime()** *{Number}* - Returns the remaining time in milliseconds
 - **getElapsedTime()** *{Number}* - Returns the elapsed time in milliseconds
-- **lastActiveTime()** *{String}* - Returns the last active time as a number or a formatted string if the `format` prop is defined
+- **lastActiveTime()** *{String}* - Returns the `Date` the user was last active
 - **isIdle()** {*Boolean*} - Returns whether or not user is idle
