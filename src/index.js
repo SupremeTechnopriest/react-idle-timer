@@ -16,7 +16,8 @@ export default class IdleTimer extends Component {
     idleAction: PropTypes.func, // Action to call when user becomes inactive
     activeAction: PropTypes.func, // Action to call when user becomes active
     element: PropTypes.oneOfType([PropTypes.object, PropTypes.string]), // Element ref to watch activty on
-    startOnLoad: PropTypes.bool
+    startOnLoad: PropTypes.bool,
+    preventDefault: PropTypes.bool, // Prevent default event when activeAction is triggered
   };
 
   static defaultProps = {
@@ -25,7 +26,8 @@ export default class IdleTimer extends Component {
       idleAction: () => {},
       activeAction: () => {},
       element: (typeof window === 'undefined' ? 'undefined' : typeof (window)) === 'object' ? document : {},
-      startOnLoad: true
+      startOnLoad: true,
+      preventDefault: false
   };
 
   state = {
@@ -127,6 +129,11 @@ export default class IdleTimer extends Component {
     });
 
     this.tId = setTimeout(this._toggleIdleState.bind(this), this.props.timeout) // set a new timeout
+
+    // Prevent default action on event
+    if (this.props.preventDefault) {
+      e.preventDefault();
+    }
 
   }
 
