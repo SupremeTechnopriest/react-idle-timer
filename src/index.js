@@ -41,7 +41,7 @@ export default class IdleTimer extends Component {
 
   componentWillMount() {
     if (typeof window !== 'object') return;
-    this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent))
+    this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent, { passive: false }))
   }
 
   componentDidMount() {
@@ -73,7 +73,7 @@ export default class IdleTimer extends Component {
    *
    */
 
-  _toggleIdleState() {
+  _toggleIdleState(e) {
     // Set the state
     this.setState({
       idle: !this.state.idle
@@ -81,9 +81,9 @@ export default class IdleTimer extends Component {
 
     // Fire the appropriate action
     if (!this.state.idle)
-      this.props.activeAction();
+      this.props.activeAction(e);
     else
-      this.props.idleAction();
+      this.props.idleAction(e);
   }
 
   /**
