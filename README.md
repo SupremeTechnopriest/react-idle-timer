@@ -53,6 +53,7 @@ module.exports = YourApp
 - **activeAction** {*Function*} - Function to call on active
 - **element** {*Object*} - Defaults to document, may pass a ref to another element
 - **startOnLoad** {*Boolean*} - Start the timer on component load.  Defaults to `true`. Set to false to wait for user action before starting timer.
+- **preventDefault"" {*Boolean*} - Stop event processing when activeAction is called. Defaults to `false`.
 
 ## Methods
 
