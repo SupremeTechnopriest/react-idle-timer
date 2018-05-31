@@ -41,7 +41,7 @@ export default class IdleTimer extends Component {
 
   componentWillMount() {
     if (typeof window !== 'object') return;
-    this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent))
+    this.props.events.forEach(e => this.props.element.addEventListener(e, this._handleEvent, { passive: false }))
   }
 
   componentDidMount() {
