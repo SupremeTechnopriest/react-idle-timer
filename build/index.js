@@ -134,14 +134,14 @@ var IdleTimer = function (_Component) {
 
   }, {
     key: '_toggleIdleState',
-    value: function _toggleIdleState() {
+    value: function _toggleIdleState(e) {
       // Set the state
       this.setState({
         idle: !this.state.idle
       });
 
       // Fire the appropriate action
-      if (!this.state.idle) this.props.activeAction();else this.props.idleAction();
+      if (!this.state.idle) this.props.activeAction(e);else this.props.idleAction(e);
     }
 
     /**
