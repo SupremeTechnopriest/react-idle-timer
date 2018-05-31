@@ -92,7 +92,7 @@ var IdleTimer = function (_Component) {
 
       if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== 'object') return;
       this.props.events.forEach(function (e) {
-        return _this2.props.element.addEventListener(e, _this2._handleEvent);
+        return _this2.props.element.addEventListener(e, _this2._handleEvent, { passive: false });
       });
     }
   }, {
