@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo $EMS_PACKAGE_VERSION
+
+documentation build --shallow \
+    -c $EMS_APP_PATH/documentation.yml \
+    -o $EMS_APP_PATH/docs/source \
+    --format html \
+    --infer-private "/(\W)_[\w]*/ig" \
+    --project-name "IdleTimer" \
+    --project-version $EMS_PACKAGE_VERSION \
+    src/index.js
+
+documentation build --shallow \
+    -c $EMS_APP_PATH/documentation.yml \
+    -o $EMS_APP_PATH/DOCS.md \
+    --infer-private "/(\W)_[\w]*/ig" \
+    --format md \
+    --project-name "IdleTimer" \
+    --project-version $EMS_PACKAGE_VERSION \
+    src/index.js

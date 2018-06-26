@@ -1,19 +1,14 @@
 {
-  "presets": ["react", "es2015", "stage-0"],
+  "presets": [
+    [ "env", { "modules": false } ],
+    "react"
+  ],
+  "plugins": [ "transform-class-properties" ],
+  
   "env": {
-    "development": {
-      "plugins": [
-        ["react-transform", {
-          "transforms": [{
-            "transform": "react-transform-hmr",
-            "imports": ["react"],
-            "locals": ["module"]
-          }, {
-            "transform": "react-transform-catch-errors",
-            "imports": ["react", "redbox-react"]
-          }]
-        }]
-      ]
+    "test": {
+      "presets": [ "env", "react" ],
+      "plugins": [ "transform-class-properties" ],
     }
   }
 }

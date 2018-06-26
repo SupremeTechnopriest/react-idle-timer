@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -z "$(git status --porcelain)" ]; then
+  # Working directory clean
+  yarn publish --new-version $SEMVER
+  git push origin master --tags
+else
+  # Uncommitted changes
+  printf "🏗 preparing package for publish"
+
+  # Commit the changed files
+  git add .
+  git commit -m "🏗 preparing package publish"
+
+  # Bump version and publish
+  yarn publish --new-version $SEMVER
+  git push origin master --tags
+
+  printf "✅  Package published"
+
+fi

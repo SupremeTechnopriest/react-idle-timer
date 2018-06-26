@@ -1,13 +1,19 @@
-node_modules/
-.sass-cache
+# OSX
+#
 .DS_Store
-npm-debug.log
-package-lock.json
 
-# Unnecessary unless installing from github source instead of npm
-npm-shrinkwrap.json
+# Node
+#
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
 
-# These go to npm, unnecessary for .gitignore
+# Application
+#
+docs/
+dist/
 build/
-examples/
-.idea
+stats.html
+coverage

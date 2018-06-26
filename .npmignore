@@ -1,2 +1,23 @@
+# OSX
+#
+.DS_Store
+
+# node.js
+#
+node_modules/
+npm-debug.log
+npm-debug.log.*
+
+# Config
+#
+.env
+.codeclimate.yml
+.babelrc
+
+# Application
+#
+docs/
+test/
 src/
-src_examples/
+stats.html
+coverage
