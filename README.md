@@ -1,22 +1,19 @@
 # React Idle Timer
 
-
-
 ![npm](https://img.shields.io/npm/v/react-idle-timer.svg)
 ![Travis](https://img.shields.io/travis/SupremeTechnopriest/react-idle-timer.svg)
 ![Code Climate](https://img.shields.io/codeclimate/coverage/SupremeTechnopriest/react-idle-timer.svg)
 ![Code Climate](https://img.shields.io/codeclimate/maintainability/SupremeTechnopriest/react-idle-timer.svg)
 ![Code Climate](https://img.shields.io/codeclimate/tech-debt/SupremeTechnopriest/react-idle-timer.svg)
 
-
 [![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://npmjs.org/package/react-idle-timer/)
 
-⚡️ **Support for React 16**<br/>
+⚡️ **Support for Windows**<br/>
 🚀 **Support for Isomorphic React**
 
 ## Latest News
 
-Welcome to version 4 of IdleTimer! We have performed a complete rewrite of our build system.  This should allow IdleTimer to be used with windows.  We also added test coverage and automated intergation tools (travis and codeclimate).  
+Welcome to version 4 of IdleTimer! We have performed a complete rewrite of our build system.  This should allow IdleTimer to be used with windows.  We also added test coverage and continuous integration tools (travis and codeclimate).  
 
 There is one breaking change in version 4:
 
