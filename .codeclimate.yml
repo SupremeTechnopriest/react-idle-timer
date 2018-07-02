@@ -2,4 +2,7 @@ plugins:
   eslint:
     enabled: true
     config:
-      config: ./node_modules/standard/eslintrc.json
+      config: .eslintrc.json
+exclude_patterns:
+- "example/**"
+- "**/__tests__/**"
