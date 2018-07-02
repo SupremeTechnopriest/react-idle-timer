@@ -7,13 +7,14 @@
 ![Code Climate](https://img.shields.io/codeclimate/tech-debt/SupremeTechnopriest/react-idle-timer.svg)
 
 [![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://npmjs.org/package/react-idle-timer/)
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
-⚡️ **Support for Windows**<br/>
+⚡️ **Support for React 16**<br/>
 🚀 **Support for Isomorphic React**
 
 ## Latest News
 
-Welcome to version 4 of IdleTimer! We have performed a complete rewrite of our build system.  This should allow IdleTimer to be used with windows.  We also added test coverage and continuous integration tools (travis and codeclimate).  
+Welcome to version 4 of IdleTimer! We have performed a complete rewrite of our build system and a refactor/ clean up of the source code. After accepting many pull requests things started to get ugly. We added test coverage and continuous integration tools (travis and codeclimate) that will automatically enforce style and test future pull requests.  
 
 There is one breaking change in version 4:
 
@@ -104,6 +105,3 @@ These events are bound by default:
 - **getElapsedTime()** *{Number}* - Returns the elapsed time in milliseconds
 - **getLastActiveTime()** *{String}* - Returns the `Date` the user was last active
 - **isIdle()** *{Boolean}* - Returns whether or not user is idle
-
-
-[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
