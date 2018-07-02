@@ -1,1 +1,18 @@
 toc:
+  - name: props
+  - timeout
+  - events
+  - idleAction
+  - activeAction
+  - element
+  - startOnMount
+  - passive
+  - capture
+  - name: methods
+  - reset
+  - pause
+  - resume
+  - getRemainingTime
+  - getElapsedTime
+  - getLastActiveTime
+  - isIdle

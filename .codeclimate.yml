@@ -1,0 +1,5 @@
+plugins:
+  eslint:
+    enabled: true
+    config:
+      config: node_modules/standard/eslintrc.json

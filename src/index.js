@@ -13,17 +13,25 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
 
+/**
+ * Determine if we are in a browser
+ * or a server environment
+ * @type {Boolean}
+ * @private
+ */
 const IS_BROWSER = (typeof window === 'undefined' ? 'undefined' : typeof (window)) === 'object'
 
 /**
  * Default element to listen for events on
- * @type {[type]}
+ * @type {Object}
+ * @private
  */
 const DEFAULT_ELEMENT = IS_BROWSER ? document : {}
 
 /**
  * The default events to determine activity
  * @type {Array}
+ * @private
  */
 const DEFAULT_EVENTS = [
   'mousemove',
@@ -41,6 +49,7 @@ const DEFAULT_EVENTS = [
 /**
  * Detects when your user is idle
  * @class IdleTimer
+ * @private
  */
 export default class IdleTimer extends Component {
   /**
@@ -78,7 +87,17 @@ export default class IdleTimer extends Component {
      * Start the timer on mount
      * @type {Boolean}
      */
-    startOnMount: PropTypes.bool
+    startOnMount: PropTypes.bool,
+    /**
+     * Bind events passively
+     * @type {Boolean}
+     */
+    passive: PropTypes.bool,
+    /**
+     * Capture events
+     * @type {Boolean}
+     */
+    capture: PropTypes.bool
   }
 
   /**
@@ -92,7 +111,9 @@ export default class IdleTimer extends Component {
     events: DEFAULT_EVENTS,
     idleAction: () => {},
     activeAction: () => {},
-    startOnMount: true
+    startOnMount: true,
+    capture: true,
+    passive: true
   }
 
   /**
@@ -112,6 +133,7 @@ export default class IdleTimer extends Component {
   /**
    * The timer instance
    * @type {Timeout}
+   * @private
    */
   tId = null
 
@@ -121,6 +143,7 @@ export default class IdleTimer extends Component {
    * for best performance
    * @param {Object} props
    * @return {IdleTimer}
+   * @private
    */
   constructor (props) {
     super(props)
@@ -146,10 +169,10 @@ export default class IdleTimer extends Component {
     if (!IS_BROWSER) return
     // Otherwise we bind all the events
     // to the supplied element
-    const { element, events } = this.props
+    const { element, events, passive, capture } = this.props
     events.forEach(e => element.addEventListener(e, this._handleEvent), {
-      capture: true,
-      passive: true
+      capture,
+      passive
     })
   }
 
@@ -200,7 +223,7 @@ export default class IdleTimer extends Component {
    * the correct action function
    * @private
    */
-  _toggleIdleState () {
+  _toggleIdleState (e) {
     // Toggle the idle state
     const { idle } = this.state
     this.setState({
@@ -208,11 +231,12 @@ export default class IdleTimer extends Component {
     })
 
     // Fire the appropriate action
+    // and pass the event through
     const { activeAction, idleAction } = this.props
     if (idle) {
-      activeAction()
+      activeAction(e)
     } else {
-      idleAction()
+      idleAction(e)
     }
   }
 
@@ -267,6 +291,7 @@ export default class IdleTimer extends Component {
 
   /**
    * Restore initial state and restart timer
+   * @name reset
    */
   _reset () {
     // Clear timeout
@@ -287,6 +312,7 @@ export default class IdleTimer extends Component {
 
   /**
    * Store remaining time and stop timer
+   * @name pause
    */
   _pause () {
     // Timer is already paused
@@ -306,6 +332,7 @@ export default class IdleTimer extends Component {
 
   /**
    * Resumes a paused timer
+   * @name resume
    */
   _resume () {
     // Timer is not paused
@@ -325,6 +352,7 @@ export default class IdleTimer extends Component {
 
   /**
    * Time remaining before idle
+   * @name getRemainingTime
    * @return {Number} Milliseconds remaining
    */
   _getRemainingTime () {
@@ -351,6 +379,7 @@ export default class IdleTimer extends Component {
 
   /**
    * How much time has elapsed
+   * @name getElapsedTime
    * @return {Timestamp}
    */
   _getElapsedTime () {
@@ -360,6 +389,7 @@ export default class IdleTimer extends Component {
 
   /**
    * Last time the user was active
+   * @name getLastActiveTime
    * @return {Timestamp}
    */
   _getLastActiveTime () {
@@ -369,6 +399,7 @@ export default class IdleTimer extends Component {
 
   /**
    * Returns wether or not the user is idle
+   * @name isIdle
    * @return {Boolean}
    */
   _isIdle () {

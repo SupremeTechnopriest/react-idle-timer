@@ -70,7 +70,8 @@
   "jest": {
     "setupFiles": [
       "./test.setup.js"
-    ]
+    ],
+    "collectCoverage": true
   },
   "standard": {
     "parser": "babel-eslint",

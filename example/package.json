@@ -17,6 +17,7 @@
     "globals": [
       "describe",
       "it",
+      "xit",
       "expect"
     ]
   }
