@@ -4,5 +4,5 @@ plugins:
     config:
       config: .eslintrc.json
 exclude_patterns:
-- "example/**"
-- "**/__tests__/**"
+  - "example/**"
+  - "**/__tests__/**"
