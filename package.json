@@ -68,6 +68,7 @@
     "standard": "^11.0.1"
   },
   "jest": {
+    "testPathIgnorePatterns": [ "/example/" ],
     "setupFiles": [
       "./test.setup.js"
     ],
