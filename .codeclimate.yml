@@ -1,8 +1,9 @@
 plugins:
   eslint:
     enabled: true
+    channel: "eslint-4"
     config:
       config: .eslintrc.json
 exclude_patterns:
-  - "example/**"
-  - "**/__tests__/**"
+- "example/**"
+- "**/__tests__/**"
