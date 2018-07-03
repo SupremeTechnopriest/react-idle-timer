@@ -7,13 +7,13 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "clean": "rimraf dist example/src/dist coverage stats.html",
+    "clean": "rimraf dist example/src/dist docs coverage",
     "lint": "standard lint",
     "fix": "standard --fix",
     "test": "yarn lint && jest",
     "docs": "./scripts/docs",
     "prepackage": "yarn clean && yarn test && yarn build && yarn docs",
-    "package": ".node scripts/package.js",
+    "package": "./scripts/package",
     "example": "./scripts/example"
   },
   "keywords": [
@@ -50,6 +50,7 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "jest": "^23.2.0",
+    "prompt-list": "^3.2.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",

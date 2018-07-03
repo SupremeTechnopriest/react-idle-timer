@@ -5,8 +5,8 @@
 -   [props][1]
 -   [timeout][2]
 -   [events][3]
--   [idleAction][4]
--   [activeAction][5]
+-   [onIdle][4]
+-   [onActive][5]
 -   [element][6]
 -   [startOnMount][7]
 -   [passive][8]
@@ -37,13 +37,13 @@ Activty events to listen on
 
 Type: [Array][19]
 
-## idleAction
+## onIdle
 
 Function to call when user is idle
 
 Type: [Function][20]
 
-## activeAction
+## onActive
 
 Function to call when user becomes active
 
@@ -120,9 +120,9 @@ Returns **[Boolean][22]**
 
 [3]: #events
 
-[4]: #idleaction
+[4]: #onidle
 
-[5]: #activeaction
+[5]: #onactive
 
 [6]: #element
 

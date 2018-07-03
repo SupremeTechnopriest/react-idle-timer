@@ -2,8 +2,8 @@ toc:
   - name: props
   - timeout
   - events
-  - idleAction
-  - activeAction
+  - onIdle
+  - onActive
   - element
   - startOnMount
   - passive
