@@ -22,7 +22,7 @@ There are a few breaking changes in version 4:
 - The property `activeAction` has been renamed to `onActive`.
 - The property `idleAction` has been renamed to `onIdle`.
 
-For the full patch notes please refer to the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/example/src/CHANGELOG.md)
+For the full patch notes please refer to the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md)
 
 ## Installation
 `yarn add react-idle-timer`
@@ -90,14 +90,14 @@ These events are bound by default:
 - MSPointerMove
 
 ### Props
-- **timeout** {*Number*} - Idle timeout in milliseconds
-- **events** {*Array*} - Events to bind. See [default events](https://)
-- **idleAction** {*Function*} - Function to call on idle
-- **activeAction** {*Function*} - Function to call on active
-- **element** {*Object*} - Defaults to document, may pass a ref to another element
+- **timeout** {*Number*} - Idle timeout in milliseconds.
+- **events** {*Array*} - Events to bind. See [default events](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/src/index.js#L36-L47) for list of defaults.
+- **idleAction** {*Function*} - Function to call on idle.
+- **activeAction** {*Function*} - Function to call on active.
+- **element** {*Object*} - Defaults to document, may pass a ref to another element.
 - **startOnMount** {*Boolean*} - Start the timer on component load.  Defaults to `true`. Set to false to wait for user action before starting timer.
-- **passive** {*Boolean*} - Bind events in passive mode. Defaults to `true`. Set to false to explicitly set to active mode.
-- **capture** {*Boolean*} - Capture events. Defaults to `true`
+- **passive** {*Boolean*} - Bind events in [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to `true`.
+- **capture** {*Boolean*} - Bind events in [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to `true`.
 
 ### Methods
 - **reset()** *{Void}* - Resets the idleTimer
