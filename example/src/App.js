@@ -42,8 +42,8 @@ export default class App extends Component {
     return (
       <IdleTimer
         ref={ref => { this.idleTimer = ref }}
-        activeAction={this.onActive}
-        idleAction={this.onIdle}
+        onActive={this.onActive}
+        onIdle={this.onIdle}
         timeout={this.state.timeout}
         startOnLoad>
         <div>

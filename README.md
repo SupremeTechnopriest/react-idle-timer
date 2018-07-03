@@ -16,9 +16,11 @@
 
 Welcome to version 4 of IdleTimer! We have performed a complete rewrite of our build system and a refactor/ clean up of the source code. After accepting many pull requests things started to get ugly. We added test coverage and continuous integration tools (travis and codeclimate) that will automatically enforce style and test future pull requests.  
 
-There is one breaking change in version 4:
+There are a few breaking changes in version 4:
 
 - The property `startOnLoad` has been renamed to `startOnMount` in order to make more sense in a react context.
+- The property `activeAction` has been renamed to `onActive`.
+- The property `idleAction` has been renamed to `onIdle`.
 
 For the full patch notes please refer to the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/example/src/CHANGELOG.md)
 
@@ -48,8 +50,8 @@ export default class YourApp extends Component {
       <IdleTimer
         ref={ref => { this.idleTimer = ref }}
         element={document}
-        activeAction={this.onActive}
-        idleAction={this.onIdle}
+        onActive={this.onActive}
+        onIdle={this.onIdle}
         timeout={1000 * 60 * 15}>
 
         <h1>Child Components</h1>

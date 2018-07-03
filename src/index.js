@@ -72,17 +72,17 @@ export default class IdleTimer extends Component {
      * Function to call when user is idle
      * @type {Function}
      */
-    idleAction: PropTypes.func,
+    onIdle: PropTypes.func,
     /**
      * Function to call when user becomes active
      * @type {Function}
      */
-    activeAction: PropTypes.func,
+    onActive: PropTypes.func,
     /**
      * Element reference to bind activity listeners to
      * @type {Object}
      */
-    element: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    element: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
     /**
      * Start the timer on mount
      * @type {Boolean}
@@ -109,8 +109,8 @@ export default class IdleTimer extends Component {
     timeout: 1000 * 60 * 20,
     element: DEFAULT_ELEMENT,
     events: DEFAULT_EVENTS,
-    idleAction: () => {},
-    activeAction: () => {},
+    onIdle: () => {},
+    onActive: () => {},
     startOnMount: true,
     capture: true,
     passive: true
@@ -232,11 +232,11 @@ export default class IdleTimer extends Component {
 
     // Fire the appropriate action
     // and pass the event through
-    const { activeAction, idleAction } = this.props
+    const { onActive, onIdle } = this.props
     if (idle) {
-      activeAction(e)
+      onActive(e)
     } else {
-      idleAction(e)
+      onIdle(e)
     }
   }
 
@@ -246,6 +246,7 @@ export default class IdleTimer extends Component {
    * @private
    */
   _handleEvent = (e) => {
+    console.log(JSON.stringify(e))
     const { remaining, pageX, pageY } = this.state
     // Already idle, ignore events
     if (remaining) return
@@ -262,6 +263,9 @@ export default class IdleTimer extends Component {
       }
       // Under 200 ms is hard to do
       // continuous activity will bypass this
+      // TODO: Cant seem to simulate this event with pageX and pageY for testing
+      // making this block of code unreachable by test suite
+      // opened an issue here https://github.com/Rich-Harris/simulant/issues/19
       const elapsed = this.getElapsedTime()
       if (elapsed < 200) {
         return
@@ -323,6 +327,7 @@ export default class IdleTimer extends Component {
 
     // Clear existing timeout
     clearTimeout(this.tId)
+    this.tId = null
 
     // Define how much is left on the timer
     this.setState({

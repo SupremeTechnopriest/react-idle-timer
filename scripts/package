@@ -1,21 +1,35 @@
-#!/bin/bash
+#!/usr/bin/env node
 
-if [ -z "$(git status --porcelain)" ]; then
-  # Working directory clean
-  yarn publish --new-version $SEMVER
-  git push origin master --tags
-else
-  # Uncommitted changes
-  printf "🏗 preparing package for publish"
+const { join } = require('path')
+const { execFile } = require('child_process')
+const List = require('prompt-list')
 
-  # Commit the changed files
-  git add .
-  git commit -m "🏗 preparing package publish"
+const list = new List({
+  name: 'semver',
+  message: 'Semver for package?',
+  choices: [
+    'patch',
+    'minor',
+    'major'
+  ]
+})
 
-  # Bump version and publish
-  yarn publish --new-version $SEMVER
-  git push origin master --tags
+const question = async function () {
+  const semver = await list.run()
 
-  printf "✅  Package published"
+  if (!semver) {
+    return console.log('❌  Package not created. Semver not selected.')
+  }
 
-fi
+  const file = execFile(join('scripts', 'publish'), [ '' ], {
+    stdio: 'inherit',
+    env: Object.assign(process.env, {
+      SEMVER: semver
+    })
+  })
+
+  file.stdout.on('data', console.log)
+  file.stderr.on('data', console.log)
+}
+
+question()

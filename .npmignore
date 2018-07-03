@@ -12,12 +12,18 @@ npm-debug.log.*
 #
 .env
 .codeclimate.yml
+.travis.yml
 .babelrc
+documentation.yml
+.eslintrc.json
+rollup.config.js
+test.setup.js
+
 
 # Application
 #
+example/
+scripts/
 docs/
-test/
 src/
-stats.html
-coverage
+coverage/

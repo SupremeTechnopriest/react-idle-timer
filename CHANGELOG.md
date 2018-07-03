@@ -3,6 +3,8 @@ Version 4.0 contains a rewrite of the build system and a refactor of the source 
 
 ## Breaking Changes
 - The property `startOnLoad` has been renamed to `startOnMount` to make more sense in a react context.
+- The property `activeAction` has been renamed to `onActive`.
+- The property `idleAction` has been renamed to `onIdle`.
 
 ## Enhancements
 - Added [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) property.  Defaults to `true`, bind events with passive mode enabled
