@@ -2,8 +2,8 @@
   "name": "react-idle-timer",
   "version": "4.0.3",
   "description": "Activity detection for React.js",
-  "main": "build/index.js",
-  "module": "build/index.es.js",
+  "main": "dist/index.min.js",
+  "module": "dist/index.es.js",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
