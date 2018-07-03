@@ -7,12 +7,6 @@ import { mount } from 'enzyme'
 // Tested component
 import IdleTimer from '../index'
 
-const simulateEvent = (event, element, pageX, pageY) => {
- const evt = document.createEvent("MouseEvents")
- evt.initMouseEvent("click", true, true, window, 0, pageX, pageY, pageX, pageY, false, false, false, false, 0, null)
- [element].dispatchEvent(evt)
-}
-
 describe('IdleTimer', () => {
   let props
   let mounted
