@@ -1,2 +1,29 @@
+# OSX
+#
+.DS_Store
+
+# node.js
+#
+node_modules/
+npm-debug.log
+npm-debug.log.*
+
+# Config
+#
+.env
+.codeclimate.yml
+.travis.yml
+.babelrc
+documentation.yml
+.eslintrc.json
+rollup.config.js
+test.setup.js
+
+
+# Application
+#
+example/
+scripts/
+docs/
 src/
-src_examples/
+coverage/

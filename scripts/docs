@@ -1,0 +1,14 @@
+#!/bin/bash
+documentation build --shallow \
+    -c documentation.yml \
+    -o docs/source \
+    --format html \
+    --project-name "IdleTimer" \
+    src/index.js
+
+documentation build --shallow \
+    -c documentation.yml \
+    -o DOCS.md \
+    --format md \
+    --project-name "IdleTimer" \
+    src/index.js

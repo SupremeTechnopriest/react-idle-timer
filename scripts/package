@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+
+const { join } = require('path')
+const { execFile } = require('child_process')
+const List = require('prompt-list')
+
+const list = new List({
+  name: 'semver',
+  message: 'Semver for package?',
+  choices: [
+    'patch',
+    'minor',
+    'major'
+  ]
+})
+
+const question = async function () {
+  const semver = await list.run()
+
+  if (!semver) {
+    return console.log('❌  Package not created. Semver not selected.')
+  }
+
+  const file = execFile(join('scripts', 'publish'), [ '' ], {
+    stdio: 'inherit',
+    env: Object.assign(process.env, {
+      SEMVER: semver
+    })
+  })
+
+  file.stdout.on('data', console.log)
+  file.stderr.on('data', console.log)
+}
+
+question()

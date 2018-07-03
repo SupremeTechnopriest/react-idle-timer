@@ -1,0 +1,6 @@
+#!/bin/bash
+
+yarn build
+cp -r dist example/src
+printf '%s\n%s\n' "/* eslint-disable */" "$(cat example/src/dist/index.es.js)" >example/src/dist/index.es.js
+cd example && yarn start
