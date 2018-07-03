@@ -1,12 +1,12 @@
 # React Idle Timer
 
 ![npm](https://img.shields.io/npm/v/react-idle-timer.svg)
+![npm](https://img.shields.io/npm/dt/react-idle-timer.svg)
 ![Travis](https://img.shields.io/travis/SupremeTechnopriest/react-idle-timer.svg)
-![Code Climate](https://img.shields.io/codeclimate/coverage/SupremeTechnopriest/react-idle-timer.svg)
-![Code Climate](https://img.shields.io/codeclimate/maintainability/SupremeTechnopriest/react-idle-timer.svg)
-![Code Climate](https://img.shields.io/codeclimate/tech-debt/SupremeTechnopriest/react-idle-timer.svg)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/df30651fb377f18aeb63/test_coverage)](https://codeclimate.com/github/SupremeTechnopriest/react-idle-timer/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/df30651fb377f18aeb63/maintainability)](https://codeclimate.com/github/SupremeTechnopriest/react-idle-timer/maintainability)
 
-[![NPM](https://nodei.co/npm/react-idle-timer.png?downloads=true&stars=true)](https://npmjs.org/package/react-idle-timer/)
+
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
 ⚡️ **Support for React 16**<br/>
