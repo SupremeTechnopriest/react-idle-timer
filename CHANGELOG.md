@@ -19,5 +19,3 @@ We dropped support for date formatting in version 3.  React idle timer returns r
 
 ## Breaking Changes
 - Removed built in date formatter.
-
-# 2.0.0
