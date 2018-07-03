@@ -74,7 +74,7 @@ export default class YourApp extends Component {
 
 ## Documentation
 
-> To build the source code generated html docs run `yarn docs` and open `docs/index.html` in any browser.  A markdown version is available [here](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/example/src/DOCS.md).
+> To build the source code generated html docs run `yarn docs` and open `docs/index.html` in any browser.  A markdown version is available [here](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/DOCS.md).
 
 ### Default Events
 These events are bound by default:
