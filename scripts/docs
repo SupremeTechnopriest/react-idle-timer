@@ -1,7 +1,7 @@
 #!/bin/bash
 documentation build --shallow \
     -c documentation.yml \
-    -o docs/source \
+    -o docs \
     --format html \
     --project-name "IdleTimer" \
     src/index.js
