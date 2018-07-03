@@ -246,7 +246,6 @@ export default class IdleTimer extends Component {
    * @private
    */
   _handleEvent = (e) => {
-    console.log(JSON.stringify(e))
     const { remaining, pageX, pageY } = this.state
     // Already idle, ignore events
     if (remaining) return
