@@ -39,7 +39,7 @@ describe('IdleTimer', () => {
   })
 
   describe('lifecycle', () => {
-    it('Should mount its children', () => {
+    it('Should render its children', () => {
       children = <div>test</div>
       const divs = idleTimer().find('div')
       expect(divs.first().html()).toBe('<div>test</div>')
@@ -59,6 +59,17 @@ describe('IdleTimer', () => {
       props.onActive = sinon.spy()
       const timer = idleTimer()
       expect(props.onActive.callCount).toBe(0)
+      expect(timer.state().idle).toBe(true)
+    })
+
+    it('Should start on first event when startOnMount is set', () => {
+      props.startOnMount = false
+      props.onActive = sinon.spy()
+      const timer = idleTimer()
+      expect(props.onActive.callCount).toBe(0)
+      expect(timer.state().idle).toBe(true)
+      simulant.fire(document, 'mousedown')
+      expect(props.onActive.callCount).toBe(1)
     })
 
     it('Should set capture property', () => {

@@ -147,6 +147,9 @@ export default class IdleTimer extends Component {
    */
   constructor (props) {
     super(props)
+    // If startOnMount is set, idle state defaults to true
+    this.state.idle = true
+    // Bind all events to component scope, built for speed 🚀
     this.toggleIdleState = this._toggleIdleState.bind(this)
     this.reset = this._reset.bind(this)
     this.pause = this._pause.bind(this)
