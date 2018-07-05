@@ -1,3 +1,13 @@
+### 4.0.5
+- Fixes a bug where setting `startOnMount` to `false` starts IdleTimer in the wrong state
+
+### 4.0.4
+- Fixes a bug where the module could not be imported
+
+### 4.0.1 - 4.0.3
+- Minor documentation updates
+- Continuous integration bugfixes
+
 # 4.0.0
 Version 4.0 contains a rewrite of the build system and a refactor of the source code for IdleTimer.  After accepting many pull requests, the projects code style was destroyed.  We added in some forced styling and will not be accepting PRs that don't respect this style. Contribution guide now on the README.  
 
@@ -19,3 +29,9 @@ We dropped support for date formatting in version 3.  React idle timer returns r
 
 ## Breaking Changes
 - Removed built in date formatter.
+
+# 2.0.0
+Added support for isomorphic react!
+
+# 1.0.0
+Initial release
