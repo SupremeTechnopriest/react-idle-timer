@@ -1,4 +1,4 @@
-### 4.0.5
+### 4.0.5 - 4.0.6
 - Fixes a bug where setting `startOnMount` to `false` starts IdleTimer in the wrong state
 
 ### 4.0.4
