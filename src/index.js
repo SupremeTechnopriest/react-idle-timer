@@ -148,7 +148,7 @@ export default class IdleTimer extends Component {
   constructor (props) {
     super(props)
     // If startOnMount is set, idle state defaults to true
-    if (props.startOnMount) {
+    if (!props.startOnMount) {
       this.state.idle = true
     }
     // Bind all events to component scope, built for speed 🚀

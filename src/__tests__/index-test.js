@@ -56,9 +56,7 @@ describe('IdleTimer', () => {
   describe('properties', () => {
     it('Should not start when startOnMount is set', () => {
       props.startOnMount = false
-      props.onActive = sinon.spy()
       const timer = idleTimer()
-      expect(props.onActive.callCount).toBe(0)
       expect(timer.state().idle).toBe(true)
     })
 
