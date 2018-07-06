@@ -92,8 +92,8 @@ These events are bound by default:
 ### Props
 - **timeout** {*Number*} - Idle timeout in milliseconds.
 - **events** {*Array*} - Events to bind. See [default events](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/src/index.js#L36-L47) for list of defaults.
-- **idleAction** {*Function*} - Function to call on idle.
-- **activeAction** {*Function*} - Function to call on active.
+- **onIdle** {*Function*} - Function to call on idle.
+- **onActive** {*Function*} - Function to call on active.
 - **element** {*Object*} - Defaults to document, may pass a ref to another element.
 - **startOnMount** {*Boolean*} - Start the timer on component load.  Defaults to `true`. Set to false to wait for user action before starting timer.
 - **passive** {*Boolean*} - Bind events in [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to `true`.
@@ -105,5 +105,5 @@ These events are bound by default:
 - **resume()** *{Void}* - Resumes a paused idleTimer
 - **getRemainingTime()** *{Number}* - Returns the remaining time in milliseconds
 - **getElapsedTime()** *{Number}* - Returns the elapsed time in milliseconds
-- **getLastActiveTime()** *{String}* - Returns the `Date` the user was last active
+- **getLastActiveTime()** *{Number}* - Returns the `Timestamp` the user was last active
 - **isIdle()** *{Boolean}* - Returns whether or not user is idle
