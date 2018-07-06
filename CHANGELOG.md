@@ -1,3 +1,7 @@
+### 4.0.7
+- Fixed some inconsistencies in the README
+- Added default prop values to documentation
+
 ### 4.0.5 - 4.0.6
 - Fixes a bug where setting `startOnMount` to `false` starts IdleTimer in the wrong state
 

@@ -59,42 +59,50 @@ export default class IdleTimer extends Component {
    */
   static propTypes = {
     /**
-     * Activity Timeout
+     * Activity Timeout in milliseconds
+     * default: 1200000
      * @type {Number}
      */
     timeout: PropTypes.number,
     /**
-     * Activty events to listen on
+     * DOM events to listen to
+     * default: see [default events](https://github.com/SupremeTechnopriest/react-idle-timer#default-events)
      * @type {Array}
      */
     events: PropTypes.arrayOf(PropTypes.string),
     /**
      * Function to call when user is idle
+     * default: () => {}
      * @type {Function}
      */
     onIdle: PropTypes.func,
     /**
      * Function to call when user becomes active
+     * default: () => {}
      * @type {Function}
      */
     onActive: PropTypes.func,
     /**
      * Element reference to bind activity listeners to
+     * default: document
      * @type {Object}
      */
     element: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
     /**
      * Start the timer on mount
+     * default: true
      * @type {Boolean}
      */
     startOnMount: PropTypes.bool,
     /**
      * Bind events passively
+     * default: true
      * @type {Boolean}
      */
     passive: PropTypes.bool,
     /**
      * Capture events
+     * default: true
      * @type {Boolean}
      */
     capture: PropTypes.bool

@@ -27,51 +27,59 @@
 
 ## timeout
 
-Activity Timeout
+Activity Timeout in milliseconds
+default: 1200000
 
 Type: [Number][18]
 
 ## events
 
-Activty events to listen on
+DOM events to listen to
+default: see [default events][19]
 
-Type: [Array][19]
+Type: [Array][20]
 
 ## onIdle
 
 Function to call when user is idle
+default: () => {}
 
-Type: [Function][20]
+Type: [Function][21]
 
 ## onActive
 
 Function to call when user becomes active
+default: () => {}
 
-Type: [Function][20]
+Type: [Function][21]
 
 ## element
 
 Element reference to bind activity listeners to
+default: document
 
-Type: [Object][21]
+Type: [Object][22]
 
 ## startOnMount
 
 Start the timer on mount
+default: true
 
-Type: [Boolean][22]
+Type: [Boolean][23]
 
 ## passive
 
 Bind events passively
+default: true
 
-Type: [Boolean][22]
+Type: [Boolean][23]
 
 ## capture
 
 Capture events
+default: true
 
-Type: [Boolean][22]
+Type: [Boolean][23]
 
 ## methods
 
@@ -112,7 +120,7 @@ Returns **Timestamp**
 
 Returns wether or not the user is idle
 
-Returns **[Boolean][22]** 
+Returns **[Boolean][23]** 
 
 [1]: #props
 
@@ -150,10 +158,12 @@ Returns **[Boolean][22]**
 
 [18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
-[19]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[19]: https://github.com/SupremeTechnopriest/react-idle-timer#default-events
 
-[20]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[20]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[21]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[21]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[22]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[22]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[23]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
