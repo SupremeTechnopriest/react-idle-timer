@@ -27,9 +27,11 @@
 
 ## timeout
 
-Activity Timeout
+Activity Timeout (Milliseconds)
 
 Type: [Number][18]
+
+Default: 1000 * 60 * 20 (Milliseconds)
 
 ## events
 
@@ -37,11 +39,15 @@ Activty events to listen on
 
 Type: [Array][19]
 
+Default: See [default events](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/src/index.js#L36-L47) for list of defaults.
+
 ## onIdle
 
 Function to call when user is idle
 
 Type: [Function][20]
+
+Default: Dummy function
 
 ## onActive
 
@@ -49,11 +55,15 @@ Function to call when user becomes active
 
 Type: [Function][20]
 
+Default: Dummy function
+
 ## element
 
 Element reference to bind activity listeners to
 
 Type: [Object][21]
+
+Default: document
 
 ## startOnMount
 
@@ -61,17 +71,23 @@ Start the timer on mount
 
 Type: [Boolean][22]
 
+Default: true
+
 ## passive
 
 Bind events passively
 
 Type: [Boolean][22]
 
+Default: true
+
 ## capture
 
 Capture events
 
 Type: [Boolean][22]
+
+Default: true
 
 ## methods
 
