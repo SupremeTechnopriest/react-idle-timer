@@ -183,9 +183,11 @@ export default class IdleTimer extends Component {
     // Otherwise we bind all the events
     // to the supplied element
     const { element, events, passive, capture } = this.props
-    events.forEach(e => element.addEventListener(e, this._handleEvent), {
-      capture,
-      passive
+    events.forEach(e => {
+      element.addEventListener(e, this._handleEvent, {
+        capture,
+        passive
+      })
     })
   }
 
