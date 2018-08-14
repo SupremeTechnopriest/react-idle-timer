@@ -1,3 +1,6 @@
+### 4.0.8
+- Fixed a bug where passive and capture were not being passed to the event listener.  The function has been reformated so it reads better.
+
 ### 4.0.7
 - Fixed some inconsistencies in the README
 - Added default prop values to documentation
