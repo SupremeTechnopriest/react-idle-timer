@@ -16,6 +16,7 @@ export default class App extends Component {
     // Bind event handlers and methods
     this.onActive = this._onActive.bind(this)
     this.onIdle = this._onIdle.bind(this)
+    this.onAction = this._onAction(this)
     this.reset = this._reset.bind(this)
     this.pause = this._pause.bind(this)
     this.resume = this._resume.bind(this)
@@ -44,6 +45,7 @@ export default class App extends Component {
         ref={ref => { this.idleTimer = ref }}
         onActive={this.onActive}
         onIdle={this.onIdle}
+        onAction={this.onAction}
         timeout={this.state.timeout}
         startOnLoad>
         <div>
@@ -70,6 +72,10 @@ export default class App extends Component {
 
   _onIdle () {
     this.setState({ isIdle: true })
+  }
+
+  _onAction() {
+    console.log('Action', e.type);
   }
 
   _changeTimeout () {
