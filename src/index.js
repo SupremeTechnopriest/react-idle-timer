@@ -219,8 +219,13 @@ export default class IdleTimer extends Component {
     // we dont need to unbind events
     if (!IS_BROWSER) return
     // Unbind all events
-    const { element, events } = this.props
-    events.forEach(e => element.removeEventListener(e, this._handleEvent))
+    const { element, events, passive, capture } = this.props
+    events.forEach(e => {
+      element.removeEventListener(e, this._handleEvent, {
+        capture,
+        passive
+      })
+    })
   }
 
   /**
