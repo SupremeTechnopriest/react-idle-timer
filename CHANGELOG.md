@@ -1,3 +1,6 @@
+### 4.0.9
+- Fixes a memory leak when IdleTimer is unmounted.  Events need to be removed exactly the same way they are added. See [here](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener#Matching_event_listeners_for_removal)
+
 ### 4.0.8
 - Fixed a bug where passive and capture were not being passed to the event listener.  The function has been reformated so it reads better.
 

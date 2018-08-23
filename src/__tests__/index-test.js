@@ -1,6 +1,6 @@
 // Test utilities
 import React from 'react'
-import sinon from 'sinon';
+import sinon from 'sinon'
 import simulant from 'simulant'
 import { mount } from 'enzyme'
 
