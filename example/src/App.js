@@ -16,7 +16,7 @@ export default class App extends Component {
     // Bind event handlers and methods
     this.onActive = this._onActive.bind(this)
     this.onIdle = this._onIdle.bind(this)
-    this.onAction = this._onAction(this)
+    this.onAction = this._onAction.bind(this)
     this.reset = this._reset.bind(this)
     this.pause = this._pause.bind(this)
     this.resume = this._resume.bind(this)
