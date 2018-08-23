@@ -74,8 +74,8 @@ export default class App extends Component {
     this.setState({ isIdle: true })
   }
 
-  _onAction() {
-    console.log('Action', e.type);
+  _onAction () {
+    console.log('Action');
   }
 
   _changeTimeout () {

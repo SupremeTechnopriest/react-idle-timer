@@ -313,7 +313,7 @@ export default class IdleTimer extends Component {
     // Set a new timeout
     const { timeout } = this.props
     this.tId = setTimeout(this._toggleIdleState.bind(this), timeout) // set a new timeout
-    onAction(e);
+    onAction();
   }
 
   /**
