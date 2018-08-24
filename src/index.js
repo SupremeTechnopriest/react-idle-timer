@@ -276,7 +276,7 @@ export default class IdleTimer extends Component {
     const { remaining, pageX, pageY } = this.state
     const { onAction } = this.props
     // Already idle, ignore events
-    if (remaining) return
+    if (remaining !== null) return
 
     // Mousemove event
     if (e.type === 'mousemove') {
@@ -318,7 +318,7 @@ export default class IdleTimer extends Component {
     // Set a new timeout
     const { timeout } = this.props
     this.tId = setTimeout(this._toggleIdleState.bind(this), timeout) // set a new timeout
-    onAction();
+    onAction(e)
   }
 
   /**
