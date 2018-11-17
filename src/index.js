@@ -83,6 +83,12 @@ export default class IdleTimer extends Component {
      */
     onActive: PropTypes.func,
     /**
+     * Function to call on user actions
+     * default: () => {}
+     * @type {Function}
+     */
+    onAction: PropTypes.func,
+    /**
      * Element reference to bind activity listeners to
      * default: document
      * @type {Object}
@@ -119,6 +125,7 @@ export default class IdleTimer extends Component {
     events: DEFAULT_EVENTS,
     onIdle: () => {},
     onActive: () => {},
+    onAction: () => {},
     startOnMount: true,
     capture: true,
     passive: true
@@ -290,6 +297,9 @@ export default class IdleTimer extends Component {
         return
       }
     }
+
+    // Fire onAction callback with event
+    this.props.onAction(e)
 
     // Clear any existing timeout
     clearTimeout(this.tId)

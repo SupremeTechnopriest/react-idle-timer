@@ -159,7 +159,7 @@ describe('IdleTimer', () => {
       }, 500)
     })
 
-    it('Should call onActive on user input', done => {
+    it('Should call onActive on user input when user is idle', done => {
       props.onActive = sinon.spy()
       props.timeout = 400
       const timer = idleTimer()
@@ -168,6 +168,28 @@ describe('IdleTimer', () => {
         expect(props.onActive.callCount).toBe(1)
         done()
       }, 500)
+    })
+
+    it('Should not call onActive on user input when user is not idle', done => {
+      props.onActive = sinon.spy()
+      props.timeout = 400
+      const timer = idleTimer()
+      setTimeout(() => {
+        simulant.fire(document, 'mousedown')
+        expect(props.onActive.callCount).toBe(0)
+        done()
+      }, 300)
+    })
+
+    it('Should call onAction on user input even if user is not idle', done => {
+      props.onAction = sinon.spy()
+      props.timeout = 400
+      const timer = idleTimer()
+      setTimeout(() => {
+        simulant.fire(document, 'mousedown')
+        expect(props.onAction.callCount).toBe(1)
+        done()
+      }, 300)
     })
   })
 

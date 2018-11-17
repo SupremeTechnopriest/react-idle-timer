@@ -41,6 +41,7 @@ export default class YourApp extends Component {
   constructor(props) {
     super(props)
     this.idleTimer = null
+    this.onAction = this._onAction.bind(this)
     this.onActive = this._onActive.bind(this)
     this.onIdle = this._onIdle.bind(this)
   }
@@ -50,6 +51,7 @@ export default class YourApp extends Component {
       <IdleTimer
         ref={ref => { this.idleTimer = ref }}
         element={document}
+        onAction={this.onAction}
         onActive={this.onActive}
         onIdle={this.onIdle}
         timeout={1000 * 60 * 15}>
@@ -60,6 +62,10 @@ export default class YourApp extends Component {
     )
   }
 
+  _onAction(e) {
+    console.log('user did something', e)
+  }
+  
   _onActive(e) {
     console.log('user is active', e)
     console.log('time remaining', this.idleTimer.getRemainingTime())
@@ -92,8 +98,9 @@ These events are bound by default:
 ### Props
 - **timeout** {*Number*} - Idle timeout in milliseconds.
 - **events** {*Array*} - Events to bind. See [default events](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/src/index.js#L36-L47) for list of defaults.
-- **onIdle** {*Function*} - Function to call on idle.
-- **onActive** {*Function*} - Function to call on active.
+- **onIdle** {*Function*} - Function to call when user is now idle.
+- **onActive** {*Function*} - Function to call when user is no longer idle.
+- **onActive** {*Function*} - Function to call on user action.
 - **element** {*Object*} - Defaults to document, may pass a ref to another element.
 - **startOnMount** {*Boolean*} - Start the timer on component load.  Defaults to `true`. Set to false to wait for user action before starting timer.
 - **passive** {*Boolean*} - Bind events in [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to `true`.
