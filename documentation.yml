@@ -4,8 +4,12 @@ toc:
   - events
   - onIdle
   - onActive
+  - onAction
+  - debounce
+  - throttle
   - element
   - startOnMount
+  - stopOnIdle
   - passive
   - capture
   - name: methods
@@ -16,3 +20,6 @@ toc:
   - getElapsedTime
   - getLastActiveTime
   - isIdle
+  - name: utilities
+  - debounced
+  - throttled

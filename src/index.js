@@ -89,6 +89,18 @@ export default class IdleTimer extends Component {
      */
     onAction: PropTypes.func,
     /**
+     * Debounce the onAction function by setting delay in milliseconds
+     * default: 0
+     * @type {Number}
+     */
+    debounce: PropTypes.number,
+    /**
+     * Throttle the onAction function by setting delay in milliseconds
+     * default: 0
+     * @type {Boolean}
+     */
+    throttle: PropTypes.number,
+    /**
      * Element reference to bind activity listeners to
      * default: document
      * @type {Object}
@@ -100,6 +112,14 @@ export default class IdleTimer extends Component {
      * @type {Boolean}
      */
     startOnMount: PropTypes.bool,
+    /**
+     * Once the user goes idle the IdleTimer will not
+     * reset on user input instead, reset() must be
+     * called manually to restart the timer
+     * default: false
+     * @type {Boolean}
+     */
+    stopOnIdle: PropTypes.bool,
     /**
      * Bind events passively
      * default: true
@@ -126,7 +146,10 @@ export default class IdleTimer extends Component {
     onIdle: () => {},
     onActive: () => {},
     onAction: () => {},
+    debounce: 0,
+    throttle: 0,
     startOnMount: true,
+    stopOnIdle: false,
     capture: true,
     passive: true
   }
@@ -162,10 +185,27 @@ export default class IdleTimer extends Component {
    */
   constructor (props) {
     super(props)
+
+    // Debounce and throttle cant both be set
+    if (props.debounce > 0 && props.throttle > 0) {
+      throw new Error('onAction can either be throttled or debounced (not both)')
+    }
+
+    // Create debounced action if applicable
+    if (props.debounce > 0) {
+      this.debouncedAction = debounced(props.onAction, props.debounce)
+    }
+
+    // Create throttled action if applicable
+    if (props.throttle > 0) {
+      this.throttledAction = throttled(props.onAction, props.throttle)
+    }
+
     // If startOnMount is set, idle state defaults to true
     if (!props.startOnMount) {
       this.state.idle = true
     }
+
     // Bind all events to component scope, built for speed 🚀
     this.toggleIdleState = this._toggleIdleState.bind(this)
     this.reset = this._reset.bind(this)
@@ -273,7 +313,8 @@ export default class IdleTimer extends Component {
    * @private
    */
   _handleEvent = (e) => {
-    const { remaining, pageX, pageY } = this.state
+    const { remaining, pageX, pageY, idle } = this.state
+    const { timeout, onAction, debounce, throttle, stopOnIdle } = this.props
     // Already idle, ignore events
     if (remaining) return
 
@@ -289,6 +330,7 @@ export default class IdleTimer extends Component {
       }
       // Under 200 ms is hard to do
       // continuous activity will bypass this
+      //
       // TODO: Cant seem to simulate this event with pageX and pageY for testing
       // making this block of code unreachable by test suite
       // opened an issue here https://github.com/Rich-Harris/simulant/issues/19
@@ -298,15 +340,23 @@ export default class IdleTimer extends Component {
       }
     }
 
-    // Fire onAction callback with event
-    this.props.onAction(e)
+    // Fire debounced, throttled or raw onAction callback with event
+    if (debounce > 0) {
+      this.debouncedAction(e)
+    } else if (throttle > 0) {
+      this.throttledAction(e)
+    } else {
+      onAction(e)
+    }
 
     // Clear any existing timeout
     clearTimeout(this.tId)
+    this.tId = null
 
-    // If the idle timer is enabled, flip
-    if (this.state.idle) {
-      this._toggleIdleState(e)
+    // If the user is idle and stopOnIdle flag is not set
+    // flip the idle state
+    if (idle && !stopOnIdle) {
+      this.toggleIdleState(e)
     }
 
     // Store when the user was last active
@@ -317,9 +367,11 @@ export default class IdleTimer extends Component {
       pageY: e.pageY
     })
 
-    // Set a new timeout
-    const { timeout } = this.props
-    this.tId = setTimeout(this._toggleIdleState.bind(this), timeout) // set a new timeout
+    // If the user is idle and stopOnIdle flag is not set
+    // set a new timeout
+    if (!stopOnIdle) {
+      this.tId = setTimeout(this.toggleIdleState, timeout)
+    }
   }
 
   /**
@@ -340,7 +392,7 @@ export default class IdleTimer extends Component {
 
     // Set new timeout
     const { timeout } = this.props
-    this.tId = setTimeout(this._toggleIdleState.bind(this), timeout)
+    this.tId = setTimeout(this.toggleIdleState, timeout)
   }
 
   /**
@@ -380,7 +432,7 @@ export default class IdleTimer extends Component {
     if (!idle) {
       this.setState({ remaining: null })
       // Set a new timeout
-      this.tId = setTimeout(this._toggleIdleState.bind(this), remaining)
+      this.tId = setTimeout(this.toggleIdleState, remaining)
     }
   }
 
@@ -439,5 +491,47 @@ export default class IdleTimer extends Component {
   _isIdle () {
     const { idle } = this.state
     return idle
+  }
+}
+
+/**
+ * Creates a debounced function that delays invoking func until
+ * after delay milliseconds has elapsed since the last time the
+ * debounced function was invoked.
+ * @name debounced
+ * @param  {Function} fn   Function to debounce
+ * @param  {Number} delay  How long to wait
+ * @return {Function}      Executed Function
+**/
+function debounced (fn, delay) {
+  let timerId
+  return function (...args) {
+    if (timerId) {
+      clearTimeout(timerId)
+    }
+    timerId = setTimeout(() => {
+      fn(...args)
+      timerId = null
+    }, delay)
+  }
+}
+
+/**
+ * Creates a throttled function that only invokes func at most
+ * once per every wait milliseconds.
+ * @name throttled
+ * @param  {Function} fn   Function to debounce
+ * @param  {Number} delay  How long to wait
+ * @return {Function}      Executed Function
+**/
+function throttled (fn, delay) {
+  let lastCall = 0
+  return function (...args) {
+    const now = (new Date).getTime()
+    if (now - lastCall < delay) {
+      return
+    }
+    lastCall = now
+    return fn(...args)
   }
 }

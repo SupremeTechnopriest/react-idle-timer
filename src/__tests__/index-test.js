@@ -30,7 +30,11 @@ describe('IdleTimer', () => {
       events: undefined,
       onIdle: undefined,
       onActive: undefined,
+      onAction: undefined,
+      debounce: undefined,
+      throttle: undefined,
       startOnMount: undefined,
+      stopOnIdle: undefined,
       capture: undefined,
       passive: undefined
     }
@@ -82,7 +86,7 @@ describe('IdleTimer', () => {
       expect(timer.props().passive).toBe(false)
     })
 
-    it('Should set custom element', (done) => {
+    it('Should set custom element', done => {
       props.element = window
       props.timeout = 200
       props.onActive = sinon.spy()
@@ -91,6 +95,38 @@ describe('IdleTimer', () => {
       setTimeout(() => {
         simulant.fire(props.element, 'mousedown')
         expect(props.onActive.callCount).toBe(1)
+        done()
+      }, 500)
+    })
+
+    it('Should pause on idle when stopOnIdle is set', (done) => {
+      props.onActive = sinon.spy()
+      props.timeout = 400
+      props.stopOnIdle = true
+      const timer = idleTimer()
+      setTimeout(() => {
+        simulant.fire(document, 'mousedown')
+        expect(props.onActive.callCount).toBe(0)
+        expect(timer.state('idle')).toBe(true)
+        expect(timer.instance().tId).toBe(null)
+        done()
+      }, 500)
+    })
+
+    it('Should start on reset() when stopOnIdle is set', (done) => {
+      props.onActive = sinon.spy()
+      props.timeout = 400
+      props.stopOnIdle = true
+      const timer = idleTimer()
+      setTimeout(() => {
+        simulant.fire(document, 'mousedown')
+        expect(props.onActive.callCount).toBe(0)
+        expect(timer.state('idle')).toBe(true)
+        expect(timer.instance().tId).toBe(null)
+        timer.instance().reset()
+        expect(props.onActive.callCount).toBe(0)
+        expect(timer.state('idle')).toBe(false)
+        expect(timer.instance().tId).toBeGreaterThan(0)
         done()
       }, 500)
     })
@@ -181,15 +217,70 @@ describe('IdleTimer', () => {
       }, 300)
     })
 
-    it('Should call onAction on user input even if user is not idle', done => {
+    it('Should call onAction on user input when user is not idle', done => {
       props.onAction = sinon.spy()
       props.timeout = 400
+      props.debounce = 0
       const timer = idleTimer()
       setTimeout(() => {
         simulant.fire(document, 'mousedown')
         expect(props.onAction.callCount).toBe(1)
         done()
       }, 300)
+    })
+
+    it('Should call onAction on user input when user is idle', done => {
+      props.onAction = sinon.spy()
+      props.timeout = 400
+      props.debounce = 0
+      const timer = idleTimer()
+      setTimeout(() => {
+        simulant.fire(document, 'mousedown')
+        expect(props.onAction.callCount).toBe(1)
+        done()
+      }, 500)
+    })
+
+    it('Should error if debounce and throttle are set', done => {
+      props.timeout = 400
+      props.debounce = 200
+      props.throttle = 200
+      try {
+        const timer = idleTimer()
+      } catch (err) {
+        expect(err.message).toBe('onAction can either be throttled or debounced (not both)')
+        done()
+      }
+    })
+
+    it('Should debounce calls to onAction', done => {
+      props.onAction = sinon.spy()
+      props.timeout = 400
+      props.debounce = 200
+      const timer = idleTimer()
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      setTimeout(() => {
+        expect(props.onAction.callCount).toBe(1)
+        done()
+      }, 200)
+    })
+
+    it('Should throttle calls to onAction', done => {
+      props.onAction = sinon.spy()
+      props.timeout = 400
+      props.throttle = 200
+      const timer = idleTimer()
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      setTimeout(() => {
+        expect(props.onAction.callCount).toBe(1)
+        done()
+      }, 200)
     })
   })
 
