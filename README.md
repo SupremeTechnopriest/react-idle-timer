@@ -6,7 +6,6 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/df30651fb377f18aeb63/test_coverage)](https://codeclimate.com/github/SupremeTechnopriest/react-idle-timer/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/df30651fb377f18aeb63/maintainability)](https://codeclimate.com/github/SupremeTechnopriest/react-idle-timer/maintainability)
 
-
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
 ⚡️ **Support for React 16**<br/>
@@ -14,15 +13,13 @@
 
 ## Latest News
 
-Welcome to version 4 of IdleTimer! We have performed a complete rewrite of our build system and a refactor/ clean up of the source code. After accepting many pull requests things started to get ugly. We added test coverage and continuous integration tools (travis and codeclimate) that will automatically enforce style and test future pull requests.  
+Version `4.1.0` brings two of the most requested features to `IdleTimer`: 
 
-There are a few breaking changes in version 4:
+☝️ You can now use `IdleTimer` as a generic activity monitor via the new `onAction` event handler.  We recommend using one of the built in `debounce` or `throttle` properties if you dont need every single update.  It really improves performance. 
 
-- The property `startOnLoad` has been renamed to `startOnMount` in order to make more sense in a react context.
-- The property `activeAction` has been renamed to `onActive`.
-- The property `idleAction` has been renamed to `onIdle`.
+✌️ Added a property `stopOnIdle` that allows developer intervention between the idle and active states.  Good for waiting for an async task to complete before restarting the `IdleTimer`.  If this option is set, you will have to call `reset()` manually to restart `IdleTimer`.
 
-For the full patch notes please refer to the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md)
+>  For the full patch notes please refer to the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md)
 
 ## Installation
 `yarn add react-idle-timer`
@@ -36,6 +33,7 @@ or
 ```javascript
 import React, { Component } from 'react'
 import IdleTimer from 'react-idle-timer'
+import App from './App'
 
 export default class YourApp extends Component {
   constructor(props) {
@@ -48,17 +46,17 @@ export default class YourApp extends Component {
 
   render() {
     return (
-      <IdleTimer
-        ref={ref => { this.idleTimer = ref }}
-        element={document}
-        onAction={this.onAction}
-        onActive={this.onActive}
-        onIdle={this.onIdle}
-        timeout={1000 * 60 * 15}>
-
-        <h1>Child Components</h1>
-
-      </IdleTimer>
+      <div>
+        <IdleTimer
+          ref={ref => { this.idleTimer = ref }}
+          element={document}
+		  onActive={this.onActive}
+          onIdle={this.onIdle}
+          onAction={this.onAction}
+		  debounce={250}
+          timeout={1000 * 60 * 15} />
+		{/* your app here */}
+      </div>
     )
   }
 
@@ -77,6 +75,15 @@ export default class YourApp extends Component {
   }
 }
 ```
+
+## Migration from v3 to v4
+
+There are a few breaking changes in version 4:
+
+- Although still capable of rendering children, as of version 4 we dont pass children to `IdleTimer`. Unless you are really good with `shouldComponentUpdate` you should avoid using `IdleTimer` as a wrapper component.
+- The property `startOnLoad` has been renamed to `startOnMount` in order to make more sense in a React context.
+- The property `activeAction` has been renamed to `onActive`.
+- The property `idleAction` has been renamed to `onIdle`.
 
 ## Documentation
 
@@ -101,10 +108,13 @@ These events are bound by default:
 - **onIdle** {*Function*} - Function to call when user is now idle.
 - **onActive** {*Function*} - Function to call when user is no longer idle.
 - **onActive** {*Function*} - Function to call on user action.
+- **debounce** {Number} - Debounce the `onActive` function with delay in milliseconds.  Defaults to `0`. Cannot be set if `throttle` is set.
+- **throttle** {Number} - Throttle the `onActive` function with delay in milliseconds. Defaults to `0`. Cannot be set if `debounce` is set.
 - **element** {*Object*} - Defaults to document, may pass a ref to another element.
-- **startOnMount** {*Boolean*} - Start the timer on component load.  Defaults to `true`. Set to false to wait for user action before starting timer.
-- **passive** {*Boolean*} - Bind events in [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to `true`.
-- **capture** {*Boolean*} - Bind events in [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to `true`.
+- **startOnMount** {*Boolean*} - Start the timer when the component mounts.  Defaults to `true`. Set to `false` to wait for user action before starting timer.
+- **stopOnIdle** {Boolean} - Stop the timer when user goes idle. Defaults to `false`.  If set to true you will need to manually call `reset()` to restart the timer.
+- **passive** {*Boolean*} - Bind events in [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to  `true`.
+- **capture** {*Boolean*} - Bind events in [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to  `true`.
 
 ### Methods
 - **reset()** *{Void}* - Resets the idleTimer

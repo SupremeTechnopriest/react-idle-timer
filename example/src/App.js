@@ -40,12 +40,13 @@ export default class App extends Component {
 
   render () {
     return (
-      <IdleTimer
-        ref={ref => { this.idleTimer = ref }}
-        onActive={this.onActive}
-        onIdle={this.onIdle}
-        timeout={this.state.timeout}
-        startOnLoad>
+      <div>
+        <IdleTimer
+          ref={ref => { this.idleTimer = ref }}
+          onActive={this.onActive}
+          onIdle={this.onIdle}
+          timeout={this.state.timeout}
+          startOnLoad />
         <div>
           <div>
             <h1>Timeout: {this.state.timeout}ms</h1>
@@ -60,7 +61,7 @@ export default class App extends Component {
             <button onClick={this.resume}>RESUME</button>
           </div>
         </div>
-      </IdleTimer>
+      </div>
     )
   }
 
