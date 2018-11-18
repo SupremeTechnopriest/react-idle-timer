@@ -1,6 +1,6 @@
 {
   "name": "react-idle-timer",
-  "version": "4.0.9",
+  "version": "4.1.0",
   "description": "Activity detection for React.js",
   "main": "dist/index.min.js",
   "module": "dist/index.es.js",
