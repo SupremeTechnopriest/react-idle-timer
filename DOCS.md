@@ -7,18 +7,27 @@
 -   [events][3]
 -   [onIdle][4]
 -   [onActive][5]
--   [element][6]
--   [startOnMount][7]
--   [passive][8]
--   [capture][9]
--   [methods][10]
--   [reset][11]
--   [pause][12]
--   [resume][13]
--   [getRemainingTime][14]
--   [getElapsedTime][15]
--   [getLastActiveTime][16]
--   [isIdle][17]
+-   [onAction][6]
+-   [debounce][7]
+-   [throttle][8]
+-   [element][9]
+-   [startOnMount][10]
+-   [stopOnIdle][11]
+-   [passive][12]
+-   [capture][13]
+-   [methods][14]
+-   [reset][15]
+-   [pause][16]
+-   [resume][17]
+-   [getRemainingTime][18]
+-   [getElapsedTime][19]
+-   [getLastActiveTime][20]
+-   [isIdle][21]
+-   [utilities][22]
+-   [debounced][23]
+    -   [Parameters][24]
+-   [throttled][25]
+    -   [Parameters][26]
 
 ## props
 
@@ -30,56 +39,86 @@
 Activity Timeout in milliseconds
 default: 1200000
 
-Type: [Number][18]
+Type: [Number][27]
 
 ## events
 
 DOM events to listen to
-default: see [default events][19]
+default: see [default events][28]
 
-Type: [Array][20]
+Type: [Array][29]
 
 ## onIdle
 
 Function to call when user is idle
 default: () => {}
 
-Type: [Function][21]
+Type: [Function][30]
 
 ## onActive
 
 Function to call when user becomes active
 default: () => {}
 
-Type: [Function][21]
+Type: [Function][30]
+
+## onAction
+
+Function to call on user actions
+default: () => {}
+
+Type: [Function][30]
+
+## debounce
+
+Debounce the onAction function by setting delay in milliseconds
+default: 0
+
+Type: [Number][27]
+
+## throttle
+
+Throttle the onAction function by setting delay in milliseconds
+default: 0
+
+Type: [Boolean][31]
 
 ## element
 
 Element reference to bind activity listeners to
 default: document
 
-Type: [Object][22]
+Type: [Object][32]
 
 ## startOnMount
 
 Start the timer on mount
 default: true
 
-Type: [Boolean][23]
+Type: [Boolean][31]
+
+## stopOnIdle
+
+Once the user goes idle the IdleTimer will not
+reset on user input instead, reset() must be
+called manually to restart the timer
+default: false
+
+Type: [Boolean][31]
 
 ## passive
 
 Bind events passively
 default: true
 
-Type: [Boolean][23]
+Type: [Boolean][31]
 
 ## capture
 
 Capture events
 default: true
 
-Type: [Boolean][23]
+Type: [Boolean][31]
 
 ## methods
 
@@ -102,7 +141,7 @@ Resumes a paused timer
 
 Time remaining before idle
 
-Returns **[Number][18]** Milliseconds remaining
+Returns **[Number][27]** Milliseconds remaining
 
 ## getElapsedTime
 
@@ -120,7 +159,39 @@ Returns **Timestamp**
 
 Returns wether or not the user is idle
 
-Returns **[Boolean][23]** 
+Returns **[Boolean][31]** 
+
+## utilities
+
+
+
+
+## debounced
+
+Creates a debounced function that delays invoking func until
+after delay milliseconds has elapsed since the last time the
+debounced function was invoked.
+
+### Parameters
+
+-   `fn` **[Function][30]** Function to debounce
+-   `delay` **[Number][27]** How long to wait
+
+Returns **[Function][30]** Executed Function
+\*
+
+## throttled
+
+Creates a throttled function that only invokes func at most
+once per every wait milliseconds.
+
+### Parameters
+
+-   `fn` **[Function][30]** Function to debounce
+-   `delay` **[Number][27]** How long to wait
+
+Returns **[Function][30]** Executed Function
+\*
 
 [1]: #props
 
@@ -132,38 +203,56 @@ Returns **[Boolean][23]**
 
 [5]: #onactive
 
-[6]: #element
+[6]: #onaction
 
-[7]: #startonmount
+[7]: #debounce
 
-[8]: #passive
+[8]: #throttle
 
-[9]: #capture
+[9]: #element
 
-[10]: #methods
+[10]: #startonmount
 
-[11]: #reset
+[11]: #stoponidle
 
-[12]: #pause
+[12]: #passive
 
-[13]: #resume
+[13]: #capture
 
-[14]: #getremainingtime
+[14]: #methods
 
-[15]: #getelapsedtime
+[15]: #reset
 
-[16]: #getlastactivetime
+[16]: #pause
 
-[17]: #isidle
+[17]: #resume
 
-[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[18]: #getremainingtime
 
-[19]: https://github.com/SupremeTechnopriest/react-idle-timer#default-events
+[19]: #getelapsedtime
 
-[20]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[20]: #getlastactivetime
 
-[21]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[21]: #isidle
 
-[22]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[22]: #utilities
 
-[23]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[23]: #debounced
+
+[24]: #parameters
+
+[25]: #throttled
+
+[26]: #parameters-1
+
+[27]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[28]: https://github.com/SupremeTechnopriest/react-idle-timer#default-events
+
+[29]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[30]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+
+[31]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[32]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
