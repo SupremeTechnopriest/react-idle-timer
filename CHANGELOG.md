@@ -1,3 +1,6 @@
+### 4.1.1
+- Fixes a bug where initial `onIdle` event was not firing when `stopOnIdle` is set
+
 # 4.1.0
 
 Version `4.1.0` adds support for some commonly requested features:
