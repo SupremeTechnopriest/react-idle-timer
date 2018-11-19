@@ -100,31 +100,34 @@ describe('IdleTimer', () => {
     })
 
     it('Should pause on idle when stopOnIdle is set', (done) => {
+      props.onIdle = sinon.spy()
       props.onActive = sinon.spy()
       props.timeout = 400
       props.stopOnIdle = true
       const timer = idleTimer()
       setTimeout(() => {
         simulant.fire(document, 'mousedown')
+        expect(props.onIdle.callCount).toBe(1)
         expect(props.onActive.callCount).toBe(0)
-        expect(timer.state('idle')).toBe(true)
+        expect(timer.state('idle')).toBe(false)
         expect(timer.instance().tId).toBe(null)
         done()
       }, 500)
     })
 
     it('Should start on reset() when stopOnIdle is set', (done) => {
+      props.onIdle = sinon.spy()
       props.onActive = sinon.spy()
       props.timeout = 400
       props.stopOnIdle = true
       const timer = idleTimer()
       setTimeout(() => {
         simulant.fire(document, 'mousedown')
+        expect(props.onIdle.callCount).toBe(1)
         expect(props.onActive.callCount).toBe(0)
-        expect(timer.state('idle')).toBe(true)
+        expect(timer.state('idle')).toBe(false)
         expect(timer.instance().tId).toBe(null)
         timer.instance().reset()
-        expect(props.onActive.callCount).toBe(0)
         expect(timer.state('idle')).toBe(false)
         expect(timer.instance().tId).toBeGreaterThan(0)
         done()

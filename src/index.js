@@ -299,9 +299,11 @@ export default class IdleTimer extends Component {
 
     // Fire the appropriate action
     // and pass the event through
-    const { onActive, onIdle } = this.props
+    const { onActive, onIdle, stopOnIdle } = this.props
     if (idle) {
-      onActive(e)
+      if (!stopOnIdle) {
+        onActive(e)
+      }
     } else {
       onIdle(e)
     }
@@ -353,9 +355,8 @@ export default class IdleTimer extends Component {
     clearTimeout(this.tId)
     this.tId = null
 
-    // If the user is idle and stopOnIdle flag is not set
-    // flip the idle state
-    if (idle && !stopOnIdle) {
+    // If the user is idle flip the idle state
+    if (idle) {
       this.toggleIdleState(e)
     }
 
@@ -381,6 +382,7 @@ export default class IdleTimer extends Component {
   _reset () {
     // Clear timeout
     clearTimeout(this.tId)
+    this.tId = null
 
     // Reset state
     this.setState({
