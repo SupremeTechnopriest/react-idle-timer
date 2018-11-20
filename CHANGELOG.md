@@ -1,3 +1,6 @@
+### 4.1.2
+- Fixes a bug where `stopOnIdle` logic was being applied to active state
+
 ### 4.1.1
 - Fixes a bug where initial `onIdle` event was not firing when `stopOnIdle` is set
 
