@@ -134,6 +134,31 @@ describe('IdleTimer', () => {
       }, 500)
     })
 
+    it('Should go idle after reset() and user input when stopOnIdle is set', (done) => {
+      props.onIdle = sinon.spy()
+      props.onActive = sinon.spy()
+      props.timeout = 400
+      props.stopOnIdle = true
+      const timer = idleTimer()
+      setTimeout(() => {
+        simulant.fire(document, 'mousedown')
+        expect(props.onIdle.callCount).toBe(1)
+        expect(props.onActive.callCount).toBe(0)
+        expect(timer.state('idle')).toBe(false)
+        expect(timer.instance().tId).toBe(null)
+        timer.instance().reset()
+        expect(timer.state('idle')).toBe(false)
+        expect(timer.instance().tId).toBeGreaterThan(0)
+        simulant.fire(document, 'mousedown')
+
+        setTimeout(() => {
+          expect(props.onIdle.callCount).toBe(2)
+          done()
+        }, 500)
+
+      }, 500)
+    })
+
     describe('events', () => {
 
       it('Should set custom events', (done) => {

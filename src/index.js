@@ -370,7 +370,11 @@ export default class IdleTimer extends Component {
 
     // If the user is idle and stopOnIdle flag is not set
     // set a new timeout
-    if (!stopOnIdle) {
+    if (idle) {
+      if (!stopOnIdle) {
+        this.tId = setTimeout(this.toggleIdleState, timeout)
+      }
+    } else {
       this.tId = setTimeout(this.toggleIdleState, timeout)
     }
   }
