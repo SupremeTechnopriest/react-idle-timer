@@ -1,3 +1,6 @@
+### 4.1.3
+- `stopOnIdle` will now keep `IdleTimer` in idle state until `reset()` is called
+
 ### 4.1.2
 - Fixes a bug where `stopOnIdle` logic was being applied to active state
 

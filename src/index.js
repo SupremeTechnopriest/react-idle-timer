@@ -356,7 +356,7 @@ export default class IdleTimer extends Component {
     this.tId = null
 
     // If the user is idle flip the idle state
-    if (idle) {
+    if (idle && !stopOnIdle) {
       this.toggleIdleState(e)
     }
 
