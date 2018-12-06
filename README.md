@@ -107,7 +107,7 @@ These events are bound by default:
 - **events** {*Array*} - Events to bind. See [default events](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/src/index.js#L36-L47) for list of defaults.
 - **onIdle** {*Function*} - Function to call when user is now idle.
 - **onActive** {*Function*} - Function to call when user is no longer idle.
-- **onActive** {*Function*} - Function to call on user action.
+- **onAction** {*Function*} - Function to call on user action.
 - **debounce** {Number} - Debounce the `onActive` function with delay in milliseconds.  Defaults to `0`. Cannot be set if `throttle` is set.
 - **throttle** {Number} - Throttle the `onActive` function with delay in milliseconds. Defaults to `0`. Cannot be set if `debounce` is set.
 - **element** {*Object*} - Defaults to document, may pass a ref to another element.
