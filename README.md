@@ -108,8 +108,8 @@ These events are bound by default:
 - **onIdle** {*Function*} - Function to call when user is now idle.
 - **onActive** {*Function*} - Function to call when user is no longer idle.
 - **onAction** {*Function*} - Function to call on user action.
-- **debounce** {Number} - Debounce the `onActive` function with delay in milliseconds.  Defaults to `0`. Cannot be set if `throttle` is set.
-- **throttle** {Number} - Throttle the `onActive` function with delay in milliseconds. Defaults to `0`. Cannot be set if `debounce` is set.
+- **debounce** {Number} - Debounce the `onAction` function with delay in milliseconds.  Defaults to `0`. Cannot be set if `throttle` is set.
+- **throttle** {Number} - Throttle the `onAction` function with delay in milliseconds. Defaults to `0`. Cannot be set if `debounce` is set.
 - **element** {*Object*} - Defaults to document, may pass a ref to another element.
 - **startOnMount** {*Boolean*} - Start the timer when the component mounts.  Defaults to `true`. Set to `false` to wait for user action before starting timer.
 - **stopOnIdle** {Boolean} - Stop the timer when user goes idle. Defaults to `false`.  If set to true you will need to manually call `reset()` to restart the timer.
