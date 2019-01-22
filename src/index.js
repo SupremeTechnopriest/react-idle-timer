@@ -224,18 +224,7 @@ export default class IdleTimer extends Component {
    * @private
    */
   componentWillMount () {
-    // Dont bind events if
-    // we are not in a browser
-    if (!IS_BROWSER) return
-    // Otherwise we bind all the events
-    // to the supplied element
-    const { element, events, passive, capture } = this.props
-    events.forEach(e => {
-      element.addEventListener(e, this._handleEvent, {
-        capture,
-        passive
-      })
-    })
+    this._bindEvents()
   }
 
   /**
@@ -262,17 +251,7 @@ export default class IdleTimer extends Component {
   componentWillUnmount () {
     // Clear timeout to prevent delayed state changes
     clearTimeout(this.tId)
-    // If we are not in a browser
-    // we dont need to unbind events
-    if (!IS_BROWSER) return
-    // Unbind all events
-    const { element, events, passive, capture } = this.props
-    events.forEach(e => {
-      element.removeEventListener(e, this._handleEvent, {
-        capture,
-        passive
-      })
-    })
+    this._unbindEvents()
   }
 
   /**
@@ -286,27 +265,80 @@ export default class IdleTimer extends Component {
   }
 
   /**
+   * Binds the specified events
+   * @private
+   */
+  _bindEvents () {
+    // Dont bind events if
+    // we are not in a browser
+    if (!IS_BROWSER) return
+    // Otherwise we bind all the events
+    // to the supplied element
+    const { eventsBound } = this.state
+    const { element, events, passive, capture } = this.props
+    if (!eventsBound) {
+      events.forEach(e => {
+        element.addEventListener(e, this._handleEvent, {
+          capture,
+          passive
+        })
+      })
+      this.setState({ eventsBound: true })
+    }
+  }
+
+  /**
+   * Unbinds all the bound events
+   * @private
+   */
+  _unbindEvents () {
+    // If we are not in a browser
+    // we dont need to unbind events
+    if (!IS_BROWSER) return
+    // Unbind all events
+    const { element, events, passive, capture } = this.props
+    const { eventsBound } = this.state
+    if (eventsBound) {
+      events.forEach(e => {
+        element.removeEventListener(e, this._handleEvent, {
+          capture,
+          passive
+        })
+      })
+      this.setState({ eventsBound: false })
+    }
+  }
+
+  /**
    * Toggles the idle state and calls
    * the correct action function
    * @private
    */
   _toggleIdleState (e) {
-    // Toggle the idle state
     const { idle } = this.state
-    this.setState({
-      idle: !idle
-    })
-
     // Fire the appropriate action
     // and pass the event through
     const { onActive, onIdle, stopOnIdle } = this.props
     if (idle) {
       if (!stopOnIdle) {
+        this._bindEvents()
         onActive(e)
       }
     } else {
+      if (stopOnIdle) {
+        // Clear any existing timeout
+        clearTimeout(this.tId)
+        this.tId = null
+        // Unbind events
+        this._unbindEvents()
+      }
       onIdle(e)
     }
+
+    // Toggle the idle state
+    this.setState({
+      idle: !idle
+    })
   }
 
   /**
@@ -317,7 +349,17 @@ export default class IdleTimer extends Component {
   _handleEvent = (e) => {
     const { remaining, pageX, pageY, idle } = this.state
     const { timeout, onAction, debounce, throttle, stopOnIdle } = this.props
-    // Already idle, ignore events
+
+    // Fire debounced, throttled or raw onAction callback with event
+    if (debounce > 0) {
+      this.debouncedAction(e)
+    } else if (throttle > 0) {
+      this.throttledAction(e)
+    } else {
+      onAction(e)
+    }
+
+    // Already active, ignore events
     if (remaining) return
 
     // Mousemove event
@@ -340,15 +382,6 @@ export default class IdleTimer extends Component {
       if (elapsed < 200) {
         return
       }
-    }
-
-    // Fire debounced, throttled or raw onAction callback with event
-    if (debounce > 0) {
-      this.debouncedAction(e)
-    } else if (throttle > 0) {
-      this.throttledAction(e)
-    } else {
-      onAction(e)
     }
 
     // Clear any existing timeout
@@ -388,6 +421,9 @@ export default class IdleTimer extends Component {
     clearTimeout(this.tId)
     this.tId = null
 
+    // Bind the events
+    this._bindEvents()
+
     // Reset state
     this.setState({
       idle: false,
@@ -412,6 +448,9 @@ export default class IdleTimer extends Component {
       return
     }
 
+    // Unbind events
+    this._unbindEvents()
+
     // Clear existing timeout
     clearTimeout(this.tId)
     this.tId = null
@@ -432,6 +471,9 @@ export default class IdleTimer extends Component {
     if (remaining === null) {
       return
     }
+
+    // Bind events
+    this._bindEvents()
 
     // Start timer and clear remaining
     // if we are in the idle state

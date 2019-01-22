@@ -281,6 +281,19 @@ describe('IdleTimer', () => {
       }
     })
 
+    it('Should unbind all events on idle when stopOnIdle is set', done => {
+      props.onAction = sinon.spy()
+      props.stopOnIdle = true
+      props.timeout = 400
+      const timer = idleTimer()
+      setTimeout(() => {
+        simulant.fire(document, 'mousedown')
+        expect(props.onAction.callCount).toBe(0)
+        expect(timer.state('eventsBound')).toBe(false)
+        done()
+      }, 500)
+    })
+
     it('Should debounce calls to onAction', done => {
       props.onAction = sinon.spy()
       props.timeout = 400
@@ -321,6 +334,23 @@ describe('IdleTimer', () => {
         timer.instance().reset()
         expect(timer.instance().tId).toBeGreaterThan(0)
       })
+
+      it('Should bind all events on reset()', done => {
+        props.onAction = sinon.spy()
+        props.stopOnIdle = true
+        props.timeout = 400
+        const timer = idleTimer()
+        setTimeout(() => {
+          simulant.fire(document, 'mousedown')
+          expect(props.onAction.callCount).toBe(0)
+          expect(timer.state('eventsBound')).toBe(false)
+          timer.instance().reset()
+          simulant.fire(document, 'mousedown')
+          expect(props.onAction.callCount).toBe(1)
+          expect(timer.state('eventsBound')).toBe(true)
+          done()
+        }, 500)
+      })
     })
 
     describe('pause', () => {
@@ -337,6 +367,19 @@ describe('IdleTimer', () => {
         expect(timer.instance().tId).toBe(null)
         expect(timer.state().remaining).toBeDefined()
       })
+
+      it('Should unbind all events on pause()', done => {
+        props.onAction = sinon.spy()
+        props.stopOnIdle = true
+        props.timeout = 400
+        const timer = idleTimer()
+        timer.instance().pause()
+        simulant.fire(document, 'mousedown')
+        expect(props.onAction.callCount).toBe(0)
+        expect(timer.state('eventsBound')).toBe(false)
+        done()
+      })
+
     })
 
     describe('resume', () => {
@@ -353,6 +396,22 @@ describe('IdleTimer', () => {
         const tId = timer.instance().tId
         timer.instance().resume()
         expect(timer.instance().tId).toBe(tId)
+      })
+
+      it('Should bind all events on resume()', done => {
+        props.onAction = sinon.spy()
+        props.stopOnIdle = true
+        props.timeout = 400
+        const timer = idleTimer()
+        timer.instance().pause()
+        simulant.fire(document, 'mousedown')
+        expect(props.onAction.callCount).toBe(0)
+        expect(timer.state('eventsBound')).toBe(false)
+        timer.instance().resume()
+        simulant.fire(document, 'mousedown')
+        expect(props.onAction.callCount).toBe(1)
+        expect(timer.state('eventsBound')).toBe(true)
+        done()
       })
     })
 

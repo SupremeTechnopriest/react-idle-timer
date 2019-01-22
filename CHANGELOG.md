@@ -1,3 +1,16 @@
+# 4.2.0
+
+Version `4.2.0` will now dynamically bind and unbind events.
+
+Events are unbound when:
+- `stopOnIdle` is set to `true` and the user goes idle
+- `pause()` is called
+
+Events are bound when:
+- component is mounted
+- `reset()` is called
+- `resume()` is called
+
 ### 4.1.3
 - `stopOnIdle` will now keep `IdleTimer` in idle state until `reset()` is called
 
