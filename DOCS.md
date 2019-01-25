@@ -81,21 +81,21 @@ Type: [Number][27]
 Throttle the onAction function by setting delay in milliseconds
 default: 0
 
-Type: [Boolean][31]
+Type: [Number][27]
 
 ## element
 
 Element reference to bind activity listeners to
 default: document
 
-Type: [Object][32]
+Type: [Object][31]
 
 ## startOnMount
 
 Start the timer on mount
 default: true
 
-Type: [Boolean][31]
+Type: [Boolean][32]
 
 ## stopOnIdle
 
@@ -104,21 +104,21 @@ reset on user input instead, reset() must be
 called manually to restart the timer
 default: false
 
-Type: [Boolean][31]
+Type: [Boolean][32]
 
 ## passive
 
 Bind events passively
 default: true
 
-Type: [Boolean][31]
+Type: [Boolean][32]
 
 ## capture
 
 Capture events
 default: true
 
-Type: [Boolean][31]
+Type: [Boolean][32]
 
 ## methods
 
@@ -159,7 +159,7 @@ Returns **Timestamp**
 
 Returns wether or not the user is idle
 
-Returns **[Boolean][31]** 
+Returns **[Boolean][32]** 
 
 ## utilities
 
@@ -253,6 +253,6 @@ Returns **[Function][30]** Executed Function
 
 [30]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[31]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[31]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[32]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[32]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean

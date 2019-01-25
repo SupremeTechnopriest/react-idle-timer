@@ -4,8 +4,9 @@
   "description": "Activity detection for React.js",
   "main": "dist/index.min.js",
   "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && cp src/index.d.ts dist/index.d.ts",
     "watch": "rollup -c -w",
     "clean": "rimraf dist example/src/dist docs coverage",
     "lint": "standard lint",

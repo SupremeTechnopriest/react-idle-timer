@@ -1,3 +1,8 @@
+### 4.2.1
+
+- Added a typescript definition that will now be maintained along with this library. It expects that you have the react type definitions installed.
+- Fixed a documentation error
+
 # 4.2.0
 
 Version `4.2.0` will now dynamically bind and unbind events.

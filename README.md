@@ -13,9 +13,15 @@
 
 ## Latest News
 
-Version `4.1.0` brings two of the most requested features to `IdleTimer`: 
+Version `4.2.0` brings typescript support and dynamic event binding to `IdleTimer`:
 
-☝️ You can now use `IdleTimer` as a generic activity monitor via the new `onAction` event handler.  We recommend using one of the built in `debounce` or `throttle` properties if you dont need every single update.  It really improves performance. 
+☝️ Events will now dynamically unbind when they are not needed (`pause()`, `stopOnIdle`) and bound when they are needed (`resume()`, `reset()`, `startOnMount`). If `onAction` is set, events will never be unbound.
+
+✌️ Added a typescript type definition file that will be maintained alongside this library. It requires that you have the react type definitions installed. 
+
+Version `4.1.0` brings two of the most requested features to `IdleTimer`:
+
+☝️ You can now use `IdleTimer` as a generic activity monitor via the new `onAction` event handler.  We recommend using one of the built in `debounce` or `throttle` properties if you dont need every single update.  It really improves performance.
 
 ✌️ Added a property `stopOnIdle` that allows developer intervention between the idle and active states.  Good for waiting for an async task to complete before restarting the `IdleTimer`.  If this option is set, you will have to call `reset()` manually to restart `IdleTimer`.
 
@@ -63,7 +69,7 @@ export default class YourApp extends Component {
   _onAction(e) {
     console.log('user did something', e)
   }
-  
+
   _onActive(e) {
     console.log('user is active', e)
     console.log('time remaining', this.idleTimer.getRemainingTime())
