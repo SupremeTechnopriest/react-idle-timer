@@ -97,7 +97,7 @@ export default class IdleTimer extends Component {
     /**
      * Throttle the onAction function by setting delay in milliseconds
      * default: 0
-     * @type {Boolean}
+     * @type {Number}
      */
     throttle: PropTypes.number,
     /**
