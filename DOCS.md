@@ -81,7 +81,7 @@ Type: [Number][27]
 Throttle the onAction function by setting delay in milliseconds
 default: 0
 
-Type: [Boolean][31]
+Type: [Number][31]
 
 ## element
 
