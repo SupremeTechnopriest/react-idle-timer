@@ -11,25 +11,26 @@ import IdleTimer from '../index'
 class Parent extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { test: 0 }
+    this.state = { test: true }
     this.onIdle = this._onIdle.bind(this)
   }
 
   render () {
     return (
       <div>
-        <span>{this.state.test}</span>
-        <IdleTimer
-          onIdle={this.onIdle}
-          ref={ref => { this.idleTimer = ref }}
-          {...this.props}
-        />
+        {this.state.test ? (
+          <IdleTimer
+            onIdle={this.onIdle}
+            ref={ref => { this.idleTimer = ref }}
+            {...this.props}
+          />
+        ) : <div />}
       </div>
     )
   }
 
   _onIdle () {
-    this.setState({ test: 1 })
+    this.setState({ test: false })
   }
 }
 
@@ -85,9 +86,9 @@ describe('IdleTimer', () => {
 
     it('Should allow parent component to setState() inside onIdle()', done => {
       const parent = mount(<Parent timeout={400} />)
-      expect(parent.state('test')).toBe(0)
+      expect(parent.state('test')).toBe(true)
       setTimeout(() => {
-        expect(parent.state('test')).toBe(1)
+        expect(parent.state('test')).toBe(false)
         expect(parent.instance().onIdle).not.toThrow()
         done()
       }, 500)
