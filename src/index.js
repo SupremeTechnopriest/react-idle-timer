@@ -319,25 +319,25 @@ export default class IdleTimer extends Component {
     // Fire the appropriate action
     // and pass the event through
     const { onActive, onIdle, stopOnIdle } = this.props
-    if (idle) {
-      if (!stopOnIdle) {
-        this._bindEvents()
-        onActive(e)
-      }
-    } else {
-      if (stopOnIdle) {
-        // Clear any existing timeout
-        clearTimeout(this.tId)
-        this.tId = null
-        // Unbind events
-        this._unbindEvents()
-      }
-      onIdle(e)
-    }
-
     // Toggle the idle state
     this.setState({
       idle: !idle
+    }, () => {
+      if (idle) {
+        if (!stopOnIdle) {
+          this._bindEvents()
+          onActive(e)
+        }
+      } else {
+        if (stopOnIdle) {
+          // Clear any existing timeout
+          clearTimeout(this.tId)
+          this.tId = null
+          // Unbind events
+          this._unbindEvents()
+        }
+        onIdle(e)
+      }
     })
   }
 

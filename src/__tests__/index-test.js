@@ -7,6 +7,33 @@ import { mount } from 'enzyme'
 // Tested component
 import IdleTimer from '../index'
 
+// Parent component
+class Parent extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { test: 0 }
+    this.onIdle = this._onIdle.bind(this)
+  }
+
+  render () {
+    return (
+      <div>
+        <span>{this.state.test}</span>
+        <IdleTimer
+          onIdle={this.onIdle}
+          ref={ref => { this.idleTimer = ref }}
+          {...this.props}
+        />
+      </div>
+    )
+  }
+
+  _onIdle () {
+    this.setState({ test: 1 })
+  }
+}
+
+// Test Suite
 describe('IdleTimer', () => {
   let props
   let mounted
@@ -54,6 +81,16 @@ describe('IdleTimer', () => {
       expect(Object.keys(timer.props()).length).toBeGreaterThan(0)
       timer.unmount()
       expect(Object.keys(timer.props()).length).toBe(0)
+    })
+
+    it('Should allow parent component to setState() inside onIdle()', done => {
+      const parent = mount(<Parent timeout={400} />)
+      expect(parent.state('test')).toBe(0)
+      setTimeout(() => {
+        expect(parent.state('test')).toBe(1)
+        expect(parent.instance().onIdle).not.toThrow()
+        done()
+      }, 500)
     })
   })
 
