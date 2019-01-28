@@ -1,3 +1,6 @@
+### 4.2.2
+- Fixes an issue updating state from inside onIdle (see #71)
+
 ### 4.2.1
 
 - Added a typescript definition that will now be maintained along with this library. It expects that you have the react type definitions installed.
