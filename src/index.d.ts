@@ -40,10 +40,6 @@ declare module "react-idle-timer" {
     isIdle(): boolean;
   }
 
-  namespace IdleTimer {
-
-  }
-
   interface IdleTimerProps {
     ref: (ref: IdleTimer) => any;
 
@@ -110,5 +106,5 @@ declare module "react-idle-timer" {
 
   }
 
-  export = IdleTimer;
+  export default IdleTimer;
 }
