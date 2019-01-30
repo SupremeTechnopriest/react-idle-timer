@@ -1,3 +1,6 @@
+### 4.2.3
+- Fixes an issue importing module with typescript (see #72)
+
 ### 4.2.2
 - Fixes an issue updating state from inside onIdle (see #71)
 
