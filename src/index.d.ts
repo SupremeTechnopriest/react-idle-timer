@@ -57,17 +57,17 @@ declare module "react-idle-timer" {
     /**
      * Function to call when user is idle
      */
-    onIdle?: () => void;
+    onIdle?: (e: Event) => void;
 
     /**
      * Function to call when user becomes active
      */
-    onActive?: () => void;
+    onActive?: (e: Event) => void;
 
     /**
      * Function to call when user have an activity
      */
-    onAction?: () => void;
+    onAction?: (e: Event) => void;
 
     /**
      * Debounce the onAction function by setting delay in milliseconds default: 0
