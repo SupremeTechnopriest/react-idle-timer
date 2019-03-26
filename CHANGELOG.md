@@ -1,3 +1,7 @@
+### 4.2.4
+- Fixes typescript definition for evented methods
+- Fixes a bug where throttled and debounced actions would not take new props
+
 ### 4.2.3
 - Fixes an issue importing module with typescript (see #72)
 
