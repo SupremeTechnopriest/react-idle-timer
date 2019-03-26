@@ -1,3 +1,5 @@
+/* eslint-env jest */
+
 // Test utilities
 import React from 'react'
 import sinon from 'sinon'
@@ -193,23 +195,20 @@ describe('IdleTimer', () => {
           expect(props.onIdle.callCount).toBe(2)
           done()
         }, 500)
-
       }, 500)
     })
 
     describe('events', () => {
-
       it('Should set custom events', (done) => {
         props.onActive = sinon.spy()
         props.events = ['mousedown']
         props.timeout = 200
-        const timer = idleTimer()
+        idleTimer()
         setTimeout(() => {
           simulant.fire(document, 'mousedown')
           expect(props.onActive.callCount).toBe(1)
           done()
         }, 500)
-
       })
 
       // TODO: This test doesnt fully work yet because pageX and pageY
@@ -254,7 +253,7 @@ describe('IdleTimer', () => {
     it('Should call onIdle on user idle', done => {
       props.onIdle = sinon.spy()
       props.timeout = 400
-      const timer = idleTimer()
+      idleTimer()
       setTimeout(() => {
         expect(props.onIdle.callCount).toBe(1)
         done()
@@ -264,7 +263,7 @@ describe('IdleTimer', () => {
     it('Should call onActive on user input when user is idle', done => {
       props.onActive = sinon.spy()
       props.timeout = 400
-      const timer = idleTimer()
+      idleTimer()
       setTimeout(() => {
         simulant.fire(document, 'mousedown')
         expect(props.onActive.callCount).toBe(1)
@@ -275,7 +274,7 @@ describe('IdleTimer', () => {
     it('Should not call onActive on user input when user is not idle', done => {
       props.onActive = sinon.spy()
       props.timeout = 400
-      const timer = idleTimer()
+      idleTimer()
       setTimeout(() => {
         simulant.fire(document, 'mousedown')
         expect(props.onActive.callCount).toBe(0)
@@ -287,7 +286,7 @@ describe('IdleTimer', () => {
       props.onAction = sinon.spy()
       props.timeout = 400
       props.debounce = 0
-      const timer = idleTimer()
+      idleTimer()
       setTimeout(() => {
         simulant.fire(document, 'mousedown')
         expect(props.onAction.callCount).toBe(1)
@@ -299,7 +298,7 @@ describe('IdleTimer', () => {
       props.onAction = sinon.spy()
       props.timeout = 400
       props.debounce = 0
-      const timer = idleTimer()
+      idleTimer()
       setTimeout(() => {
         simulant.fire(document, 'mousedown')
         expect(props.onAction.callCount).toBe(1)
@@ -312,7 +311,7 @@ describe('IdleTimer', () => {
       props.debounce = 200
       props.throttle = 200
       try {
-        const timer = idleTimer()
+        idleTimer()
       } catch (err) {
         expect(err.message).toBe('onAction can either be throttled or debounced (not both)')
         done()
@@ -336,7 +335,7 @@ describe('IdleTimer', () => {
       props.onAction = sinon.spy()
       props.timeout = 400
       props.debounce = 200
-      const timer = idleTimer()
+      idleTimer()
       simulant.fire(document, 'mousedown')
       simulant.fire(document, 'mousedown')
       simulant.fire(document, 'mousedown')
@@ -351,7 +350,7 @@ describe('IdleTimer', () => {
       props.onAction = sinon.spy()
       props.timeout = 400
       props.throttle = 200
-      const timer = idleTimer()
+      idleTimer()
       simulant.fire(document, 'mousedown')
       simulant.fire(document, 'mousedown')
       simulant.fire(document, 'mousedown')
@@ -361,10 +360,44 @@ describe('IdleTimer', () => {
         done()
       }, 200)
     })
+
+    it('Should update throttle prop', done => {
+      props.onAction = sinon.spy()
+      props.timeout = 400
+      props.throttle = 200
+      const timer = idleTimer()
+      timer.setProps({ throttle: 1000 })
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      setTimeout(() => {
+        expect(timer.props().throttle).toBe(1000)
+        expect(props.onAction.callCount).toBe(1)
+        done()
+      }, 200)
+    })
+
+    it('Should update debounce prop', done => {
+      props.onAction = sinon.spy()
+      props.timeout = 400
+      props.debounce = 200
+      const timer = idleTimer()
+      timer.setProps({ debounce: 1000 })
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      simulant.fire(document, 'mousedown')
+      setTimeout(() => {
+        simulant.fire(document, 'mousedown')
+        expect(timer.props().debounce).toBe(1000)
+        expect(props.onAction.callCount).toBe(0)
+        done()
+      }, 200)
+    })
   })
 
   describe('methods', () => {
-
     describe('reset', () => {
       it('Should start timer when reset is called', () => {
         props.startOnMount = false
@@ -417,7 +450,6 @@ describe('IdleTimer', () => {
         expect(timer.state('eventsBound')).toBe(false)
         done()
       })
-
     })
 
     describe('resume', () => {
@@ -479,7 +511,6 @@ describe('IdleTimer', () => {
     describe('getElapsedTime', () => {
       it('Should get the elapsed time', (done) => {
         const timer = idleTimer()
-        const oldDate = timer.state().oldDate
         setTimeout(() => {
           // Accurate within 10ms
           expect(timer.instance().getElapsedTime()).toBeGreaterThanOrEqual(500)

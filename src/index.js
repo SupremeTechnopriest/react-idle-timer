@@ -242,6 +242,17 @@ export default class IdleTimer extends Component {
     }
   }
 
+  componentDidUpdate (prevProps) {
+    // Update debounce function
+    if (prevProps.debounce !== this.props.debounce) {
+      this.debouncedAction = debounced(this.props.onAction, this.props.debounce)
+    }
+    // Update throttle function
+    if (prevProps.throttle !== this.props.throttle) {
+      this.throttledAction = throttled(this.props.onAction, this.props.throttle)
+    }
+  }
+
   /**
    * Called before the component unmounts
    * here we clear the timer and remove
@@ -575,7 +586,7 @@ function debounced (fn, delay) {
 function throttled (fn, delay) {
   let lastCall = 0
   return function (...args) {
-    const now = (new Date).getTime()
+    const now = new Date().getTime()
     if (now - lastCall < delay) {
       return
     }
