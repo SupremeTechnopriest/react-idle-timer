@@ -41,8 +41,6 @@ declare module "react-idle-timer" {
   }
 
   interface IdleTimerProps {
-    ref?: (ref: IdleTimer) => any;
-
     /**
      * Activity Timeout in milliseconds default: 1200000
      */

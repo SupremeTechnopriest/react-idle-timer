@@ -1,3 +1,6 @@
+### 4.2.5
+- Remove ref from typedef as it's included in the React Component interface (see #76)
+
 ### 4.2.4
 - Fixes typescript definition for evented methods
 - Fixes a bug where throttled and debounced actions would not take new props
