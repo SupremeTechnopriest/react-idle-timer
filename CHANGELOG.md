@@ -1,3 +1,8 @@
+### 4.2.6
+- Update dependencies
+- Fix a bug where `reset()` was not resetting `getRemainingTime()`
+- `componentWillMount` is deprecated. Moved logic to `componentDidMount`
+
 ### 4.2.5
 - Remove ref from typedef as it's included in the React Component interface (see #76)
 
