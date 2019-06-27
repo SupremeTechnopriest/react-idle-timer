@@ -2,7 +2,7 @@ import babel from 'rollup-plugin-babel'
 import builtins from 'rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
 import resolve from 'rollup-plugin-node-resolve'
-import minify from 'rollup-plugin-minify-es'
+import uglify from 'rollup-plugin-uglify-es'
 import progress from 'rollup-plugin-progress'
 
 const FILE = 'dist/index'
@@ -28,8 +28,7 @@ export default {
   ],
   plugins: [
     babel({
-      exclude: [ 'node_modules/**' ],
-      plugins: [ 'external-helpers' ]
+      exclude: [ 'node_modules/**' ]
     }),
     resolve({
       main: true,
@@ -39,7 +38,7 @@ export default {
     }),
     builtins(),
     globals(),
-    minify(),
+    uglify(),
     progress()
   ]
 }

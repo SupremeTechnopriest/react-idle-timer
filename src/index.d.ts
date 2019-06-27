@@ -46,7 +46,6 @@ declare module "react-idle-timer" {
      */
     timeout?: number;
 
-
     /**
      * DOM events to listen to default: see [default events](https://github.com/SupremeTechnopriest/react-idle-timer#default-events)
      */
