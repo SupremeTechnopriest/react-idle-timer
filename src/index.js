@@ -218,24 +218,15 @@ export default class IdleTimer extends Component {
   }
 
   /**
-   * Runs when the component mounts
-   * here we bind the events to the
-   * element we want to listen on
-   * @private
-   */
-  componentWillMount () {
-    this._bindEvents()
-  }
-
-  /**
    * Runs once the component has mounted
    * here we handle automatically starting
    * the idletimer
    * @private
    */
   componentDidMount () {
-    // If startOnMount is enabled
-    // start the timer
+    // Bind the event listeners
+    this._bindEvents()
+    // If startOnMount is enabled start the timer
     const { startOnMount } = this.props
     if (startOnMount) {
       this.reset()
@@ -502,19 +493,20 @@ export default class IdleTimer extends Component {
    */
   _getRemainingTime () {
     const { remaining, idle, lastActive } = this.state
+    const { timeout } = this.props
+
     // If idle there is no time remaining
     if (idle) {
       return 0
     }
 
-    // If timer is in a paused state
-    // just return its remaining time
-    if (remaining !== null) {
-      return remaining
+    // Remaining time is null when the timer is reset
+    // return the timeout
+    if (remaining === null) {
+      return timeout < 0 ? 0 : timeout
     }
 
     // Determine remaining, if negative idle didn't finish flipping, just return 0
-    const { timeout } = this.props
     let timeLeft = timeout - ((+new Date()) - lastActive)
     if (timeLeft < 0) {
       timeLeft = 0

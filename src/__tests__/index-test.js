@@ -11,7 +11,7 @@ import IdleTimer from '../index'
 
 // Parent component
 class Parent extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = { test: true }
     this.onIdle = this._onIdle.bind(this)
@@ -83,7 +83,7 @@ describe('IdleTimer', () => {
       const timer = idleTimer()
       expect(Object.keys(timer.props()).length).toBeGreaterThan(0)
       timer.unmount()
-      expect(Object.keys(timer.props()).length).toBe(0)
+      expect(timer.exists()).toBe(false)
     })
 
     it('Should allow parent component to setState() inside onIdle()', done => {
@@ -189,6 +189,7 @@ describe('IdleTimer', () => {
         timer.instance().reset()
         expect(timer.state('idle')).toBe(false)
         expect(timer.instance().tId).toBeGreaterThan(0)
+        expect(timer.instance().getRemainingTime()).toBe(props.timeout)
         simulant.fire(document, 'mousedown')
 
         setTimeout(() => {
@@ -498,7 +499,7 @@ describe('IdleTimer', () => {
       it('Should return remaining time while paused', () => {
         const timer = idleTimer()
         timer.instance().pause()
-        expect(timer.instance().getRemainingTime()).toBe(timer.state().remaining)
+        expect(timer.instance().getRemainingTime()).toBeAround(timer.state().remaining, 5)
       })
 
       it('Should never return a negative number for remaining time', () => {
