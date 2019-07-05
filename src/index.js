@@ -208,12 +208,12 @@ export default class IdleTimer extends Component {
 
     // Bind all events to component scope, built for speed 🚀
     this.toggleIdleState = this._toggleIdleState.bind(this)
-    this.reset = this._reset.bind(this)
-    this.pause = this._pause.bind(this)
-    this.resume = this._resume.bind(this)
-    this.getRemainingTime = this._getRemainingTime.bind(this)
-    this.getElapsedTime = this._getElapsedTime.bind(this)
-    this.getLastActiveTime = this._getLastActiveTime.bind(this)
+    this.reset = this.reset.bind(this)
+    this.pause = this.pause.bind(this)
+    this.resume = this.resume.bind(this)
+    this.getRemainingTime = this.getRemainingTime.bind(this)
+    this.getElapsedTime = this.getElapsedTime.bind(this)
+    this.getLastActiveTime = this.getLastActiveTime.bind(this)
     this.isIdle = this._isIdle.bind(this)
   }
 
@@ -418,7 +418,7 @@ export default class IdleTimer extends Component {
    * Restore initial state and restart timer
    * @name reset
    */
-  _reset () {
+  reset () {
     // Clear timeout
     clearTimeout(this.tId)
     this.tId = null
@@ -430,7 +430,7 @@ export default class IdleTimer extends Component {
     this.setState({
       idle: false,
       oldDate: +new Date(),
-      lastActive: this.state.oldDate,
+      lastActive: +new Date(),
       remaining: null
     })
 
@@ -443,7 +443,7 @@ export default class IdleTimer extends Component {
    * Store remaining time and stop timer
    * @name pause
    */
-  _pause () {
+  pause () {
     // Timer is already paused
     const { remaining } = this.state
     if (remaining !== null) {
@@ -467,7 +467,7 @@ export default class IdleTimer extends Component {
    * Resumes a paused timer
    * @name resume
    */
-  _resume () {
+  resume () {
     // Timer is not paused
     const { remaining, idle } = this.state
     if (remaining === null) {
@@ -491,27 +491,18 @@ export default class IdleTimer extends Component {
    * @name getRemainingTime
    * @return {Number} Milliseconds remaining
    */
-  _getRemainingTime () {
-    const { remaining, idle, lastActive } = this.state
+  getRemainingTime () {
+    const { remaining, lastActive } = this.state
     const { timeout } = this.props
 
     // If idle there is no time remaining
-    if (idle) {
-      return 0
-    }
-
-    // Remaining time is null when the timer is reset
-    // return the timeout
-    if (remaining === null) {
-      return timeout < 0 ? 0 : timeout
+    if (remaining !== null) {
+      return remaining < 0 ? 0 : remaining
     }
 
     // Determine remaining, if negative idle didn't finish flipping, just return 0
     let timeLeft = timeout - ((+new Date()) - lastActive)
-    if (timeLeft < 0) {
-      timeLeft = 0
-    }
-    return timeLeft
+    return timeLeft < 0 ? 0 : timeLeft
   }
 
   /**
@@ -519,7 +510,7 @@ export default class IdleTimer extends Component {
    * @name getElapsedTime
    * @return {Timestamp}
    */
-  _getElapsedTime () {
+  getElapsedTime () {
     const { oldDate } = this.state
     return (+new Date()) - oldDate
   }
@@ -529,7 +520,7 @@ export default class IdleTimer extends Component {
    * @name getLastActiveTime
    * @return {Timestamp}
    */
-  _getLastActiveTime () {
+  getLastActiveTime () {
     const { lastActive } = this.state
     return lastActive
   }

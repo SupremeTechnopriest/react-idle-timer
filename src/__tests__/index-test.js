@@ -189,7 +189,7 @@ describe('IdleTimer', () => {
         timer.instance().reset()
         expect(timer.state('idle')).toBe(false)
         expect(timer.instance().tId).toBeGreaterThan(0)
-        expect(timer.instance().getRemainingTime()).toBe(props.timeout)
+        expect(timer.instance().getRemainingTime()).toBeAround(props.timeout, 3)
         simulant.fire(document, 'mousedown')
 
         setTimeout(() => {

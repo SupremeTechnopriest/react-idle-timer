@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import IdleTimer from './dist/index.es'
+import IdleTimer from 'react-idle-timer'
 import format from 'date-fns/format'
 
 export default class App extends Component {
