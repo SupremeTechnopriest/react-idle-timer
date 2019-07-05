@@ -1,4 +1,7 @@
 ### 4.2.6
+- Fixes a regression introduced in v4.2.6.  If you rely on `getRemainingTime()` you should update to this patch.
+
+### 4.2.6
 - Update dependencies
 - Fix a bug where `reset()` was not resetting `getRemainingTime()`
 - `componentWillMount` is deprecated. Moved logic to `componentDidMount`
