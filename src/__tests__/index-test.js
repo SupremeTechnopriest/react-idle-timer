@@ -484,6 +484,20 @@ describe('IdleTimer', () => {
         expect(timer.state('eventsBound')).toBe(true)
         done()
       })
+
+      it('Should resume from paused time', done => {
+        const timer = idleTimer()
+        timer.instance().pause()
+        props.timeout = 3000
+        const time = timer.instance().getRemainingTime()
+        expect(timer.instance().tId).toBe(null)
+        setTimeout(() => {
+          timer.instance().resume()
+          expect(timer.instance().getRemainingTime()).toBeAround(time, 5)
+          expect(timer.instance().tId).toBeGreaterThan(0)
+          done()
+        }, 2000)
+      })
     })
 
     describe('getRemainingTime', () => {

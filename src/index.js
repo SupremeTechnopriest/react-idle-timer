@@ -480,7 +480,7 @@ export default class IdleTimer extends Component {
     // Start timer and clear remaining
     // if we are in the idle state
     if (!idle) {
-      this.setState({ remaining: null })
+      this.setState({ remaining: null, lastActive: +new Date() })
       // Set a new timeout
       this.tId = setTimeout(this.toggleIdleState, remaining)
     }
