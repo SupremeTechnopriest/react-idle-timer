@@ -1,7 +1,7 @@
-### 4.2.7
+### 4.2.8
 - Fixes a bug where a paused timer would return the wrong remaining time when resumed.
 
-### 4.2.6
+### 4.2.7
 - Fixes a regression introduced in v4.2.6.  If you rely on `getRemainingTime()` you should update to this patch.
 
 ### 4.2.6
