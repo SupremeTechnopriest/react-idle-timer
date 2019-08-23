@@ -1,3 +1,6 @@
+### 4.2.9
+- Fixes a bug where HMR systems would prevent events from unbinding. (see #87)
+
 ### 4.2.8
 - Fixes a bug where a paused timer would return the wrong remaining time when resumed.
 
