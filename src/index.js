@@ -253,7 +253,7 @@ export default class IdleTimer extends Component {
   componentWillUnmount () {
     // Clear timeout to prevent delayed state changes
     clearTimeout(this.tId)
-    this._unbindEvents()
+    this._unbindEvents(true)
   }
 
   /**
@@ -293,14 +293,14 @@ export default class IdleTimer extends Component {
    * Unbinds all the bound events
    * @private
    */
-  _unbindEvents () {
+  _unbindEvents (force = false) {
     // If we are not in a browser
     // we dont need to unbind events
     if (!IS_BROWSER) return
     // Unbind all events
     const { element, events, passive, capture } = this.props
     const { eventsBound } = this.state
-    if (eventsBound) {
+    if (eventsBound || force) {
       events.forEach(e => {
         element.removeEventListener(e, this._handleEvent, {
           capture,
