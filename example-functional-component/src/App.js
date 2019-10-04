@@ -68,9 +68,9 @@ export default function App() {
           <h1>Idle: {isIdle.toString()}</h1>
         </div>
         <div>
-          {/* <button onClick={reset()}>RESET</button>
-          <button onClick={pause()}>PAUSE</button>
-          <button onClick={resume()}>RESUME</button> */}
+          <button onClick={reset}>RESET</button>
+          <button onClick={pause}>PAUSE</button>
+          <button onClick={resume}>RESUME</button>
         </div>
       </div>
     </div>
