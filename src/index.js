@@ -317,15 +317,15 @@ export default class IdleTimer extends Component {
    * @private
    */
   _toggleIdleState (e) {
-    const { idle } = this.state
     // Fire the appropriate action
     // and pass the event through
-    const { onActive, onIdle, stopOnIdle } = this.props
     // Toggle the idle state
-    this.setState({
-      idle: !idle
-    }, () => {
-      if (idle) {
+    this.setState((prevState) => ({
+      idle: !prevState.idle
+    }), () => {
+      const { onActive, onIdle, stopOnIdle } = this.props
+      const { idle } = this.state
+      if (!idle) {
         if (!stopOnIdle) {
           this._bindEvents()
           onActive(e)
@@ -392,8 +392,8 @@ export default class IdleTimer extends Component {
 
     if (!stopOnIdle) {
       // Determine last time User was active, as can't rely on setTimeout ticking at the correct interval
-      const elapsedTimeSinceLastActive = new Date() - this.getLastActiveTime();
-      // If the user is idle or last active time is more than timeout, flip the idle state      
+      const elapsedTimeSinceLastActive = new Date() - this.getLastActiveTime()
+      // If the user is idle or last active time is more than timeout, flip the idle state
       if (idle || (!idle && elapsedTimeSinceLastActive > timeout)) {
         this.toggleIdleState(e)
       }

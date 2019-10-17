@@ -21,12 +21,9 @@ class Parent extends React.Component {
     return (
       <div>
         {this.state.test ? (
-          <IdleTimer
-            onIdle={this.onIdle}
-            ref={ref => { this.idleTimer = ref }}
-            {...this.props}
-          />
-        ) : <div />}
+           <IdleTimer onIdle={this.onIdle} ref={ref => {
+                                                this.idleTimer = ref}} {...this.props} />
+           ) : <div />}
       </div>
     )
   }
@@ -46,7 +43,9 @@ describe('IdleTimer', () => {
   const idleTimer = () => {
     if (!mounted) {
       mounted = mount(
-        <IdleTimer {...props}>{children}</IdleTimer>
+        <IdleTimer {...props}>
+          {children}
+        </IdleTimer>
       )
     }
     return mounted
@@ -74,7 +73,9 @@ describe('IdleTimer', () => {
 
   describe('lifecycle', () => {
     it('Should render its children', () => {
-      children = <div>test</div>
+      children = <div>
+                   test
+                 </div>
       const divs = idleTimer().find('div')
       expect(divs.first().html()).toBe('<div>test</div>')
     })
@@ -259,6 +260,16 @@ describe('IdleTimer', () => {
         expect(props.onIdle.callCount).toBe(1)
         done()
       }, 500)
+    })
+
+    it('Should not call onIdle on larger timeouts', done => {
+      props.onIdle = sinon.spy()
+      props.timeout = 2147483647
+      idleTimer()
+      setTimeout(() => {
+        expect(props.onIdle.callCount).toBe(0)
+        done()
+      }, 100)
     })
 
     it('Should call onActive on user input when user is idle', done => {
