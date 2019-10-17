@@ -1,3 +1,7 @@
+### 4.2.10
+- Fixes a bug where onIdle was not triggered consistently on iOS. (see #94)
+- Refactor of toggleIdle function to prevent race conditions. (see #93)
+
 ### 4.2.9
 - Fixes a bug where HMR systems would prevent events from unbinding. (see #87)
 
