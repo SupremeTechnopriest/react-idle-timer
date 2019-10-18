@@ -73,9 +73,7 @@ describe('IdleTimer', () => {
 
   describe('lifecycle', () => {
     it('Should render its children', () => {
-      children = <div>
-                   test
-                 </div>
+      children = <div>test</div>
       const divs = idleTimer().find('div')
       expect(divs.first().html()).toBe('<div>test</div>')
     })

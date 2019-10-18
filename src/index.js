@@ -394,7 +394,7 @@ export default class IdleTimer extends Component {
     const elapsedTimeSinceLastActive = new Date() - this.getLastActiveTime()
 
     // If the user is idle or last active time is more than timeout, flip the idle state
-    if (idle && !stopOnIdle || (!idle && elapsedTimeSinceLastActive > timeout)) {
+    if ((idle && !stopOnIdle) || (!idle && elapsedTimeSinceLastActive > timeout)) {
       this.toggleIdleState(e)
     }
 

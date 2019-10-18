@@ -1,3 +1,6 @@
+### 4.2.11
+- Fixes an issue where in mobile devices after backgrounding with `stopOnIdle` set. (see #96)
+
 ### 4.2.10
 - Fixes a bug where onIdle was not triggered consistently on iOS. (see #94)
 - Refactor of toggleIdle function to prevent race conditions. (see #93)
