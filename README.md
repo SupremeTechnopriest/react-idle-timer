@@ -101,6 +101,7 @@ These events are bound by default:
 - touchmove
 - MSPointerDown
 - MSPointerMove
+- visibilitychange
 
 ### Props
 - **timeout** {*Number*} - Idle timeout in milliseconds.

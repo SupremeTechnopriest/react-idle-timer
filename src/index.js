@@ -43,7 +43,8 @@ const DEFAULT_EVENTS = [
   'touchstart',
   'touchmove',
   'MSPointerDown',
-  'MSPointerMove'
+  'MSPointerMove',
+  'visibilitychange'
 ]
 
 /**
