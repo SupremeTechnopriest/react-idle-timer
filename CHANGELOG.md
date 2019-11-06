@@ -1,3 +1,6 @@
+### 4.2.12
+- Added `visibilitychange` event to default events. (see #98)
+
 ### 4.2.11
 - Fixes an issue where in mobile devices after backgrounding with `stopOnIdle` set. (see #96)
 
