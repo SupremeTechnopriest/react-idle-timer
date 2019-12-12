@@ -317,15 +317,20 @@ describe('IdleTimer', () => {
     })
 
     it('Should error if debounce and throttle are set', done => {
+      jest.spyOn(console, 'error')
+      console.error.mockImplementation(() => {})
       props.timeout = 400
       props.debounce = 200
       props.throttle = 200
+      let errorMessage
       try {
         idleTimer()
       } catch (err) {
-        expect(err.message).toBe('onAction can either be throttled or debounced (not both)')
-        done()
+        errorMessage = err.message
       }
+      expect(errorMessage).toBe('onAction can either be throttled or debounced (not both)')
+      console.error.mockRestore()
+        done()
     })
 
     it('Should unbind all events on idle when stopOnIdle is set', done => {
