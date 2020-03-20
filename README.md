@@ -50,12 +50,12 @@ export default class YourApp extends Component {
         <IdleTimer
           ref={ref => { this.idleTimer = ref }}
           element={document}
-		  onActive={this.onActive}
+          onActive={this.onActive}
           onIdle={this.onIdle}
           onAction={this.onAction}
-		  debounce={250}
+          debounce={250}
           timeout={1000 * 60 * 15} />
-		{/* your app here */}
+        {/* your app here */}
       </div>
     )
   }
