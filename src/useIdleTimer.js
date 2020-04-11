@@ -67,7 +67,7 @@ export default function useIdleTimer({
   capture,
   passive,
 }) {
-  const [idle, setTdle] = useState(false);
+  const [isIdle, setIsIdle] = useState(false);
   const [oldDate, setOldDate] = useState(+new Date());
   const [lastActive, setLastActive] = useState(+new Date());
   const [remaining, setRemaining] = useState(null);
@@ -186,7 +186,7 @@ export default function useIdleTimer({
     //Toggle the idle state
     settIdle((prev) => !prev);
 
-    if (!idle) {
+    if (!isIdle) {
       if (!stopOnIdle) {
         _bindEvents();
         onActive(e);
@@ -247,8 +247,8 @@ export default function useIdleTimer({
     const elapsedTimeSinceLastActive = new Date() - lastActive;
     // If the user is idle or last active time is more than timeout, flip the idle state
     if (
-      (idle && !stopOnIdle) ||
-      (!idle && elapsedTimeSinceLastActive > timeout)
+      (isIdle && !stopOnIdle) ||
+      (!isIdle && elapsedTimeSinceLastActive > timeout)
     ) {
       _toggleIdleState(e);
     }
@@ -262,7 +262,7 @@ export default function useIdleTimer({
 
     // If the user is idle and stopOnIdle flag is not set
     // set a new timeout
-    if (idle) {
+    if (isIdle) {
       if (!stopOnIdle) {
         tId.current = setTimeout(_toggleIdleState, timeout);
       }
@@ -322,7 +322,7 @@ export default function useIdleTimer({
     _bindEvents();
     // Start timer and clear remaining
     // if we are in the idle state
-    if (!idle) {
+    if (!isIdle) {
       setRemaining(null);
       setLastActive(+new Date());
       // Set a new timeout
@@ -352,6 +352,17 @@ export default function useIdleTimer({
    * @return {Timestamp}
    */
   const getElapsedTime = () => +new Date() - oldDate;
+
+  const getLastActiveTime = () => lastActive;
+
+  return {
+    pause,
+    reset,
+    resume,
+    getLastActiveTime,
+    getElapsedTime,
+    getRemainingTime,
+  };
 }
 
 /**
