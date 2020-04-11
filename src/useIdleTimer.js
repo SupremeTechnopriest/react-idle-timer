@@ -5,7 +5,7 @@
  *  | | (_| | |  __/| | | | | | | | |  __/ |
  * |___\__,_|_|\___||_| |_|_| |_| |_|\___|_|
  *
- * @name IdleTimer
+ * @name useIdleTimer
  * @author Randy Lebeau
  * @private
  */
@@ -50,23 +50,38 @@ const DEFAULT_EVENTS = [
 
 /**
  * Detects when your user is idle
- * @function IdleTimer
+ * @function useIdleTimer
  * @private
  */
-export default function useIdleTimer({
-  timeout,
-  element,
-  events,
-  onIdle,
-  onActive,
-  onAction,
-  debounce,
-  throttle,
-  startOnMount,
-  stopOnIdle,
-  capture,
-  passive,
-}) {
+export default function useIdleTimer(
+  {
+    timeout,
+    element,
+    events,
+    onIdle,
+    onActive,
+    onAction,
+    debounce,
+    throttle,
+    startOnMount,
+    stopOnIdle,
+    capture,
+    passive,
+  } = {
+    timeout: 1000 * 60 * 20,
+    element: DEFAULT_ELEMENT,
+    events: DEFAULT_EVENTS,
+    onIdle: () => {},
+    onActive: () => {},
+    onAction: () => {},
+    debounce: 0,
+    throttle: 0,
+    startOnMount: true,
+    stopOnIdle: false,
+    capture: true,
+    passive: true,
+  }
+) {
   const [isIdle, setIsIdle] = useState(false);
   const [oldDate, setOldDate] = useState(+new Date());
   const [lastActive, setLastActive] = useState(+new Date());
@@ -284,13 +299,13 @@ export default function useIdleTimer({
     _bindEvents();
 
     // Reset state
-    setIdle(false);
+    setIsIdle(false);
     setOldDate(+new Date());
     setLastActive(+new Date());
     setRemaining(null);
 
     // Set new timeout
-    tId.current = setTimeout(toggleIdleState, timeout);
+    tId.current = setTimeout(_toggleIdleState, timeout);
   };
 
   /**
@@ -326,7 +341,7 @@ export default function useIdleTimer({
       setRemaining(null);
       setLastActive(+new Date());
       // Set a new timeout
-      tId.current = setTimeout(toggleIdleState, remaining);
+      tId.current = setTimeout(_toggleIdleState, remaining);
     }
   };
 
@@ -370,101 +385,83 @@ export default function useIdleTimer({
  * @type {Object}
  * @private
  */
-IdleTimer.propTypes = {
-  /**
-   * Activity Timeout in milliseconds
-   * default: 1200000
-   * @type {Number}
-   */
-  timeout: PropTypes.number,
-  /**
-   * DOM events to listen to
-   * default: see [default events](https://github.com/SupremeTechnopriest/react-idle-timer#default-events)
-   * @type {Array}
-   */
-  events: PropTypes.arrayOf(PropTypes.string),
-  /**
-   * Function to call when user is idle
-   * default: () => {}
-   * @type {Function}
-   */
-  onIdle: PropTypes.func,
-  /**
-   * Function to call when user becomes active
-   * default: () => {}
-   * @type {Function}
-   */
-  onActive: PropTypes.func,
-  /**
-   * Function to call on user actions
-   * default: () => {}
-   * @type {Function}
-   */
-  onAction: PropTypes.func,
-  /**
-   * Debounce the onAction function by setting delay in milliseconds
-   * default: 0
-   * @type {Number}
-   */
-  debounce: PropTypes.number,
-  /**
-   * Throttle the onAction function by setting delay in milliseconds
-   * default: 0
-   * @type {Number}
-   */
-  throttle: PropTypes.number,
-  /**
-   * Element reference to bind activity listeners to
-   * default: document
-   * @type {Object}
-   */
-  element: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
-  /**
-   * Start the timer on mount
-   * default: true
-   * @type {Boolean}
-   */
-  startOnMount: PropTypes.bool,
-  /**
-   * Once the user goes idle the IdleTimer will not
-   * reset on user input instead, reset() must be
-   * called manually to restart the timer
-   * default: false
-   * @type {Boolean}
-   */
-  stopOnIdle: PropTypes.bool,
-  /**
-   * Bind events passively
-   * default: true
-   * @type {Boolean}
-   */
-  passive: PropTypes.bool,
-  /**
-   * Capture events
-   * default: true
-   * @type {Boolean}
-   */
-  capture: PropTypes.bool,
-};
-
-/**
- * Sets default property values
- * @type {Object}
- * @private
- */
-IdleTimer.defaultProps = {
-  timeout: 1000 * 60 * 20,
-  element: DEFAULT_ELEMENT,
-  events: DEFAULT_EVENTS,
-  onIdle: () => {},
-  onActive: () => {},
-  onAction: () => {},
-  debounce: 0,
-  throttle: 0,
-  startOnMount: true,
-  stopOnIdle: false,
-  capture: true,
-  passive: true,
+useIdleTimer.propTypes = {
+  config: PropTypes.shape({
+    /**
+     * Activity Timeout in milliseconds
+     * default: 1200000
+     * @type {Number}
+     */
+    timeout: PropTypes.number,
+    /**
+     * DOM events to listen to
+     * default: see [default events](https://github.com/SupremeTechnopriest/react-idle-timer#default-events)
+     * @type {Array}
+     */
+    events: PropTypes.arrayOf(PropTypes.string),
+    /**
+     * Function to call when user is idle
+     * default: () => {}
+     * @type {Function}
+     */
+    onIdle: PropTypes.func,
+    /**
+     * Function to call when user becomes active
+     * default: () => {}
+     * @type {Function}
+     */
+    onActive: PropTypes.func,
+    /**
+     * Function to call on user actions
+     * default: () => {}
+     * @type {Function}
+     */
+    onAction: PropTypes.func,
+    /**
+     * Debounce the onAction function by setting delay in milliseconds
+     * default: 0
+     * @type {Number}
+     */
+    debounce: PropTypes.number,
+    /**
+     * Throttle the onAction function by setting delay in milliseconds
+     * default: 0
+     * @type {Number}
+     */
+    throttle: PropTypes.number,
+    /**
+     * Element reference to bind activity listeners to
+     * default: document
+     * @type {Object}
+     */
+    element: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
+    /**
+     * Start the timer on mount
+     * default: true
+     * @type {Boolean}
+     */
+    startOnMount: PropTypes.bool,
+    /**
+     * Once the user goes idle the useIdleTimer will not
+     * reset on user input instead, reset() must be
+     * called manually to restart the timer
+     * default: false
+     * @type {Boolean}
+     */
+    stopOnIdle: PropTypes.bool,
+    /**
+     * Bind events passively
+     * default: true
+     * @type {Boolean}
+     */
+    passive: PropTypes.bool,
+    /**
+     * Capture events
+     * default: true
+     * @type {Boolean}
+     */
+    capture: PropTypes.bool,
+  }),
 };
 
 /**
