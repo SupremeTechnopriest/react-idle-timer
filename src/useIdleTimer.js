@@ -10,7 +10,7 @@
  * @private
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 
 /**
@@ -53,35 +53,20 @@ const DEFAULT_EVENTS = [
  * @function useIdleTimer
  * @private
  */
-export default function useIdleTimer(
-  {
-    timeout,
-    element,
-    events,
-    onIdle,
-    onActive,
-    onAction,
-    debounce,
-    throttle,
-    startOnMount,
-    stopOnIdle,
-    capture,
-    passive,
-  } = {
-    timeout: 1000 * 60 * 20,
-    element: DEFAULT_ELEMENT,
-    events: DEFAULT_EVENTS,
-    onIdle: () => {},
-    onActive: () => {},
-    onAction: () => {},
-    debounce: 0,
-    throttle: 0,
-    startOnMount: true,
-    stopOnIdle: false,
-    capture: true,
-    passive: true,
-  }
-) {
+export default function useIdleTimer({
+  timeout = 1000 * 60 * 20,
+  element = DEFAULT_ELEMENT,
+  events = DEFAULT_EVENTS,
+  onIdle = () => {},
+  onActive = () => {},
+  onAction = () => {},
+  debounce = 0,
+  throttle = 0,
+  startOnMount = true,
+  stopOnIdle = false,
+  capture = true,
+  passive = true,
+} = {}) {
   const [isIdle, setIsIdle] = useState(false);
   const [oldDate, setOldDate] = useState(+new Date());
   const [lastActive, setLastActive] = useState(+new Date());
@@ -130,14 +115,14 @@ export default function useIdleTimer(
       return;
     }
 
-    seIdle(true);
-  }, [startOnMount]);
+    setIsIdle(true);
+  }, [startOnMount, reset]);
 
   // Set the bound events lifecycle
   useEffect(() => {
     _bindEvents();
     return _unbindEvents();
-  }, []);
+  }, [_bindEvents, _unbindEvents]);
 
   /**
    * Called before the component unmounts
@@ -150,7 +135,7 @@ export default function useIdleTimer(
    * Binds the specified events
    * @private
    */
-  const _bindEvents = () => {
+  const _bindEvents = useCallback(() => {
     // Dont bind events if
     // we are not in a browser
     if (!IS_BROWSER) return;
@@ -166,28 +151,31 @@ export default function useIdleTimer(
       });
       setEventsBound(true);
     }
-  };
+  }, [eventsBound, capture, passive, _handleEvent, events, element]);
 
   /**
    * Unbinds all the bound events
    * @private
    */
-  const _unbindEvents = (force = false) => {
-    // If we are not in a browser
-    // we dont need to unbind events
-    if (!IS_BROWSER) return;
+  const _unbindEvents = useCallback(
+    (force = false) => {
+      // If we are not in a browser
+      // we dont need to unbind events
+      if (!IS_BROWSER) return;
 
-    // Unbind all events
-    if (eventsBound || force) {
-      events.forEach((e) => {
-        element.removeEventListener(e, _handleEvent, {
-          capture,
-          passive,
+      // Unbind all events
+      if (eventsBound || force) {
+        events.forEach((e) => {
+          element.removeEventListener(e, _handleEvent, {
+            capture,
+            passive,
+          });
         });
-      });
-      setEventsBound(false);
-    }
-  };
+        setEventsBound(false);
+      }
+    },
+    [eventsBound, capture, passive, events, element, _handleEvent, IS_BROWSER]
+  );
 
   /**
    * Toggles the idle state and calls
@@ -199,7 +187,7 @@ export default function useIdleTimer(
     // and pass the event through
 
     //Toggle the idle state
-    settIdle((prev) => !prev);
+    setIsIdle((prev) => !prev);
 
     if (!isIdle) {
       if (!stopOnIdle) {
