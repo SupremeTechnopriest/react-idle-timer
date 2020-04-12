@@ -174,7 +174,7 @@ export default function useIdleTimer({
         setEventsBound(false);
       }
     },
-    [eventsBound, capture, passive, events, element, _handleEvent, IS_BROWSER]
+    [eventsBound, capture, passive, events, element, _handleEvent]
   );
 
   /**
@@ -182,103 +182,133 @@ export default function useIdleTimer({
    * the correct action function
    * @private
    */
-  const _toggleIdleState = (e) => {
-    // Fire the appropriate action
-    // and pass the event through
+  const _toggleIdleState = useCallback(
+    (e) => {
+      // Fire the appropriate action
+      // and pass the event through
 
-    //Toggle the idle state
-    setIsIdle((prev) => !prev);
+      //Toggle the idle state
+      setIsIdle((prev) => !prev);
 
-    if (!isIdle) {
-      if (!stopOnIdle) {
-        _bindEvents();
-        onActive(e);
+      if (!isIdle) {
+        if (!stopOnIdle) {
+          _bindEvents();
+          onActive(e);
+        }
+      } else {
+        if (stopOnIdle) {
+          // Clear any existing timeout
+          clearTimeout(tId.current);
+          tId.current = null;
+          // Unbind events
+          _unbindEvents();
+        }
+        onIdle(e);
       }
-    } else {
-      if (stopOnIdle) {
-        // Clear any existing timeout
-        clearTimeout(tId.current);
-        tId.current = null;
-        // Unbind events
-        _unbindEvents();
-      }
-      onIdle(e);
-    }
-  };
+    },
+    [
+      setIsIdle,
+      isIdle,
+      stopOnIdle,
+      _bindEvents,
+      onActive,
+      tId,
+      _unbindEvents,
+      onIdle,
+    ]
+  );
 
   /**
    * Event handler for supported event types
    * @param  {Object} e event object
    * @private
    */
-  const _handleEvent = (e) => {
-    // Fire debounced, throttled or raw onAction callback with event
-    if (debounce > 0) {
-      debouncedAction(e);
-    } else if (throttle > 0) {
-      throttledAction(e);
-    } else {
-      onAction(e);
-    }
-    // Already active, ignore events
-    if (remaining) return;
-    // Mousemove event
-    if (e.type === "mousemove") {
-      // If coord are same, it didn't move
-      if (e.pageX === pageX && e.pageY === pageY) {
-        return;
+  const _handleEvent = useCallback(
+    (e) => {
+      // Fire debounced, throttled or raw onAction callback with event
+      if (debounce > 0) {
+        debouncedAction(e);
+      } else if (throttle > 0) {
+        throttledAction(e);
+      } else {
+        onAction(e);
       }
-      // If coord don't exist how could it move
-      if (typeof e.pageX === "undefined" && typeof e.pageY === "undefined") {
-        return;
+      // Already active, ignore events
+      if (remaining) return;
+      // Mousemove event
+      if (e.type === "mousemove") {
+        // If coord are same, it didn't move
+        if (e.pageX === pageX && e.pageY === pageY) {
+          return;
+        }
+        // If coord don't exist how could it move
+        if (typeof e.pageX === "undefined" && typeof e.pageY === "undefined") {
+          return;
+        }
+        // Under 200 ms is hard to do
+        // continuous activity will bypass this
+        //
+        // TODO: Cant seem to simulate this event with pageX and pageY for testing
+        // making this block of code unreachable by test suite
+        // opened an issue here https://github.com/Rich-Harris/simulant/issues/19
+        const elapsed = getElapsedTime();
+        if (elapsed < 200) {
+          return;
+        }
       }
-      // Under 200 ms is hard to do
-      // continuous activity will bypass this
-      //
-      // TODO: Cant seem to simulate this event with pageX and pageY for testing
-      // making this block of code unreachable by test suite
-      // opened an issue here https://github.com/Rich-Harris/simulant/issues/19
-      const elapsed = getElapsedTime();
-      if (elapsed < 200) {
-        return;
+      // Clear any existing timeout
+      clearTimeout(tId.current);
+      tId.current = null;
+      // Determine last time User was active, as can't rely on setTimeout ticking at the correct interval
+      const elapsedTimeSinceLastActive = new Date() - lastActive;
+      // If the user is idle or last active time is more than timeout, flip the idle state
+      if (
+        (isIdle && !stopOnIdle) ||
+        (!isIdle && elapsedTimeSinceLastActive > timeout)
+      ) {
+        _toggleIdleState(e);
       }
-    }
-    // Clear any existing timeout
-    clearTimeout(tId.current);
-    tId.current = null;
-    // Determine last time User was active, as can't rely on setTimeout ticking at the correct interval
-    const elapsedTimeSinceLastActive = new Date() - lastActive;
-    // If the user is idle or last active time is more than timeout, flip the idle state
-    if (
-      (isIdle && !stopOnIdle) ||
-      (!isIdle && elapsedTimeSinceLastActive > timeout)
-    ) {
-      _toggleIdleState(e);
-    }
 
-    // Store when the user was last active
-    // and update the mouse coordinates
+      // Store when the user was last active
+      // and update the mouse coordinates
 
-    setLastActive(+new Date()); // store when user was last active
-    setPageX(e.pageX);
-    setPageY(e.pageY);
+      setLastActive(+new Date()); // store when user was last active
+      setPageX(e.pageX);
+      setPageY(e.pageY);
 
-    // If the user is idle and stopOnIdle flag is not set
-    // set a new timeout
-    if (isIdle) {
-      if (!stopOnIdle) {
+      // If the user is idle and stopOnIdle flag is not set
+      // set a new timeout
+      if (isIdle) {
+        if (!stopOnIdle) {
+          tId.current = setTimeout(_toggleIdleState, timeout);
+        }
+      } else {
         tId.current = setTimeout(_toggleIdleState, timeout);
       }
-    } else {
-      tId.current = setTimeout(_toggleIdleState, timeout);
-    }
-  };
+    },
+    [
+      _toggleIdleState,
+      debounce,
+      debouncedAction,
+      getElapsedTime,
+      isIdle,
+      lastActive,
+      onAction,
+      pageX,
+      pageY,
+      remaining,
+      stopOnIdle,
+      throttle,
+      throttledAction,
+      timeout,
+    ]
+  );
 
   /**
    * Restore initial state and restart timer
    * @name reset
    */
-  const reset = () => {
+  const reset = useCallback(() => {
     // Clear timeout
     clearTimeout(tId.current);
     tId.current = null;
@@ -294,7 +324,16 @@ export default function useIdleTimer({
 
     // Set new timeout
     tId.current = setTimeout(_toggleIdleState, timeout);
-  };
+  }, [
+    tId,
+    _bindEvents,
+    setIsIdle,
+    setOldDate,
+    setLastActive,
+    setRemaining,
+    _toggleIdleState,
+    timeout,
+  ]);
 
   /**
    * Store remaining time and stop timer
@@ -354,7 +393,7 @@ export default function useIdleTimer({
    * @name getElapsedTime
    * @return {Timestamp}
    */
-  const getElapsedTime = () => +new Date() - oldDate;
+  const getElapsedTime = useCallback(() => +new Date() - oldDate, [oldDate]);
 
   const getLastActiveTime = () => lastActive;
 
