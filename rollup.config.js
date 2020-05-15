@@ -1,7 +1,7 @@
-import babel from 'rollup-plugin-babel'
+import babel from '@rollup/plugin-babel'
+import resolve from '@rollup/plugin-node-resolve'
 import builtins from 'rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
-import resolve from 'rollup-plugin-node-resolve'
 import uglify from 'rollup-plugin-uglify-es'
 import progress from 'rollup-plugin-progress'
 

@@ -21,9 +21,12 @@ class Parent extends React.Component {
     return (
       <div>
         {this.state.test ? (
-           <IdleTimer onIdle={this.onIdle} ref={ref => {
-                                                this.idleTimer = ref}} {...this.props} />
-           ) : <div />}
+          <IdleTimer
+            onIdle={this.onIdle} ref={ref => {
+              this.idleTimer = ref
+            }} {...this.props}
+          />
+        ) : <div />}
       </div>
     )
   }
@@ -330,7 +333,7 @@ describe('IdleTimer', () => {
       }
       expect(errorMessage).toBe('onAction can either be throttled or debounced (not both)')
       console.error.mockRestore()
-        done()
+      done()
     })
 
     it('Should unbind all events on idle when stopOnIdle is set', done => {
