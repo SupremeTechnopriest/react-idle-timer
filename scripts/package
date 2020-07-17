@@ -21,7 +21,7 @@ const question = async function () {
     return console.log('❌  Package not created. Semver not selected.')
   }
 
-  const file = execFile(join('scripts', 'publish'), [ '' ], {
+  const file = execFile(join('scripts', 'publish'), [''], {
     stdio: 'inherit',
     env: Object.assign(process.env, {
       SEMVER: semver

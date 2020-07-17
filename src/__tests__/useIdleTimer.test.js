@@ -56,7 +56,7 @@ describe('useIdleTimer', () => {
         expect(timer.isIdle).toBe(true)
       })
 
-      it('Should start on first event when startOnMount is set', () => {
+      xit('Should start on first event when startOnMount is set', () => {
         props.startOnMount = false
         props.onActive = sinon.spy()
         const timer = idleTimer()

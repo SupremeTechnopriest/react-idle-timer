@@ -13,9 +13,10 @@
     "fix": "standard --fix",
     "test": "npm run lint && jest",
     "docs": "./scripts/docs",
-    "prepackage": "yarn clean && yarn test && yarn build && yarn docs",
+    "prepackage": "npm run clean && npm run test && npm run build && npm run docs",
     "package": "./scripts/package",
-    "example": "./scripts/example"
+    "example-component": "./scripts/example-component",
+    "example-hook": "./scripts/example-hook"
   },
   "keywords": [
     "react",

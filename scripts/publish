@@ -2,7 +2,7 @@
 
 if [ -z "$(git status --porcelain)" ]; then
   # Working directory clean
-  yarn publish --new-version $SEMVER
+  npm run publish --new-version $SEMVER
   git push origin master --tags
 else
   # Uncommitted changes
@@ -13,7 +13,7 @@ else
   git commit -m "🏗 preparing package publish"
 
   # Bump version and publish
-  yarn publish --new-version $SEMVER
+  npm run publish --new-version $SEMVER
   git push origin master --tags
 
   printf "✅  Package published"

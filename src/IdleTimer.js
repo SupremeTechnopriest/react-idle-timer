@@ -294,10 +294,10 @@ export default class IdleTimer extends Component {
       const { onActive, onIdle, stopOnIdle } = this.props
       const { idle } = this.state
       if (!idle) {
-        if (!stopOnIdle) {
+        if (stopOnIdle) {
           this._bindEvents()
-          onActive(e)
         }
+        onActive(e)
       } else {
         if (stopOnIdle) {
           // Clear any existing timeout
