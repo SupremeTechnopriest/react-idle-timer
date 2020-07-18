@@ -1,6 +1,6 @@
 {
   "name": "react-idle-timer",
-  "version": "4.2.12",
+  "version": "4.3.0",
   "description": "Activity detection for React.js",
   "main": "dist/index.min.js",
   "module": "dist/index.es.js",
@@ -8,14 +8,15 @@
   "scripts": {
     "build": "rollup -c && cp src/index.d.ts dist/index.d.ts",
     "watch": "rollup -c -w",
-    "clean": "rimraf dist example/src/dist docs coverage",
+    "clean": "rimraf dist coverage",
     "lint": "standard lint",
     "fix": "standard --fix",
-    "test": "yarn lint && jest",
-    "docs": "./scripts/docs",
-    "prepackage": "yarn clean && yarn test && yarn build && yarn docs",
+    "test": "npm run lint && jest",
+    "prepackage": "npm run clean && npm run test && npm run build",
     "package": "./scripts/package",
-    "example": "./scripts/example"
+    "example-install": "cd examples/component && npm i && cd ../hook && npm i",
+    "example-component": "cd examples/component && npm start",
+    "example-hook": "cd examples/hook && npm start"
   },
   "keywords": [
     "react",
@@ -37,38 +38,35 @@
     "react-dom": "^16.x.x"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.0",
-    "@babel/core": "^7.5.0",
-    "@babel/plugin-proposal-class-properties": "^7.5.0",
-    "@babel/preset-env": "^7.5.0",
-    "@babel/preset-react": "^7.0.0",
-    "babel-eslint": "^10.0.2",
-    "babel-jest": "^24.8.0",
-    "date-fns": "^1.30.1",
-    "docco": "^0.8.0",
-    "documentation": "^11.0.1",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
-    "jest": "^24.8.0",
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@testing-library/react-hooks": "^3.3.0",
+    "babel-jest": "^26.1.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "jest": "^26.1.0",
+    "jest-esm-transformer": "^1.0.0",
     "prompt-list": "^3.2.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "rimraf": "^2.6.3",
-    "rollup": "^1.16.6",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-globals": "^1.4.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-progress": "^1.1.1",
-    "rollup-plugin-uglify-es": "0.0.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.21.0",
+    "rollup-plugin-terser": "^6.1.0",
     "simulant": "^0.2.2",
-    "sinon": "^7.3.2",
-    "standard": "^12.0.1"
+    "sinon": "^9.0.2",
+    "standard": "^14.3.4"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
   },
   "jest": {
     "testPathIgnorePatterns": [
-      "/example/"
+      "/examples/"
     ],
     "setupFiles": [
       "./test.setup.js"
@@ -76,7 +74,6 @@
     "collectCoverage": true
   },
   "standard": {
-    "parser": "babel-eslint",
     "globals": [
       "beforeEach",
       "describe",

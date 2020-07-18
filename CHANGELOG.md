@@ -1,3 +1,8 @@
+### 4.3.0
+- Added `useIdleTimer` hook implementation.
+- Added `eventsThrottle` to reduce cpu using on events that can spam the event handler. Defaults to 200ms.
+- Updated all dependencies, added new examples and cleaned up build chain.
+
 ### 4.2.12
 - Added `visibilitychange` event to default events. (see #98)
 

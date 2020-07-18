@@ -1,4 +1,4 @@
-# React Idle Timer
+# ⏱ React Idle Timer
 
 ![npm](https://img.shields.io/npm/v/react-idle-timer.svg)
 ![npm](https://img.shields.io/npm/dt/react-idle-timer.svg)
@@ -9,39 +9,49 @@
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
 ⚡️ **Support for React 16**<br/>
-🚀 **Support for Isomorphic React**
+🚀 **Support for Isomorphic React**<br/>
+🎣 **Hook Implementation**
 
 ## Latest News
 
-#### Version `4.2.0` brings typescript support and dynamic event binding to `IdleTimer`:
+#### Version `4.3.0` adds a new hook implementation and some minor performance improvements:
 
-☝️ Events will now dynamically unbind when they are not needed (`pause()`, `stopOnIdle`) and bound when they are needed (`resume()`, `reset()`, `startOnMount`). If `onAction` is set, events will never be unbound.
+☝️ The long awaited hook implementation is here! It takes the same properties and returns the same API as the component implementation. See [here](https://github.com/SupremeTechnopriest/react-idle-timer#hook-usage) for usage or check out the new [example](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/hook).
 
-✌️ Added a typescript type definition file that will be maintained alongside this library. It requires that you have the react type definitions installed.
+✌️ Added a new property called `eventsThrottle`. This will throttle the event handler to help decrease cpu usage on certain events (looking at you `mousemove`).  It defaults to 200ms, but can be set however you see fit. To disable this feature, set it to `0`.
 
 >  For the full patch notes please refer to the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md)
 
 ## Installation
-`yarn add react-idle-timer`
-or
-`npm install react-idle-timer --save`
+```
+yarn add react-idle-timer
+``` 
+or 
+```
+npm install react-idle-timer --save
+```
 
-## Usage
+## Examples
+You can install all the dependencies for the examples by running:
+```
+npm run example-install
+```
 
-> Run `yarn example` to build and run the example `example`. The example is a [create-react-app](https://github.com/facebook/create-react-app) project. IdleTimer is implemented in the [App Component](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/example/src/App.js).
+## Component Usage
+
+> Run `npm run example-component` to build and run the component example. The example is a [create-react-app](https://github.com/facebook/create-react-app) project. IdleTimer is implemented in the [App Component](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/component/src/App.js).
 
 ```javascript
 import React, { Component } from 'react'
 import IdleTimer from 'react-idle-timer'
-import App from './App'
 
 export default class YourApp extends Component {
   constructor(props) {
     super(props)
     this.idleTimer = null
-    this.onAction = this._onAction.bind(this)
-    this.onActive = this._onActive.bind(this)
-    this.onIdle = this._onIdle.bind(this)
+    this.handleOnAction = this.handleOnnAction.bind(this)
+    this.handleOnActive = this.handleOnnActive.bind(this)
+    this.handleOnIdle = this.handleOnnIdle.bind(this)
   }
 
   render() {
@@ -49,30 +59,70 @@ export default class YourApp extends Component {
       <div>
         <IdleTimer
           ref={ref => { this.idleTimer = ref }}
-          element={document}
-		  onActive={this.onActive}
-          onIdle={this.onIdle}
-          onAction={this.onAction}
-		  debounce={250}
-          timeout={1000 * 60 * 15} />
-		{/* your app here */}
+          timeout={1000 * 60 * 15}
+          onActive={this.handleOnActive}
+          onIdle={this.handleOnIdle}
+          onAction={this.handleOnAction}
+          debounce={250}
+        />
+        {/* your app here */}
       </div>
     )
   }
 
-  _onAction(e) {
-    console.log('user did something', e)
+  handleOnAction (event) {
+    console.log('user did something', event)
   }
 
-  _onActive(e) {
-    console.log('user is active', e)
+  handleOnActive (event) {
+    console.log('user is active', event)
     console.log('time remaining', this.idleTimer.getRemainingTime())
   }
 
-  _onIdle(e) {
-    console.log('user is idle', e)
+  handleOnIdle (event) {
+    console.log('user is idle', event)
     console.log('last active', this.idleTimer.getLastActiveTime())
   }
+}
+```
+
+## Hook Usage
+
+> Run `npm run example-hook` to build and run the hook example. The example is a [create-react-app](https://github.com/facebook/create-react-app) project. IdleTimer is implemented in the [App Component](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/hook/src/App.js).
+
+```javascript
+import React from 'react'
+import { useIdleTimer } from 'react-idle-timer'
+import App from './App'
+
+export default function (props) {
+  const handleOnIdle = event => {
+    console.log('user is idle', event)
+    console.log('last active', getLastActiveTime())
+  }
+
+  const handleOnActive = event => {
+    console.log('user is active', event)
+    console.log('time remaining', getRemainingTime())
+  }
+
+  const handleOnAction = (e) => {
+    console.log('user did something', e)
+  }
+
+  const { getRemainingTime, getLastActiveTime } = useIdleTimer({
+    timeout: 1000 * 60 * 15,
+    onIdle: handleOnIdle,
+    onActive: handleOnActive,
+    onAction: handleOnAction,
+    debounce: 500
+  })
+
+  return (
+    <div>
+      {/* your app here */}
+    </div>
+  )
 }
 ```
 
@@ -80,17 +130,14 @@ export default class YourApp extends Component {
 
 There are a few breaking changes in version 4:
 
-- Although still capable of rendering children, as of version 4 we dont pass children to `IdleTimer`. Unless you are really good with `shouldComponentUpdate` you should avoid using `IdleTimer` as a wrapper component.
+- Although still capable of rendering children, as of version 4 we don't pass children to `IdleTimer`. Unless you are really good with `shouldComponentUpdate` you should avoid using `IdleTimer` as a wrapper component.
 - The property `startOnLoad` has been renamed to `startOnMount` in order to make more sense in a React context.
 - The property `activeAction` has been renamed to `onActive`.
 - The property `idleAction` has been renamed to `onIdle`.
 
 ## Documentation
 
-> To build the source code generated html docs run `yarn docs` and open `docs/index.html` in any browser.  A markdown version is available [here](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/DOCS.md).
-
 ### Default Events
-These events are bound by default:
 - mousemove
 - keydown
 - wheel
@@ -105,15 +152,16 @@ These events are bound by default:
 
 ### Props
 - **timeout** {*Number*} - Idle timeout in milliseconds.
-- **events** {*Array*} - Events to bind. See [default events](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/src/index.js#L36-L47) for list of defaults.
+- **events** {*Array*} - Events to bind. See [default events](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/src/utils.js#L22-L34) for list of defaults.
 - **onIdle** {*Function*} - Function to call when user is now idle.
 - **onActive** {*Function*} - Function to call when user is no longer idle.
 - **onAction** {*Function*} - Function to call on user action.
-- **debounce** {Number} - Debounce the `onAction` function with delay in milliseconds.  Defaults to `0`. Cannot be set if `throttle` is set.
-- **throttle** {Number} - Throttle the `onAction` function with delay in milliseconds. Defaults to `0`. Cannot be set if `debounce` is set.
+- **debounce** {*Number*} - Debounce the `onAction` function with delay in milliseconds.  Defaults to `0`. Cannot be set if `throttle` is set.
+- **throttle** {*Number*} - Throttle the `onAction` function with delay in milliseconds. Defaults to `0`. Cannot be set if `debounce` is set.
+- **eventsThrottle** {*Number*} - Throttle the event handler. Helps to reduce cpu usage on repeated events (`mousemove`). Defaults to `200`.
 - **element** {*Object*} - Defaults to document, may pass a ref to another element.
 - **startOnMount** {*Boolean*} - Start the timer when the component mounts.  Defaults to `true`. Set to `false` to wait for user action before starting timer.
-- **stopOnIdle** {Boolean} - Stop the timer when user goes idle. Defaults to `false`.  If set to true you will need to manually call `reset()` to restart the timer.
+- **stopOnIdle** {*Boolean*} - Stop the timer when user goes idle. Defaults to `false`.  If set to true you will need to manually call `reset()` to restart the timer.
 - **passive** {*Boolean*} - Bind events in [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to  `true`.
 - **capture** {*Boolean*} - Bind events in [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to  `true`.
 

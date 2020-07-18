@@ -1,7 +1,97 @@
 /// <reference types="react"/>
 
+import IdleTimer from "./IdleTimer";
+
 declare module "react-idle-timer" {
   import * as React from "react";
+
+  enum EVENTS {
+    'abort',
+    'afterprint',
+    'animationend',
+    'animationiteration',
+    'animationstart',
+    'beforeprint',
+    'beforeunload',
+    'blur',
+    'canplay',
+    'canplaythrough',
+    'change',
+    'click',
+    'contextmenu',
+    'copy',
+    'cut',
+    'dblclick',
+    'drag',
+    'dragend',
+    'dragenter',
+    'dragleave',
+    'dragover',
+    'dragstart',
+    'drop',
+    'durationchange',
+    'ended',
+    'error',
+    'focus',
+    'focusin',
+    'focusout',
+    'fullscreenchange',
+    'fullscreenerror',
+    'hashchange',
+    'input',
+    'invalid',
+    'keydown',
+    'keypress',
+    'keyup',
+    'load',
+    'loadeddata',
+    'loadedmetadata',
+    'loadstart',
+    'message',
+    'mousedown',
+    'mouseenter',
+    'mouseleave',
+    'mousemove',
+    'mouseover',
+    'mouseout',
+    'mouseup',
+    'mousewheel',
+    'offline',
+    'online',
+    'open',
+    'pagehide',
+    'pageshow',
+    'paste',
+    'pause',
+    'play',
+    'playing',
+    'popstate',
+    'progress',
+    'ratechange',
+    'resize',
+    'reset',
+    'scroll',
+    'search',
+    'seeked',
+    'seeking',
+    'select',
+    'show',
+    'stalled',
+    'storage',
+    'submit',
+    'suspend',
+    'timeupdate',
+    'toggle',
+    'touchcancel',
+    'touchend',
+    'touchmove',
+    'touchstart',
+    'transitionend',
+    'unload',
+    'volumechange',
+    'waiting',
+    'wheel'
+  }
 
   class IdleTimer extends React.Component<IdleTimerProps> {
     /**
@@ -49,7 +139,7 @@ declare module "react-idle-timer" {
     /**
      * DOM events to listen to default: see [default events](https://github.com/SupremeTechnopriest/react-idle-timer#default-events)
      */
-    events?: string[];
+    events?: EVENTS[];
 
     /**
      * Function to call when user is idle
@@ -77,6 +167,12 @@ declare module "react-idle-timer" {
     throttle?: number;
 
     /**
+     * Throttle the activity events. Useful if you are listening to mouse events. 
+     * Helps to cut down on cpu usage. Default: 200
+     */
+    eventsThrottle?: number;
+
+    /**
      * Element reference to bind activity listeners to default: document
      */
     element?: Node;
@@ -100,8 +196,45 @@ declare module "react-idle-timer" {
      * Capture events default: true
      */
     capture?: boolean;
-
   }
 
+  interface IdleTimerAPI {
+    /**
+     * Restore initial state and restart timer
+     */
+    reset(): void;
+
+    /**
+     * Store remaining time and stop timer
+     */
+    pause(): void;
+
+    /**
+     * Resumes a paused timer
+     */
+    resume(): void;
+
+    /**
+     * Time remaining before idle (number of ms)
+     */
+    getRemainingTime(): number;
+
+    /**
+     * How much time has elapsed (timestamp)
+     */
+    getElapsedTime(): number;
+
+    /**
+     * Last time the user was active
+     */
+    getLastActiveTime(): number;
+
+    /**
+     * Returns wether or not the user is idle
+     */
+    isIdle(): boolean;
+  }
+
+  export function useIdleTimer(props: IdleTimerProps): IdleTimerAPI;
   export default IdleTimer;
 }

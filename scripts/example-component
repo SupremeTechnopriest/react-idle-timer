@@ -1,0 +1,5 @@
+#!/bin/bash
+npm run build
+cp -r dist examples/component/src
+printf '%s\n%s\n' "/* eslint-disable */" "$(cat examples/component/src/dist/index.es.js)" > examples/component/src/dist/index.es.js
+cd examples/component && npm start

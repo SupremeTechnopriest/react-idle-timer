@@ -1,0 +1,5 @@
+#!/bin/bash
+npm run build
+cp -r dist examples/hook/src
+printf '%s\n%s\n' "/* eslint-disable */" "$(cat examples/hook/src/dist/index.es.js)" > examples/hook/src/dist/index.es.js
+cd examples/hook && npm start
