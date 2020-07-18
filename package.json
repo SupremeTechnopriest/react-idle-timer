@@ -21,10 +21,14 @@
   "keywords": [
     "react",
     "idle",
-    "idletimer",
+    "idle timer",
     "timer",
     "activity",
-    "active"
+    "active",
+    "timeout",
+    "session",
+    "session expiration",
+    "session timeout"
   ],
   "author": "Randy Lebeau <randylebeau@gmail.com> (https://github.com/supremetechnopriest)",
   "license": "MIT",
