@@ -1,9 +1,5 @@
-import babel from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
-import builtins from 'rollup-plugin-node-builtins'
-import globals from 'rollup-plugin-node-globals'
-import uglify from 'rollup-plugin-uglify-es'
-import progress from 'rollup-plugin-progress'
+import { terser } from 'rollup-plugin-terser'
 
 const FILE = 'dist/index'
 const NAME = 'IdleTimer'
@@ -14,7 +10,8 @@ export default {
     name: NAME,
     file: `${FILE}.min.js`,
     sourcemap: true,
-    format: 'cjs'
+    format: 'cjs',
+    exports: 'named'
   }, {
     name: NAME,
     file: `${FILE}.es.js`,
@@ -27,18 +24,7 @@ export default {
     'prop-types'
   ],
   plugins: [
-    babel({
-      exclude: [ 'node_modules/**' ]
-    }),
-    resolve({
-      main: true,
-      module: true,
-      preferBuiltins: true,
-      browser: true
-    }),
-    builtins(),
-    globals(),
-    uglify(),
-    progress()
+    resolve(),
+    terser()
   ]
 }

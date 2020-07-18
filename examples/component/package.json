@@ -1,25 +1,31 @@
 {
-  "name": "examples",
+  "name": "component",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "date-fns": "^2.15.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
-    "react-idle-timer": "file:../.."
+    "react-idle-timer": "file:../../",
+    "react-scripts": "3.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "build": "react-scripts build"
   },
-  "standard": {
-    "globals": [
-      "describe",
-      "it",
-      "xit",
-      "expect"
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ]
   }
 }

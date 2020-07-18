@@ -19,130 +19,7 @@ import { IS_BROWSER, DEFAULT_ELEMENT, DEFAULT_EVENTS, debounced, throttled } fro
  * @class IdleTimer
  * @private
  */
-export default class IdleTimer extends Component {
-  /**
-   * Type checks for every property
-   * @type {Object}
-   * @private
-   */
-  static propTypes = {
-    /**
-     * Activity Timeout in milliseconds
-     * default: 1200000
-     * @type {Number}
-     */
-    timeout: PropTypes.number,
-    /**
-     * DOM events to listen to
-     * default: see [default events](https://github.com/SupremeTechnopriest/react-idle-timer#default-events)
-     * @type {Array}
-     */
-    events: PropTypes.arrayOf(PropTypes.string),
-    /**
-     * Function to call when user is idle
-     * default: () => {}
-     * @type {Function}
-     */
-    onIdle: PropTypes.func,
-    /**
-     * Function to call when user becomes active
-     * default: () => {}
-     * @type {Function}
-     */
-    onActive: PropTypes.func,
-    /**
-     * Function to call on user actions
-     * default: () => {}
-     * @type {Function}
-     */
-    onAction: PropTypes.func,
-    /**
-     * Debounce the onAction function by setting delay in milliseconds
-     * default: 0
-     * @type {Number}
-     */
-    debounce: PropTypes.number,
-    /**
-     * Throttle the onAction function by setting delay in milliseconds
-     * default: 0
-     * @type {Number}
-     */
-    throttle: PropTypes.number,
-    /**
-     * Element reference to bind activity listeners to
-     * default: document
-     * @type {Object}
-     */
-    element: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
-    /**
-     * Start the timer on mount
-     * default: true
-     * @type {Boolean}
-     */
-    startOnMount: PropTypes.bool,
-    /**
-     * Once the user goes idle the IdleTimer will not
-     * reset on user input instead, reset() must be
-     * called manually to restart the timer
-     * default: false
-     * @type {Boolean}
-     */
-    stopOnIdle: PropTypes.bool,
-    /**
-     * Bind events passively
-     * default: true
-     * @type {Boolean}
-     */
-    passive: PropTypes.bool,
-    /**
-     * Capture events
-     * default: true
-     * @type {Boolean}
-     */
-    capture: PropTypes.bool
-  }
-
-  /**
-   * Sets default property values
-   * @type {Object}
-   * @private
-   */
-  static defaultProps = {
-    timeout: 1000 * 60 * 20,
-    element: DEFAULT_ELEMENT,
-    events: DEFAULT_EVENTS,
-    onIdle: () => {},
-    onActive: () => {},
-    onAction: () => {},
-    debounce: 0,
-    throttle: 0,
-    startOnMount: true,
-    stopOnIdle: false,
-    capture: true,
-    passive: true
-  }
-
-  /**
-   * Sets initial component state
-   * @type {Object}
-   * @private
-   */
-  state = {
-    idle: false,
-    oldDate: +new Date(),
-    lastActive: +new Date(),
-    remaining: null,
-    pageX: null,
-    pageY: null
-  }
-
-  /**
-   * The timer instance
-   * @type {Timeout}
-   * @private
-   */
-  tId = null
-
+class IdleTimer extends Component {
   /**
    * Creates an instance of IdleTimer
    * bind all of our internal events here
@@ -154,19 +31,54 @@ export default class IdleTimer extends Component {
   constructor (props) {
     super(props)
 
-    // Debounce and throttle cant both be set
+    /**
+     * Sets initial component state
+     * @type {Object}
+     * @private
+     */
+    this.state = {
+      idle: false,
+      oldDate: +new Date(),
+      lastActive: +new Date(),
+      remaining: null,
+      pageX: null,
+      pageY: null
+    }
+
+    /**
+     * The timer instance
+     * @type {Timeout}
+     * @private
+     */
+    this.tId = null
+
+    /**
+     * Wether or not events are bound
+     * @type {boolean}
+     * @private
+     */
+    this.eventsBound = false
+
+    // Debounce and throttle can't both be set
     if (props.debounce > 0 && props.throttle > 0) {
       throw new Error('onAction can either be throttled or debounced (not both)')
     }
 
     // Create debounced action if applicable
     if (props.debounce > 0) {
-      this.debouncedAction = debounced(props.onAction, props.debounce)
+      props.onAction = debounced(props.onAction, props.debounce)
     }
 
     // Create throttled action if applicable
     if (props.throttle > 0) {
-      this.throttledAction = throttled(props.onAction, props.throttle)
+      props.onAction = throttled(props.onAction, props.throttle)
+    }
+
+    // Create a throttle event handler if applicable
+    if (props.eventsThrottle > 0) {
+      this._handleEvent = throttled(this._handleEvent.bind(this), props.eventThrottle)
+    } else {
+      this._handleEvent = this._handleEvent.bind(this)
     }
 
     // If startOnMount is set, idle state defaults to true
@@ -175,14 +87,14 @@ export default class IdleTimer extends Component {
     }
 
     // Bind all events to component scope, built for speed 🚀
-    this.toggleIdleState = this._toggleIdleState.bind(this)
+    this._toggleIdleState = this._toggleIdleState.bind(this)
     this.reset = this.reset.bind(this)
     this.pause = this.pause.bind(this)
     this.resume = this.resume.bind(this)
     this.getRemainingTime = this.getRemainingTime.bind(this)
     this.getElapsedTime = this.getElapsedTime.bind(this)
     this.getLastActiveTime = this.getLastActiveTime.bind(this)
-    this.isIdle = this._isIdle.bind(this)
+    this.isIdle = this.isIdle.bind(this)
   }
 
   /**
@@ -204,11 +116,15 @@ export default class IdleTimer extends Component {
   componentDidUpdate (prevProps) {
     // Update debounce function
     if (prevProps.debounce !== this.props.debounce) {
-      this.debouncedAction = debounced(this.props.onAction, this.props.debounce)
+      this.props.onAction = debounced(this.props.onAction, this.props.debounce)
     }
     // Update throttle function
     if (prevProps.throttle !== this.props.throttle) {
-      this.throttledAction = throttled(this.props.onAction, this.props.throttle)
+      this.props.onAction = throttled(this.props.onAction, this.props.throttle)
+    }
+    // Update event throttle function
+    if (prevProps.eventsThrottle !== this.props.eventsThrottle) {
+      this._handleEvent = throttled(this._handleEvent, this.props.eventsThrottle)
     }
   }
 
@@ -239,21 +155,20 @@ export default class IdleTimer extends Component {
    * @private
    */
   _bindEvents () {
-    // Dont bind events if
+    // Don't bind events if
     // we are not in a browser
     if (!IS_BROWSER) return
     // Otherwise we bind all the events
     // to the supplied element
-    const { eventsBound } = this.state
     const { element, events, passive, capture } = this.props
-    if (!eventsBound) {
+    if (!this.eventsBound) {
       events.forEach(e => {
         element.addEventListener(e, this._handleEvent, {
           capture,
           passive
         })
       })
-      this.setState({ eventsBound: true })
+      this.eventsBound = true
     }
   }
 
@@ -263,19 +178,18 @@ export default class IdleTimer extends Component {
    */
   _unbindEvents (force = false) {
     // If we are not in a browser
-    // we dont need to unbind events
+    // we don't need to unbind events
     if (!IS_BROWSER) return
     // Unbind all events
     const { element, events, passive, capture } = this.props
-    const { eventsBound } = this.state
-    if (eventsBound || force) {
+    if (this.eventsBound || force) {
       events.forEach(e => {
         element.removeEventListener(e, this._handleEvent, {
           capture,
           passive
         })
       })
-      this.setState({ eventsBound: false })
+      this.eventsBound = false
     }
   }
 
@@ -293,12 +207,7 @@ export default class IdleTimer extends Component {
     }), () => {
       const { onActive, onIdle, stopOnIdle } = this.props
       const { idle } = this.state
-      if (!idle) {
-        if (stopOnIdle) {
-          this._bindEvents()
-        }
-        onActive(e)
-      } else {
+      if (idle) {
         if (stopOnIdle) {
           // Clear any existing timeout
           clearTimeout(this.tId)
@@ -307,6 +216,11 @@ export default class IdleTimer extends Component {
           this._unbindEvents()
         }
         onIdle(e)
+      } else {
+        if (!stopOnIdle) {
+          this._bindEvents()
+          onActive(e)
+        }
       }
     })
   }
@@ -316,38 +230,28 @@ export default class IdleTimer extends Component {
    * @param  {Object} e event object
    * @private
    */
-  _handleEvent = (e) => {
+  _handleEvent (e) {
     const { remaining, pageX, pageY, idle } = this.state
-    const { timeout, onAction, debounce, throttle, stopOnIdle } = this.props
+    const { timeout, onAction, stopOnIdle } = this.props
 
-    // Fire debounced, throttled or raw onAction callback with event
-    if (debounce > 0) {
-      this.debouncedAction(e)
-    } else if (throttle > 0) {
-      this.throttledAction(e)
-    } else {
-      onAction(e)
-    }
+    // Fire onAction event
+    onAction(e)
 
     // Already active, ignore events
     if (remaining) return
 
     // Mousemove event
     if (e.type === 'mousemove') {
-      // If coord are same, it didn't move
+      // If coords are same, it didn't move
       if (e.pageX === pageX && e.pageY === pageY) {
         return
       }
-      // If coord don't exist how could it move
+      // If coords don't exist how could it move
       if (typeof e.pageX === 'undefined' && typeof e.pageY === 'undefined') {
         return
       }
       // Under 200 ms is hard to do
       // continuous activity will bypass this
-      //
-      // TODO: Cant seem to simulate this event with pageX and pageY for testing
-      // making this block of code unreachable by test suite
-      // opened an issue here https://github.com/Rich-Harris/simulant/issues/19
       const elapsed = this.getElapsedTime()
       if (elapsed < 200) {
         return
@@ -359,18 +263,18 @@ export default class IdleTimer extends Component {
     this.tId = null
 
     // Determine last time User was active, as can't rely on setTimeout ticking at the correct interval
-    const elapsedTimeSinceLastActive = new Date() - this.getLastActiveTime()
+    const elapsedTimeSinceLastActive = +new Date() - this.getLastActiveTime()
 
     // If the user is idle or last active time is more than timeout, flip the idle state
     if ((idle && !stopOnIdle) || (!idle && elapsedTimeSinceLastActive > timeout)) {
-      this.toggleIdleState(e)
+      this._toggleIdleState(e)
     }
 
     // Store when the user was last active
     // and update the mouse coordinates
     this.setState({
-      lastActive: +new Date(), // store when user was last active
-      pageX: e.pageX, // update mouse coord
+      lastActive: +new Date(),
+      pageX: e.pageX,
       pageY: e.pageY
     })
 
@@ -378,10 +282,10 @@ export default class IdleTimer extends Component {
     // set a new timeout
     if (idle) {
       if (!stopOnIdle) {
-        this.tId = setTimeout(this.toggleIdleState, timeout)
+        this.tId = setTimeout(this._toggleIdleState, timeout)
       }
     } else {
-      this.tId = setTimeout(this.toggleIdleState, timeout)
+      this.tId = setTimeout(this._toggleIdleState, timeout)
     }
   }
 
@@ -407,7 +311,7 @@ export default class IdleTimer extends Component {
 
     // Set new timeout
     const { timeout } = this.props
-    this.tId = setTimeout(this.toggleIdleState, timeout)
+    this.tId = setTimeout(this._toggleIdleState, timeout)
   }
 
   /**
@@ -417,9 +321,7 @@ export default class IdleTimer extends Component {
   pause () {
     // Timer is already paused
     const { remaining } = this.state
-    if (remaining !== null) {
-      return
-    }
+    if (remaining !== null) return
 
     // Unbind events
     this._unbindEvents()
@@ -441,9 +343,7 @@ export default class IdleTimer extends Component {
   resume () {
     // Timer is not paused
     const { remaining, idle } = this.state
-    if (remaining === null) {
-      return
-    }
+    if (remaining === null) return
 
     // Bind events
     this._bindEvents()
@@ -451,9 +351,10 @@ export default class IdleTimer extends Component {
     // Start timer and clear remaining
     // if we are in the idle state
     if (!idle) {
-      this.setState({ remaining: null, lastActive: +new Date() })
       // Set a new timeout
-      this.tId = setTimeout(this.toggleIdleState, remaining)
+      this.tId = setTimeout(this._toggleIdleState, remaining)
+      // Set new state
+      this.setState({ remaining: null, lastActive: +new Date() })
     }
   }
 
@@ -501,8 +402,119 @@ export default class IdleTimer extends Component {
    * @name isIdle
    * @return {Boolean}
    */
-  _isIdle () {
+  isIdle () {
     const { idle } = this.state
     return idle
   }
 }
+
+/**
+ * Type checks for every property
+ * @type {Object}
+ * @private
+ */
+IdleTimer.propTypes = {
+  /**
+   * Activity Timeout in milliseconds
+   * default: 1200000
+   * @type {Number}
+   */
+  timeout: PropTypes.number,
+  /**
+   * DOM events to listen to
+   * default: see [default events](https://github.com/SupremeTechnopriest/react-idle-timer#default-events)
+   * @type {Array}
+   */
+  events: PropTypes.arrayOf(PropTypes.string),
+  /**
+   * Function to call when user is idle
+   * default: () => {}
+   * @type {Function}
+   */
+  onIdle: PropTypes.func,
+  /**
+   * Function to call when user becomes active
+   * default: () => {}
+   * @type {Function}
+   */
+  onActive: PropTypes.func,
+  /**
+   * Function to call on user actions
+   * default: () => {}
+   * @type {Function}
+   */
+  onAction: PropTypes.func,
+  /**
+   * Debounce the onAction function by setting delay in milliseconds
+   * default: 0
+   * @type {Number}
+   */
+  debounce: PropTypes.number,
+  /**
+   * Throttle the onAction function by setting delay in milliseconds
+   * default: 0
+   * @type {Number}
+   */
+  throttle: PropTypes.number,
+  /**
+   * Throttle the event handler function by setting delay in milliseconds
+   * default: 0
+   * @type {Number}
+   */
+  eventsThrottle: PropTypes.number,
+  /**
+   * Element reference to bind activity listeners to
+   * default: document
+   * @type {Object}
+   */
+  element: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
+  /**
+   * Start the timer on mount
+   * default: true
+   * @type {Boolean}
+   */
+  startOnMount: PropTypes.bool,
+  /**
+   * Once the user goes idle the IdleTimer will not
+   * reset on user input instead, reset() must be
+   * called manually to restart the timer
+   * default: false
+   * @type {Boolean}
+   */
+  stopOnIdle: PropTypes.bool,
+  /**
+   * Bind events passively
+   * default: true
+   * @type {Boolean}
+   */
+  passive: PropTypes.bool,
+  /**
+   * Capture events
+   * default: true
+   * @type {Boolean}
+   */
+  capture: PropTypes.bool
+}
+
+/**
+ * Sets default property values
+ * @type {Object}
+ * @private
+ */
+IdleTimer.defaultProps = {
+  timeout: 1000 * 60 * 20,
+  element: DEFAULT_ELEMENT,
+  events: DEFAULT_EVENTS,
+  onIdle: () => { },
+  onActive: () => { },
+  onAction: () => { },
+  debounce: 0,
+  throttle: 0,
+  eventsThrottle: 0,
+  startOnMount: true,
+  stopOnIdle: false,
+  capture: true,
+  passive: true
+}
+
+export default IdleTimer
