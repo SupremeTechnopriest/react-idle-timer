@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { useIdleTimer } from 'react-idle-timer'
@@ -21,12 +22,10 @@ export default function App () {
     getElapsedTime
   } = useIdleTimer({
     timeout,
-    eventsThrottle: 500,
-    startOnLoad: true,
     onActive: handleOnActive,
     onIdle: handleOnIdle
   })
-  
+
   const handleReset = () => reset()
   const handlePause = () => pause()
   const handleResume = () => resume()
@@ -35,7 +34,7 @@ export default function App () {
     setRemaining(getRemainingTime())
     setLastActive(getLastActiveTime())
     setElapsed(getElapsedTime())
-  
+
     setInterval(() => {
       setRemaining(getRemainingTime())
       setLastActive(getLastActiveTime())

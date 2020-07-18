@@ -45,8 +45,6 @@ export default class App extends Component {
           onActive={this.handleOnActive}
           onIdle={this.handleOnIdle}
           timeout={timeout}
-          eventsThrottle={500}
-          startOnLoad
         />
         <div>
           <div>

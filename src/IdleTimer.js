@@ -66,17 +66,24 @@ class IdleTimer extends Component {
 
     // Create debounced action if applicable
     if (props.debounce > 0) {
-      props.onAction = debounced(props.onAction, props.debounce)
-    }
+      this._onAction = debounced(props.onAction, props.debounce)
 
     // Create throttled action if applicable
-    if (props.throttle > 0) {
-      props.onAction = throttled(props.onAction, props.throttle)
+    } else if (props.throttle > 0) {
+      this._onAction = throttled(props.onAction, props.throttle)
+
+    // Set custom onAction
+    } else if (props.onAction) {
+      this._onAction = props.onAction
+
+    // Set default onAction
+    } else {
+      this._onAction = () => {}
     }
 
     // Create a throttle event handler if applicable
     if (props.eventsThrottle > 0) {
-      this._handleEvent = throttled(this._handleEvent.bind(this), props.eventThrottle)
+      this._handleEvent = throttled(this._handleEvent.bind(this), props.eventsThrottle)
     } else {
       this._handleEvent = this._handleEvent.bind(this)
     }
@@ -116,11 +123,11 @@ class IdleTimer extends Component {
   componentDidUpdate (prevProps) {
     // Update debounce function
     if (prevProps.debounce !== this.props.debounce) {
-      this.props.onAction = debounced(this.props.onAction, this.props.debounce)
+      this._onAction = debounced(this._onAction, this.props.debounce)
     }
     // Update throttle function
     if (prevProps.throttle !== this.props.throttle) {
-      this.props.onAction = throttled(this.props.onAction, this.props.throttle)
+      this._onAction = throttled(this._onAction, this.props.throttle)
     }
     // Update event throttle function
     if (prevProps.eventsThrottle !== this.props.eventsThrottle) {
@@ -232,10 +239,10 @@ class IdleTimer extends Component {
    */
   _handleEvent (e) {
     const { remaining, pageX, pageY, idle } = this.state
-    const { timeout, onAction, stopOnIdle } = this.props
+    const { timeout, stopOnIdle } = this.props
 
     // Fire onAction event
-    onAction(e)
+    this._onAction(e)
 
     // Already active, ignore events
     if (remaining) return
@@ -458,7 +465,7 @@ IdleTimer.propTypes = {
   throttle: PropTypes.number,
   /**
    * Throttle the event handler function by setting delay in milliseconds
-   * default: 0
+   * default: 200
    * @type {Number}
    */
   eventsThrottle: PropTypes.number,
@@ -510,7 +517,7 @@ IdleTimer.defaultProps = {
   onAction: () => { },
   debounce: 0,
   throttle: 0,
-  eventsThrottle: 0,
+  eventsThrottle: 200,
   startOnMount: true,
   stopOnIdle: false,
   capture: true,

@@ -14,7 +14,7 @@ class Parent extends React.Component {
   constructor (props) {
     super(props)
     this.state = { test: true }
-    this.onIdle = this._onIdle.bind(this)
+    this.handleOnIdle = this.handleOnIdle.bind(this)
   }
 
   render () {
@@ -22,7 +22,7 @@ class Parent extends React.Component {
       <div>
         {this.state.test ? (
           <IdleTimer
-            onIdle={this.onIdle} ref={ref => {
+            onIdle={this.handleOnIdle} ref={ref => {
               this.idleTimer = ref
             }} {...this.props}
           />
@@ -31,7 +31,7 @@ class Parent extends React.Component {
     )
   }
 
-  _onIdle () {
+  handleOnIdle () {
     this.setState({ test: false })
   }
 }
@@ -65,6 +65,7 @@ describe('IdleTimer', () => {
       onAction: undefined,
       debounce: undefined,
       throttle: undefined,
+      eventsThrottle: undefined,
       startOnMount: undefined,
       stopOnIdle: undefined,
       capture: undefined,
@@ -77,8 +78,8 @@ describe('IdleTimer', () => {
   describe('lifecycle', () => {
     it('Should render its children', () => {
       children = <div>test</div>
-      const divs = idleTimer().find('div')
-      expect(divs.first().html()).toBe('<div>test</div>')
+      const div = idleTimer().find('div')
+      expect(div.first().html()).toBe('<div>test</div>')
     })
 
     it('Should unmount the component', () => {
@@ -93,7 +94,7 @@ describe('IdleTimer', () => {
       expect(parent.state('test')).toBe(true)
       setTimeout(() => {
         expect(parent.state('test')).toBe(false)
-        expect(parent.instance().onIdle).not.toThrow()
+        expect(parent.instance().handleOnIdle).not.toThrow()
         done()
       }, 500)
     })
@@ -200,55 +201,56 @@ describe('IdleTimer', () => {
         }, 500)
       }, 500)
     })
+  })
 
-    describe('events', () => {
-      it('Should set custom events', (done) => {
-        props.onActive = sinon.spy()
-        props.events = ['mousedown']
-        props.timeout = 200
-        idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          expect(props.onActive.callCount).toBe(1)
-          done()
-        }, 500)
-      })
+  describe('events', () => {
+    it('Should set custom events', (done) => {
+      props.onActive = sinon.spy()
+      props.events = ['mousedown']
+      props.timeout = 200
+      idleTimer()
+      setTimeout(() => {
+        simulant.fire(document, 'mousedown')
+        simulant.fire(document, 'keypress')
+        expect(props.onActive.callCount).toBe(1)
+        done()
+      }, 500)
+    })
 
-      // TODO: This test doesnt fully work yet because pageX and pageY
-      // are not set on the event handler. See issue https://github.com/Rich-Harris/simulant/issues/19
-      it('Should reject when mouse has not moved', () => {
-        const timer = idleTimer()
-        const tId = timer.instance().tId
-        simulant.fire(document, 'mousemove', {
-          pageX: 0,
-          pageY: 0
-        })
-        expect(timer.instance().tId).toBe(tId)
+    // TODO: This test doesn't fully work yet because pageX and pageY
+    // are not set on the event handler. See issue https://github.com/Rich-Harris/simulant/issues/19
+    it('Should reject when mouse has not moved', () => {
+      const timer = idleTimer()
+      const tId = timer.instance().tId
+      simulant.fire(document, 'mousemove', {
+        pageX: 0,
+        pageY: 0
       })
+      expect(timer.instance().tId).toBe(tId)
+    })
 
-      // TODO: This test doesnt fully work yet because pageX and pageY
-      // are not set on the event handler. See issue https://github.com/Rich-Harris/simulant/issues/19
-      it('Should reject when input data is undefined', () => {
-        const timer = idleTimer()
-        const tId = timer.instance().tId
-        simulant.fire(document, 'mousemove', {
-          pageX: undefined,
-          pageY: undefined
-        })
-        expect(timer.instance().tId).toBe(tId)
+    // TODO: This test doesn't fully work yet because pageX and pageY
+    // are not set on the event handler. See issue https://github.com/Rich-Harris/simulant/issues/19
+    it('Should reject when input data is undefined', () => {
+      const timer = idleTimer()
+      const tId = timer.instance().tId
+      simulant.fire(document, 'mousemove', {
+        pageX: undefined,
+        pageY: undefined
       })
+      expect(timer.instance().tId).toBe(tId)
+    })
 
-      // TODO: This test doesnt fully work yet because pageX and pageY
-      // are not set on the event handler. See issue https://github.com/Rich-Harris/simulant/issues/19
-      it('Should reject when event occurs within 200ms of start', () => {
-        const timer = idleTimer()
-        const tId = timer.instance().tId
-        simulant.fire(document, 'mousemove', {
-          pageX: 1,
-          pageY: 1
-        })
-        expect(timer.instance().tId).toBe(tId)
+    // TODO: This test doesn't fully work yet because pageX and pageY
+    // are not set on the event handler. See issue https://github.com/Rich-Harris/simulant/issues/19
+    it('Should reject when event occurs within 200ms of start', () => {
+      const timer = idleTimer()
+      const tId = timer.instance().tId
+      simulant.fire(document, 'mousemove', {
+        pageX: 1,
+        pageY: 1
       })
+      expect(timer.instance().tId).toBe(tId)
     })
   })
 
@@ -503,9 +505,9 @@ describe('IdleTimer', () => {
       })
 
       it('Should resume from paused time', done => {
+        props.timeout = 3000
         const timer = idleTimer()
         timer.instance().pause()
-        props.timeout = 3000
         const time = timer.instance().getRemainingTime()
         expect(timer.instance().tId).toBe(null)
         setTimeout(() => {

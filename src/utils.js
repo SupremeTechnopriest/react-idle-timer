@@ -41,6 +41,7 @@ export const DEFAULT_EVENTS = [
  * @param  {Function} fn   Function to debounce
  * @param  {Number} delay  How long to wait
  * @return {Function}      Executed Function
+ * @private
  **/
 export function debounced (fn, delay) {
   let timerId
@@ -62,6 +63,7 @@ export function debounced (fn, delay) {
  * @param  {Function} fn   Function to debounce
  * @param  {Number} delay  How long to wait
  * @return {Function}      Executed Function
+ * @private
  **/
 export function throttled (fn, delay) {
   let lastCall = 0

@@ -168,7 +168,7 @@ declare module "react-idle-timer" {
 
     /**
      * Throttle the activity events. Useful if you are listening to mouse events. 
-     * Helps to cut down on cpu usage. Default: 0
+     * Helps to cut down on cpu usage. Default: 200
      */
     eventsThrottle?: number;
 

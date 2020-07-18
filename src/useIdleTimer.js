@@ -28,14 +28,14 @@ function useIdleTimer ({
   onAction = () => {},
   debounce = 0,
   throttle = 0,
-  eventsThrottle = 0,
+  eventsThrottle = 200,
   startOnMount = true,
   stopOnIdle = false,
   capture = true,
   passive = true
 } = {}) {
   const eventsBound = useRef(false)
-  const idle = useRef(!startOnMount)
+  const idle = useRef(true)
   const oldDate = useRef(+new Date())
   const lastActive = useRef(+new Date())
   const remaining = useRef(null)
@@ -370,7 +370,7 @@ useIdleTimer.propTypes = {
   throttle: PropTypes.number,
   /**
    * Throttle the event handler function by setting delay in milliseconds
-   * default: 0
+   * default: 200
    * @type {Number}
    */
   eventsThrottle: PropTypes.number,
@@ -422,7 +422,7 @@ useIdleTimer.defaultProps = {
   onAction: () => { },
   debounce: 0,
   throttle: 0,
-  eventsThrottle: 0,
+  eventsThrottle: 200,
   startOnMount: true,
   stopOnIdle: false,
   capture: true,
