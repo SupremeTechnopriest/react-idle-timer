@@ -1,5 +1,7 @@
 /// <reference types="react"/>
 
+import IdleTimer from "./IdleTimer";
+
 declare module "react-idle-timer" {
   import * as React from "react";
 
@@ -196,5 +198,43 @@ declare module "react-idle-timer" {
     capture?: boolean;
   }
 
+  interface IdleTimerAPI {
+    /**
+     * Restore initial state and restart timer
+     */
+    reset(): void;
+
+    /**
+     * Store remaining time and stop timer
+     */
+    pause(): void;
+
+    /**
+     * Resumes a paused timer
+     */
+    resume(): void;
+
+    /**
+     * Time remaining before idle (number of ms)
+     */
+    getRemainingTime(): number;
+
+    /**
+     * How much time has elapsed (timestamp)
+     */
+    getElapsedTime(): number;
+
+    /**
+     * Last time the user was active
+     */
+    getLastActiveTime(): number;
+
+    /**
+     * Returns wether or not the user is idle
+     */
+    isIdle(): boolean;
+  }
+
+  export function useIdleTimer(props: IdleTimerProps): IdleTimerAPI;
   export default IdleTimer;
 }

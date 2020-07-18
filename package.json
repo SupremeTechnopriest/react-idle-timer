@@ -6,7 +6,7 @@
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c && cp src/IdleTimer.d.ts dist/IdleTimer.d.ts && cp src/useIdleTimer.d.ts dist/useIdleTimer.d.ts",
+    "build": "rollup -c && cp src/IdleTimer.d.ts dist/index.d.ts",
     "watch": "rollup -c -w",
     "clean": "rimraf dist example/src/dist docs coverage",
     "lint": "standard lint",
