@@ -35,7 +35,7 @@ function useIdleTimer ({
   passive = true
 } = {}) {
   const eventsBound = useRef(false)
-  const idle = useRef(startOnMount ? false : true)
+  const idle = useRef(!startOnMount)
   const oldDate = useRef(+new Date())
   const lastActive = useRef(+new Date())
   const remaining = useRef(null)
@@ -70,7 +70,7 @@ function useIdleTimer ({
 
   /**
    * Event handler
-   * @param {Event} e 
+   * @param {Event} e
    */
   let _handleEvent = e => {
     // Fire onAction event
@@ -106,7 +106,7 @@ function useIdleTimer ({
 
     // If the user is idle or last active time is more than timeout, flip the idle state
     if (
-      (idle.current && !stopOnIdle) || 
+      (idle.current && !stopOnIdle) ||
       (!idle.current && elapsedTimeSinceLastActive > timeout)
     ) {
       _toggleIdleState(e)
