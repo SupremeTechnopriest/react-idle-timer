@@ -16,9 +16,10 @@
 
 #### Version `4.3.0` adds a new hook implementation and some minor performance improvements:
 
-☝️ The long awaited hook implementation is here! It takes the same properties and returns the same API as the component implementation. See [here](https://github.com/SupremeTechnopriest/react-idle-timer#hook-usage) for usage or check out the new [example](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/hook).
+☝️ The hook implementation is here! It takes the same properties and returns the same API as the component implementation. See [here](https://github.com/SupremeTechnopriest/react-idle-timer#hook-usage) for usage or check out the new [example](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/hook). There are now TypeScript [examples](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples) as well.
 
 ✌️ Added a new property called `eventsThrottle`. This will throttle the event handler to help decrease cpu usage on certain events (looking at you `mousemove`).  It defaults to 200ms, but can be set however you see fit. To disable this feature, set it to `0`.
+
 
 >  For the full patch notes please refer to the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md)
 
@@ -32,7 +33,7 @@ npm install react-idle-timer --save
 ```
 
 ## Examples
-You can install all the dependencies for the examples by running:
+You can install the dependencies for all the examples by running:
 ```
 npm run example-install
 ```
