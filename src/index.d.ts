@@ -1,240 +1,236 @@
-/// <reference types="react"/>
+/// <reference types='react'/>
 
-import IdleTimer from "./IdleTimer";
+declare module 'react-idle-timer' {
+  import * as React from 'react'
 
-declare module "react-idle-timer" {
-  import * as React from "react";
-
-  enum EVENTS {
-    'abort',
-    'afterprint',
-    'animationend',
-    'animationiteration',
-    'animationstart',
-    'beforeprint',
-    'beforeunload',
-    'blur',
-    'canplay',
-    'canplaythrough',
-    'change',
-    'click',
-    'contextmenu',
-    'copy',
-    'cut',
-    'dblclick',
-    'drag',
-    'dragend',
-    'dragenter',
-    'dragleave',
-    'dragover',
-    'dragstart',
-    'drop',
-    'durationchange',
-    'ended',
-    'error',
-    'focus',
-    'focusin',
-    'focusout',
-    'fullscreenchange',
-    'fullscreenerror',
-    'hashchange',
-    'input',
-    'invalid',
-    'keydown',
-    'keypress',
-    'keyup',
-    'load',
-    'loadeddata',
-    'loadedmetadata',
-    'loadstart',
-    'message',
-    'mousedown',
-    'mouseenter',
-    'mouseleave',
-    'mousemove',
-    'mouseover',
-    'mouseout',
-    'mouseup',
-    'mousewheel',
-    'offline',
-    'online',
-    'open',
-    'pagehide',
-    'pageshow',
-    'paste',
-    'pause',
-    'play',
-    'playing',
-    'popstate',
-    'progress',
-    'ratechange',
-    'resize',
-    'reset',
-    'scroll',
-    'search',
-    'seeked',
-    'seeking',
-    'select',
-    'show',
-    'stalled',
-    'storage',
-    'submit',
-    'suspend',
-    'timeupdate',
-    'toggle',
-    'touchcancel',
-    'touchend',
-    'touchmove',
-    'touchstart',
-    'transitionend',
-    'unload',
-    'volumechange',
-    'waiting',
+  export type EVENTS =
+    'abort' |
+    'afterprint' |
+    'animationend' |
+    'animationiteration' |
+    'animationstart' |
+    'beforeprint' |
+    'beforeunload' |
+    'blur' |
+    'canplay' |
+    'canplaythrough' |
+    'change' |
+    'click' |
+    'contextmenu' |
+    'copy' |
+    'cut' |
+    'dblclick' |
+    'drag' |
+    'dragend' |
+    'dragenter' |
+    'dragleave' |
+    'dragover' |
+    'dragstart' |
+    'drop' |
+    'durationchange' |
+    'ended' |
+    'error' |
+    'focus' |
+    'focusin' |
+    'focusout' |
+    'fullscreenchange' |
+    'fullscreenerror' |
+    'hashchange' |
+    'input' |
+    'invalid' |
+    'keydown' |
+    'keypress' |
+    'keyup' |
+    'load' |
+    'loadeddata' |
+    'loadedmetadata' |
+    'loadstart' |
+    'message' |
+    'mousedown' |
+    'mouseenter' |
+    'mouseleave' |
+    'mousemove' |
+    'mouseover' |
+    'mouseout' |
+    'mouseup' |
+    'mousewheel' |
+    'offline' |
+    'online' |
+    'open' |
+    'pagehide' |
+    'pageshow' |
+    'paste' |
+    'pause' |
+    'play' |
+    'playing' |
+    'popstate' |
+    'progress' |
+    'ratechange' |
+    'resize' |
+    'reset' |
+    'scroll' |
+    'search' |
+    'seeked' |
+    'seeking' |
+    'select' |
+    'show' |
+    'stalled' |
+    'storage' |
+    'submit' |
+    'suspend' |
+    'timeupdate' |
+    'toggle' |
+    'touchcancel' |
+    'touchend' |
+    'touchmove' |
+    'touchstart' |
+    'transitionend' |
+    'unload' |
+    'volumechange' |
+    'waiting' |
     'wheel'
-  }
 
-  class IdleTimer extends React.Component<IdleTimerProps> {
+  export default class IdleTimer extends React.Component<IdleTimerProps> {
     /**
      * Restore initial state and restart timer
      */
-    reset(): void;
+    reset(): void
 
     /**
      * Store remaining time and stop timer
      */
-    pause(): void;
+    pause(): void
 
     /**
      * Resumes a paused timer
      */
-    resume(): void;
+    resume(): void
 
     /**
      * Time remaining before idle (number of ms)
      */
-    getRemainingTime(): number;
+    getRemainingTime(): number
 
     /**
      * How much time has elapsed (timestamp)
      */
-    getElapsedTime(): number;
+    getElapsedTime(): number
 
     /**
      * Last time the user was active
      */
-    getLastActiveTime(): number;
+    getLastActiveTime(): number
 
     /**
      * Returns wether or not the user is idle
      */
-    isIdle(): boolean;
+    isIdle(): boolean
   }
 
   interface IdleTimerProps {
     /**
      * Activity Timeout in milliseconds default: 1200000
      */
-    timeout?: number;
+    timeout?: number
 
     /**
      * DOM events to listen to default: see [default events](https://github.com/SupremeTechnopriest/react-idle-timer#default-events)
      */
-    events?: EVENTS[];
+    events?: EVENTS[]
 
     /**
      * Function to call when user is idle
      */
-    onIdle?: (e: Event) => void;
+    onIdle?: (e: Event) => void
 
     /**
      * Function to call when user becomes active
      */
-    onActive?: (e: Event) => void;
+    onActive?: (e: Event) => void
 
     /**
      * Function to call when user have an activity
      */
-    onAction?: (e: Event) => void;
+    onAction?: (e: Event) => void
 
     /**
      * Debounce the onAction function by setting delay in milliseconds default: 0
      */
-    debounce?: number;
+    debounce?: number
 
     /**
      * Throttle the onAction function by setting delay in milliseconds default: 0
      */
-    throttle?: number;
+    throttle?: number
 
     /**
      * Throttle the activity events. Useful if you are listening to mouse events. 
      * Helps to cut down on cpu usage. Default: 200
      */
-    eventsThrottle?: number;
+    eventsThrottle?: number
 
     /**
      * Element reference to bind activity listeners to default: document
      */
-    element?: Node;
+    element?: Node
 
     /**
      * Start the timer on mount default: true
      */
-    startOnMount?: boolean;
+    startOnMount?: boolean
 
     /**
      * Once the user goes idle the IdleTimer will not reset on user input instead, reset() must be called manually to restart the timer default: false
      */
-    stopOnIdle?: boolean;
+    stopOnIdle?: boolean
 
     /**
      * Bind events passively default: true
      */
-    passive?: boolean;
+    passive?: boolean
 
     /**
      * Capture events default: true
      */
-    capture?: boolean;
+    capture?: boolean
   }
 
   interface IdleTimerAPI {
     /**
      * Restore initial state and restart timer
      */
-    reset(): void;
+    reset(): void
 
     /**
      * Store remaining time and stop timer
      */
-    pause(): void;
+    pause(): void
 
     /**
      * Resumes a paused timer
      */
-    resume(): void;
+    resume(): void
 
     /**
      * Time remaining before idle (number of ms)
      */
-    getRemainingTime(): number;
+    getRemainingTime(): number
 
     /**
      * How much time has elapsed (timestamp)
      */
-    getElapsedTime(): number;
+    getElapsedTime(): number
 
     /**
      * Last time the user was active
      */
-    getLastActiveTime(): number;
+    getLastActiveTime(): number
 
     /**
      * Returns wether or not the user is idle
      */
-    isIdle(): boolean;
+    isIdle(): boolean
   }
 
-  export function useIdleTimer(props: IdleTimerProps): IdleTimerAPI;
-  export default IdleTimer;
+  export function useIdleTimer(props: IdleTimerProps): IdleTimerAPI
 }

@@ -1,12 +1,21 @@
 import React, { Component } from 'react'
-import IdleTimer from 'react-idle-timer'
+import IdleTimer, { IdleTimerProps } from 'react-idle-timer'
 import format from 'date-fns/format'
 
-export default class App extends Component {
-  constructor (props) {
+export default class YourApp extends Component {
+  idleTimer : IdleTimer | null
+  timeout : number
+  state : { 
+    remaining: number
+    isIdle: boolean
+    lastActive: Date
+    elapsed: number
+  }
+
+  constructor(props: IdleTimerProps) {
     super(props)
-    this.idleTimer = null
     this.timeout = 3000
+    this.idleTimer = null
     this.state = {
       remaining: this.timeout,
       isIdle: false,
@@ -21,23 +30,23 @@ export default class App extends Component {
     this.handleResume = this.handleResume.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({
-      remaining: this.idleTimer.getRemainingTime(),
-      lastActive: this.idleTimer.getLastActiveTime(),
-      elapsed: this.idleTimer.getElapsedTime()
+      remaining: this.idleTimer && this.idleTimer.getRemainingTime(),
+      lastActive: this.idleTimer && this.idleTimer.getLastActiveTime(),
+      elapsed: this.idleTimer && this.idleTimer.getElapsedTime()
     })
 
     setInterval(() => {
       this.setState({
-        remaining: this.idleTimer.getRemainingTime(),
-        lastActive: this.idleTimer.getLastActiveTime(),
-        elapsed: this.idleTimer.getElapsedTime()
+        remaining: this.idleTimer && this.idleTimer.getRemainingTime(),
+        lastActive: this.idleTimer && this.idleTimer.getLastActiveTime(),
+        elapsed: this.idleTimer && this.idleTimer.getElapsedTime()
       })
     }, 1000)
   }
 
-  render () {
+  render() {
     return (
       <div>
         <IdleTimer
@@ -64,23 +73,23 @@ export default class App extends Component {
     )
   }
 
-  handleOnActive () {
+  handleOnActive() {
     this.setState({ isIdle: false })
   }
 
-  handleOnIdle () {
+  handleOnIdle() {
     this.setState({ isIdle: true })
   }
 
-  handleReset () {
-    this.idleTimer.reset()
+  handleReset() {
+    if (this.idleTimer) this.idleTimer.reset()
   }
 
-  handlePause () {
-    this.idleTimer.pause()
+  handlePause() {
+    if (this.idleTimer) this.idleTimer.pause()
   }
 
-  handleResume () {
-    this.idleTimer.resume()
+  handleResume() {
+    if (this.idleTimer) this.idleTimer.resume()
   }
 }
