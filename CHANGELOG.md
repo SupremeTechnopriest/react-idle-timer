@@ -1,3 +1,6 @@
+### 4.3.2
+- Fixed an issue where callback functions were not being updated. #122
+
 ### 4.3.1
 - Added TypeScript examples.
 - Fixed an issue with TypeScript typings.
