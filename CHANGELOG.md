@@ -1,3 +1,6 @@
+### 4.3.4
+- Fixed a regression where debounced and throttled were not applied to onAction.
+
 ### 4.3.2
 - Fixed an issue where callback functions were not being updated. #122
 
