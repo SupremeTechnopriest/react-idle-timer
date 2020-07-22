@@ -316,15 +316,15 @@ function useIdleTimer ({
     // Create debounced action if applicable
     if (debounce > 0) {
       emitOnAction.current = debounced(onAction, debounce)
-    }
 
     // Create throttled action if applicable
-    if (throttle > 0) {
+    } else if (throttle > 0) {
       emitOnAction.current = throttled(onAction, throttle)
-    }
 
     // No throttle or debounce
-    emitOnAction.current = onAction
+    } else {
+      emitOnAction.current = onAction
+    }
   }, [onAction])
 
   return {
