@@ -43,11 +43,16 @@ function useIdleTimer ({
   const pageY = useRef(null)
   const tId = useRef(null)
 
+  // Event emitters
+  const emitOnIdle = useRef(onIdle)
+  const emitOnActive = useRef(onActive)
+  const emitOnAction = useRef(onAction)
+
   /**
- * Toggles the idle state and calls
- * the correct action function
- * @private
- */
+   * Toggles the idle state and calls
+   * the correct action function
+   * @private
+   */
   const _toggleIdleState = e => {
     const nextIdle = !idle.current
     idle.current = nextIdle
@@ -59,11 +64,11 @@ function useIdleTimer ({
         // Unbind events
         _unbindEvents()
       }
-      onIdle(e)
+      emitOnIdle.current(e)
     } else {
       if (!stopOnIdle) {
         _bindEvents()
-        onActive(e)
+        emitOnActive.current(e)
       }
     }
   }
@@ -74,7 +79,7 @@ function useIdleTimer ({
    */
   let _handleEvent = e => {
     // Fire onAction event
-    onAction(e)
+    emitOnAction.current(e)
 
     // Already active, ignore events
     if (remaining.current) return
@@ -281,16 +286,6 @@ function useIdleTimer ({
       throw new Error('onAction can either be throttled or debounced (not both)')
     }
 
-    // Create debounced action if applicable
-    if (debounce > 0) {
-      onAction = debounced(onAction, debounce)
-    }
-
-    // Create throttled action if applicable
-    if (throttle > 0) {
-      onAction = throttled(onAction, throttle)
-    }
-
     // Create a throttle event handler if applicable
     if (eventsThrottle > 0) {
       _handleEvent = throttled(_handleEvent, eventsThrottle)
@@ -308,6 +303,29 @@ function useIdleTimer ({
       _unbindEvents(true)
     }
   }, [])
+
+  useEffect(() => {
+    emitOnIdle.current = onIdle
+  }, [onIdle])
+
+  useEffect(() => {
+    emitOnActive.current = onActive
+  }, [onActive])
+
+  useEffect(() => {
+    // Create debounced action if applicable
+    if (debounce > 0) {
+      emitOnAction.current = debounced(onAction, debounce)
+    }
+
+    // Create throttled action if applicable
+    if (throttle > 0) {
+      emitOnAction.current = throttled(onAction, throttle)
+    }
+
+    // No throttle or debounce
+    emitOnAction.current = onAction
+  }, [onAction])
 
   return {
     isIdle,
