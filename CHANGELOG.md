@@ -1,3 +1,6 @@
+### 4.3.5
+- Fixed a regression affecting older minifiers that don't know how to deal with `let` and `const`. Re-implement babel to transpile to `var`.
+
 ### 4.3.4
 - Fixed a regression where debounced and throttled were not applied to onAction.
 
