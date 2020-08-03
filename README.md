@@ -50,9 +50,9 @@ export default class YourApp extends Component {
   constructor(props) {
     super(props)
     this.idleTimer = null
-    this.handleOnAction = this.handleOnnAction.bind(this)
-    this.handleOnActive = this.handleOnnActive.bind(this)
-    this.handleOnIdle = this.handleOnnIdle.bind(this)
+    this.handleOnAction = this.handleOnAction.bind(this)
+    this.handleOnActive = this.handleOnActive.bind(this)
+    this.handleOnIdle = this.handleOnIdle.bind(this)
   }
 
   render() {
