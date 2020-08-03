@@ -1,3 +1,6 @@
+### 4.3.6
+- Fixed a type-o in the README examples.
+
 ### 4.3.5
 - Fixed a regression affecting older minifiers that don't know how to deal with `let` and `const`. Re-implement babel to transpile to `var`.
 
