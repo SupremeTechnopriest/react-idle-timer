@@ -396,9 +396,8 @@ describe('useIdleTimer', () => {
         it('Should get the elapsed time', (done) => {
           const { result } = idleTimer()
           setTimeout(() => {
-            // Accurate within 10ms
-            expect(result.current.getElapsedTime()).toBeGreaterThanOrEqual(500)
-            expect(result.current.getElapsedTime()).toBeLessThanOrEqual(510)
+            // Accurate within 20ms
+            expect(result.current.getElapsedTime()).toBeAround(500, 20)
             done()
           }, 500)
         })
