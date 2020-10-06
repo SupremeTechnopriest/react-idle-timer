@@ -143,7 +143,7 @@ There are a few breaking changes in version 4:
 - keydown
 - wheel
 - DOMMouseScroll
-- mouseWheel
+- mousewheel
 - mousedown
 - touchstart
 - touchmove
