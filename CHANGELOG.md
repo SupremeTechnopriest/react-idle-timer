@@ -1,3 +1,7 @@
+### 4.3.7
+- Added more event types to typescript definition
+- Fixed a type-o in the default events (mouseWheel -> mousewheel)
+
 ### 4.3.6
 - Fixed a type-o in the README examples.
 
