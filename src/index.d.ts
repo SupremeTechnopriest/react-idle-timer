@@ -20,6 +20,7 @@ declare module 'react-idle-timer' {
     'copy' |
     'cut' |
     'dblclick' |
+    'DOMMouseScroll' |
     'drag' |
     'dragend' |
     'dragenter' |
@@ -54,6 +55,9 @@ declare module 'react-idle-timer' {
     'mouseout' |
     'mouseup' |
     'mousewheel' |
+    'mouseWheel' |
+    'MSPointerDown' |
+    'MSPointerMove' |
     'offline' |
     'online' |
     'open' |
@@ -88,7 +92,8 @@ declare module 'react-idle-timer' {
     'unload' |
     'volumechange' |
     'waiting' |
-    'wheel'
+    'wheel' |
+    'visibilitychange'
 
   export default class IdleTimer extends React.Component<IdleTimerProps> {
     /**
