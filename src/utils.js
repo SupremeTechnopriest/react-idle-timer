@@ -24,7 +24,7 @@ export const DEFAULT_EVENTS = [
   'keydown',
   'wheel',
   'DOMMouseScroll',
-  'mouseWheel',
+  'mousewheel',
   'mousedown',
   'touchstart',
   'touchmove',

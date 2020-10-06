@@ -55,7 +55,6 @@ declare module 'react-idle-timer' {
     'mouseout' |
     'mouseup' |
     'mousewheel' |
-    'mouseWheel' |
     'MSPointerDown' |
     'MSPointerMove' |
     'offline' |
