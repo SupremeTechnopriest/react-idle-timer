@@ -69,7 +69,7 @@ describe('useIdleTimer', () => {
         }, 500)
       })
 
-      it('Should pause on idle when stopOnIdle is set', (done) => {
+      it('Should pause on idle when stopOnIdle is set', done => {
         props.onIdle = sinon.spy()
         props.onActive = sinon.spy()
         props.timeout = 400
@@ -84,7 +84,7 @@ describe('useIdleTimer', () => {
         }, 500)
       })
 
-      it('Should start on reset() when stopOnIdle is set', (done) => {
+      it('Should start on reset() when stopOnIdle is set', done => {
         props.onIdle = sinon.spy()
         props.onActive = sinon.spy()
         props.timeout = 400
@@ -101,7 +101,7 @@ describe('useIdleTimer', () => {
         }, 500)
       })
 
-      it('Should go idle after reset() and user input when stopOnIdle is set', (done) => {
+      it('Should go idle after reset() and user input when stopOnIdle is set', done => {
         props.onIdle = sinon.spy()
         props.onActive = sinon.spy()
         props.timeout = 400
@@ -123,10 +123,26 @@ describe('useIdleTimer', () => {
           }, 500)
         }, 500)
       })
+
+      it('Should allow timeout to be changed dynamically', done => {
+        props.onIdle = sinon.spy()
+        props.timeout = 500
+        const { result, rerender } = idleTimer()
+        setTimeout(() => {
+          expect(props.onIdle.callCount).toBe(1)
+          props.timeout = 300
+          rerender()
+          result.current.reset()
+          setTimeout(() => {
+            expect(props.onIdle.callCount).toBe(2)
+            done()
+          }, 400)
+        }, 600)
+      })
     })
 
     describe('events', () => {
-      it('Should set custom events', (done) => {
+      it('Should set custom events', done => {
         props.onActive = sinon.spy()
         props.events = ['mousedown']
         props.timeout = 200
@@ -369,7 +385,7 @@ describe('useIdleTimer', () => {
       })
 
       describe('getRemainingTime', () => {
-        it('Should return 0 for remaining time while idle', (done) => {
+        it('Should return 0 for remaining time while idle', done => {
           props.timeout = 200
           const { result } = idleTimer()
           setTimeout(() => {
@@ -393,7 +409,7 @@ describe('useIdleTimer', () => {
       })
 
       describe('getElapsedTime', () => {
-        it('Should get the elapsed time', (done) => {
+        it('Should get the elapsed time', done => {
           const { result } = idleTimer()
           setTimeout(() => {
             // Accurate within 20ms
@@ -416,7 +432,7 @@ describe('useIdleTimer', () => {
       })
 
       describe('isIdle', () => {
-        it('Should get the idle state', (done) => {
+        it('Should get the idle state', done => {
           props.timeout = 200
           const { result } = idleTimer()
           expect(result.current.isIdle()).toBe(false)

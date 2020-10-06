@@ -1,10 +1,17 @@
 {
   "cSpell.words": [
+    "animationend",
+    "animationiteration",
+    "animationstart",
     "browserslist",
     "builtins",
     "coord",
     "debounced",
     "idletimer",
-    "sourcemap"
+    "module",
+    "rerender",
+    "sourcemap",
+    "transitionend",
+    "visibilitychange"
   ]
 }
