@@ -16,7 +16,7 @@
 
 #### Version `4.4.0` adds user active time tracking and reduces module size:
 
-☝️ Added the `getTotalActiveTime()` method to get the total milliseconds a user has been active for the current session.
+☝️ Added `getTotalActiveTime()` method to get the total milliseconds a user has been active for the current session.
 
 ✌️ Reduced NPM package size by excluding examples from downloaded module.
 
