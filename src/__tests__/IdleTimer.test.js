@@ -566,6 +566,21 @@ describe('IdleTimer', () => {
       })
     })
 
+    describe('getTotalActiveTime', () => {
+      it('Should get the total active time', done => {
+        props.timeout = 200
+        const timer = idleTimer()
+        setTimeout(() => {
+          expect(timer.instance().getTotalActiveTime()).toBeAround(props.timeout, 5)
+          simulant.fire(document, 'mousedown')
+          setTimeout(() => {
+            expect(timer.instance().getTotalActiveTime()).toBeAround(props.timeout * 2, 10)
+            done()
+          }, 300)
+        }, 300)
+      })
+    })
+
     describe('isIdle', () => {
       it('Should get the idle state', (done) => {
         props.timeout = 200

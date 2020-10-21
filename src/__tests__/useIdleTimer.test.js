@@ -427,7 +427,22 @@ describe('useIdleTimer', () => {
           setTimeout(() => {
             expect(result.current.getLastActiveTime()).toBe(lastActive)
             done()
-          }, 500)
+          }, 300)
+        })
+      })
+
+      describe('getTotalActiveTime', () => {
+        it('Should get the total active time', done => {
+          props.timeout = 200
+          const { result } = idleTimer()
+          setTimeout(() => {
+            expect(result.current.getTotalActiveTime()).toBeAround(props.timeout, 5)
+            simulant.fire(document, 'mousedown')
+            setTimeout(() => {
+              expect(result.current.getTotalActiveTime()).toBeAround(props.timeout * 2, 10)
+              done()
+            }, 300)
+          }, 300)
         })
       })
 

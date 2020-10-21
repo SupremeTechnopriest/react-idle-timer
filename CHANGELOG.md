@@ -1,3 +1,6 @@
+### 4.4.0
+- Added `getTotalActiveTime` method.  Returns the total time in milliseconds the user was active.
+
 ### 4.3.7
 - Added more event types to typescript definition
 - Fixed a type-o in the default events (mouseWheel -> mousewheel)
