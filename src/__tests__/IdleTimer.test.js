@@ -192,7 +192,7 @@ describe('IdleTimer', () => {
         timer.instance().reset()
         expect(timer.state('idle')).toBe(false)
         expect(timer.instance().tId).toBeGreaterThan(0)
-        expect(timer.instance().getRemainingTime()).toBeAround(props.timeout, 3)
+        expect(timer.instance().getRemainingTime()).toBeAround(props.timeout, 5)
         simulant.fire(document, 'mousedown')
 
         setTimeout(() => {
@@ -563,6 +563,23 @@ describe('IdleTimer', () => {
           expect(timer.instance().getLastActiveTime()).toBe(lastActive)
           done()
         }, 500)
+      })
+    })
+
+    describe('getTotalActiveTime', () => {
+      it('Should get the total active time', done => {
+        props.timeout = 200
+        const timer = idleTimer()
+        setTimeout(() => {
+          expect(timer.instance().getTotalActiveTime()).toBeAround(props.timeout, 5)
+          setTimeout(() => {
+            simulant.fire(document, 'mousedown')
+            setTimeout(() => {
+              expect(timer.instance().getTotalActiveTime()).toBeAround(props.timeout * 2, 10)
+              done()
+            }, 300)
+          }, 100)
+        }, 300)
       })
     })
 

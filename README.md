@@ -167,10 +167,11 @@ There are a few breaking changes in version 4:
 - **capture** {*Boolean*} - Bind events in [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to  `true`.
 
 ### Methods
-- **reset()** *{Void}* - Resets the idleTimer
-- **pause()** *{Void}* - Pauses the idleTimer
-- **resume()** *{Void}* - Resumes a paused idleTimer
-- **getRemainingTime()** *{Number}* - Returns the remaining time in milliseconds
-- **getElapsedTime()** *{Number}* - Returns the elapsed time in milliseconds
-- **getLastActiveTime()** *{Number}* - Returns the `Timestamp` the user was last active
-- **isIdle()** *{Boolean}* - Returns whether or not user is idle
+- **reset()** *{Void}* - Resets the idleTimer.
+- **pause()** *{Void}* - Pauses the idleTimer.
+- **resume()** *{Void}* - Resumes a paused idleTimer.
+- **getRemainingTime()** *{Number}* - Returns the remaining time in milliseconds.
+- **getElapsedTime()** *{Number}* - Returns the elapsed time in milliseconds.
+- **getLastActiveTime()** *{Number}* - Returns the `Timestamp` the user was last active.
+- **getTotalActiveTime()** *{Number}* - Returns the amount of time in milliseconds the user was active.
+- **isIdle()** *{Boolean}* - Returns whether or not user is idle.

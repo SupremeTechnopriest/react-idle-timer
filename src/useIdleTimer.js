@@ -42,6 +42,7 @@ function useIdleTimer ({
   const pageX = useRef(null)
   const pageY = useRef(null)
   const tId = useRef(null)
+  const activeTime = useRef(0)
 
   // Event emitters
   const emitOnIdle = useRef(onIdle)
@@ -64,6 +65,7 @@ function useIdleTimer ({
         // Unbind events
         _unbindEvents()
       }
+      activeTime.current += (+new Date()) - lastActive.current
       emitOnIdle.current(e)
     } else {
       if (!stopOnIdle) {
@@ -178,7 +180,7 @@ function useIdleTimer ({
   /**
    * Time remaining before idle
    * @name getRemainingTime
-   * @return {Number} Milliseconds remaining
+   * @return {number} Milliseconds remaining
    */
   const getRemainingTime = () => {
     // If idle there is no time remaining
@@ -196,9 +198,7 @@ function useIdleTimer ({
    * @name getElapsedTime
    * @return {Timestamp}
    */
-  const getElapsedTime = () => {
-    return (+new Date()) - oldDate.current
-  }
+  const getElapsedTime = () => (+new Date()) - oldDate.current
 
   /**
    * Last time the user was active
@@ -206,6 +206,13 @@ function useIdleTimer ({
    * @return {Timestamp}
    */
   const getLastActiveTime = () => lastActive.current
+
+  /**
+   * Get the total time user is active
+   * @name getTotalActiveTime
+   * @return {number} Milliseconds active
+   */
+  const getTotalActiveTime = () => activeTime.current
 
   /**
    * Returns wether or not the user is idle
@@ -333,6 +340,7 @@ function useIdleTimer ({
     reset,
     resume,
     getLastActiveTime,
+    getTotalActiveTime,
     getElapsedTime,
     getRemainingTime
   }
@@ -347,7 +355,7 @@ useIdleTimer.propTypes = {
   /**
    * Activity Timeout in milliseconds
    * default: 1200000
-   * @type {Number}
+   * @type {number}
    */
   timeout: PropTypes.number,
   /**
@@ -377,19 +385,19 @@ useIdleTimer.propTypes = {
   /**
    * Debounce the onAction function by setting delay in milliseconds
    * default: 0
-   * @type {Number}
+   * @type {number}
    */
   debounce: PropTypes.number,
   /**
    * Throttle the onAction function by setting delay in milliseconds
    * default: 0
-   * @type {Number}
+   * @type {number}
    */
   throttle: PropTypes.number,
   /**
    * Throttle the event handler function by setting delay in milliseconds
    * default: 200
-   * @type {Number}
+   * @type {number}
    */
   eventsThrottle: PropTypes.number,
   /**

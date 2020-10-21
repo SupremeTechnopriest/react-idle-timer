@@ -40,6 +40,7 @@ class IdleTimer extends Component {
       idle: false,
       oldDate: +new Date(),
       lastActive: +new Date(),
+      activeTime: null,
       remaining: null,
       pageX: null,
       pageY: null
@@ -210,7 +211,8 @@ class IdleTimer extends Component {
     // and pass the event through
     // Toggle the idle state
     this.setState((prevState) => ({
-      idle: !prevState.idle
+      idle: !prevState.idle,
+      activeTime: !prevState.idle ? this.state.activeTime + (+new Date()) - this.state.lastActive : this.state.activeTime
     }), () => {
       const { onActive, onIdle, stopOnIdle } = this.props
       const { idle } = this.state
@@ -222,6 +224,7 @@ class IdleTimer extends Component {
           // Unbind events
           this._unbindEvents()
         }
+
         onIdle(e)
       } else {
         if (!stopOnIdle) {
@@ -368,7 +371,7 @@ class IdleTimer extends Component {
   /**
    * Time remaining before idle
    * @name getRemainingTime
-   * @return {Number} Milliseconds remaining
+   * @return {number} Milliseconds remaining
    */
   getRemainingTime () {
     const { remaining, lastActive } = this.state
@@ -405,9 +408,19 @@ class IdleTimer extends Component {
   }
 
   /**
+   * Total time the user was active
+   * @name getTotalActiveTime
+   * @return {number}
+   */
+  getTotalActiveTime () {
+    const { activeTime } = this.state
+    return activeTime
+  }
+
+  /**
    * Returns wether or not the user is idle
    * @name isIdle
-   * @return {Boolean}
+   * @return {boolean}
    */
   isIdle () {
     const { idle } = this.state
