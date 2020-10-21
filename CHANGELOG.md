@@ -1,3 +1,7 @@
+### 4.4.1
+- Reduce bundle size by excluding examples from npm package.
+- Update README.md.
+
 ### 4.4.0
 - Added `getTotalActiveTime` method.  Returns the total time in milliseconds the user was active.
 

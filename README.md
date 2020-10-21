@@ -14,6 +14,12 @@
 
 ## Latest News
 
+#### Version `4.4.0` adds user active time tracking and reduces module size:
+
+☝️ Added the `getTotalActiveTime()` method to get the total milliseconds a user has been active for the current session.
+
+✌️ Reduced NPM package size by excluding examples from downloaded module.
+
 #### Version `4.3.0` adds a new hook implementation and some minor performance improvements:
 
 ☝️ The hook implementation is here! It takes the same properties and returns the same API as the component implementation. See [here](https://github.com/SupremeTechnopriest/react-idle-timer#hook-usage) for usage or check out the new [example](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/hook). There are now TypeScript [examples](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples) as well.
