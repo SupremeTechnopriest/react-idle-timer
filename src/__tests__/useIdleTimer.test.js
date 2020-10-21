@@ -437,11 +437,13 @@ describe('useIdleTimer', () => {
           const { result } = idleTimer()
           setTimeout(() => {
             expect(result.current.getTotalActiveTime()).toBeAround(props.timeout, 5)
-            simulant.fire(document, 'mousedown')
             setTimeout(() => {
-              expect(result.current.getTotalActiveTime()).toBeAround(props.timeout * 2, 10)
-              done()
-            }, 300)
+              simulant.fire(document, 'mousedown')
+              setTimeout(() => {
+                expect(result.current.getTotalActiveTime()).toBeAround(props.timeout * 2, 10)
+                done()
+              }, 300)
+            }, 100)
           }, 300)
         })
       })
