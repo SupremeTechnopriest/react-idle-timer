@@ -1,3 +1,6 @@
+### 4.4.2
+- Update peerDependencies to support React versions greater than 16.
+
 ### 4.4.1
 - Reduce bundle size by excluding examples from npm package.
 - Update README.md.
