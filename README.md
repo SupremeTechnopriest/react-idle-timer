@@ -1,8 +1,8 @@
 # ⏱ React Idle Timer
 
-![npm](https://img.shields.io/npm/v/react-idle-timer.svg)
-![npm](https://img.shields.io/npm/dt/react-idle-timer.svg)
-![Travis](https://img.shields.io/travis/SupremeTechnopriest/react-idle-timer.svg)
+[![npm](https://img.shields.io/npm/v/react-idle-timer.svg)](https://www.npmjs.com/package/react-idle-timer)
+[![npm](https://img.shields.io/npm/dt/react-idle-timer.svg)](https://www.npmjs.com/package/react-idle-timer)
+![Tests](https://github.com/SupremeTechnopriest/react-idle-timer/workflows/Tests/badge.svg)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/df30651fb377f18aeb63/test_coverage)](https://codeclimate.com/github/SupremeTechnopriest/react-idle-timer/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/df30651fb377f18aeb63/maintainability)](https://codeclimate.com/github/SupremeTechnopriest/react-idle-timer/maintainability)
 
