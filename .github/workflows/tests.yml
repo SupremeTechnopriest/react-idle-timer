@@ -6,7 +6,8 @@ on:
     tags:
       - '!*'
     paths:
-      - src/*
+      - .github/workflows/*
+      - src/**
       - '*.json'
       - '!*.MD'
   pull_request:
