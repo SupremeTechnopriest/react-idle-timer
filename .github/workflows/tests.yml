@@ -32,7 +32,7 @@ jobs:
     - uses: actions/setup-node@master
     - run: npm i
     - run: npm run build
-    - uses: paambaati/codeclimate-action@v2.2.4
+    - uses: paambaati/codeclimate-action@v2.7.4
       env:
         CC_TEST_REPORTER_ID: fff55059c877f2d5091c8a89cb5bebd3bcf12811355ce9e109e35f78c4bef96c
       with:
