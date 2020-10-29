@@ -23,17 +23,7 @@ jobs:
         run: npm i
       - name: Run Tests
         run: npm t
-  coverage:
-    needs: [test]
-    name: Coverage
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-node@master
-    - run: npm i
-    - run: npm run build
-    - uses: paambaati/codeclimate-action@v2.7.4
-      env:
-        CC_TEST_REPORTER_ID: fff55059c877f2d5091c8a89cb5bebd3bcf12811355ce9e109e35f78c4bef96c
-      with:
-        coverageCommand: npm run coverage
+      - name: Upload Coverage
+        uses: paambaati/codeclimate-action@v2.7.4
+        env:
+          CC_TEST_REPORTER_ID: fff55059c877f2d5091c8a89cb5bebd3bcf12811355ce9e109e35f78c4bef96c
