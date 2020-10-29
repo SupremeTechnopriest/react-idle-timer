@@ -1,3 +1,7 @@
+### 4.4.3
+- Added  `getLastIdleTime` and `getTotalIdleTime` methods.
+- Switched from jenkins to github actions.
+
 ### 4.4.2
 - Update peerDependencies to support React versions greater than 16.
 

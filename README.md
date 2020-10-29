@@ -178,6 +178,8 @@ There are a few breaking changes in version 4:
 - **resume()** *{Void}* - Resumes a paused idleTimer.
 - **getRemainingTime()** *{Number}* - Returns the remaining time in milliseconds.
 - **getElapsedTime()** *{Number}* - Returns the elapsed time in milliseconds.
+- **getLastIdleTime()** *{Number}* - Returns the `Timestamp` the user was last idle.
+- **getTotalIdleTime()** *{Number}* - Returns the amount of time in milliseconds the user was idle.
 - **getLastActiveTime()** *{Number}* - Returns the `Timestamp` the user was last active.
 - **getTotalActiveTime()** *{Number}* - Returns the amount of time in milliseconds the user was active.
 - **isIdle()** *{Boolean}* - Returns whether or not user is idle.

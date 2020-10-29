@@ -56,6 +56,7 @@
     "prompt-list": "^3.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "regenerator-runtime": "^0.13.7",
     "rimraf": "^3.0.2",
     "rollup": "^2.21.0",
     "rollup-plugin-terser": "^6.1.0",

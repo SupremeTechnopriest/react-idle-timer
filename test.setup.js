@@ -1,4 +1,5 @@
 /* eslint-env jest */
+import 'regenerator-runtime/runtime'
 import expect from 'expect'
 import { configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'

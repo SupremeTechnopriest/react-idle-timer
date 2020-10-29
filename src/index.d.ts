@@ -226,6 +226,16 @@ declare module 'react-idle-timer' {
     getElapsedTime(): number
 
     /**
+     * Last time the user was idle
+     */
+    getLastIdleTime(): number
+
+    /**
+     * Total time in milliseconds user was idle
+     */
+    getTotalIdleTime(): number
+
+    /**
      * Last time the user was active
      */
     getLastActiveTime(): number

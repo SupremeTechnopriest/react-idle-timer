@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 // Test utilities
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react-hooks'
 import simulant from 'simulant'
 import sinon from 'sinon'
 
@@ -15,6 +15,14 @@ describe('useIdleTimer', () => {
   // Create an idle timer instance
   const idleTimer = () => {
     return renderHook(() => useIdleTimer(props))
+  }
+
+  const sleep = time => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve()
+      }, time)
+    })
   }
 
   // Reset the tests
@@ -50,177 +58,167 @@ describe('useIdleTimer', () => {
         const { result } = idleTimer()
         expect(props.onActive.callCount).toBe(0)
         expect(result.current.isIdle()).toBe(true)
-        act(() => {
-          simulant.fire(document, 'mousedown')
-        })
+        simulant.fire(document, 'mousedown')
         expect(result.current.isIdle()).toBe(false)
         expect(props.onActive.callCount).toBe(1)
       })
 
-      it('Should set custom element', done => {
+      it('Should set custom element', async done => {
         props.element = window
         props.timeout = 200
         props.onActive = sinon.spy()
         idleTimer()
-        setTimeout(() => {
-          simulant.fire(props.element, 'mousedown')
-          expect(props.onActive.callCount).toBe(1)
-          done()
-        }, 500)
+
+        await sleep(500)
+        simulant.fire(props.element, 'mousedown')
+        expect(props.onActive.callCount).toBe(1)
+        done()
       })
 
-      it('Should pause on idle when stopOnIdle is set', done => {
+      it('Should pause on idle when stopOnIdle is set', async done => {
         props.onIdle = sinon.spy()
         props.onActive = sinon.spy()
         props.timeout = 400
         props.stopOnIdle = true
         const { result } = idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          expect(props.onIdle.callCount).toBe(1)
-          expect(props.onActive.callCount).toBe(0)
-          expect(result.current.isIdle()).toBe(true)
-          done()
-        }, 500)
+
+        await sleep(500)
+        simulant.fire(document, 'mousedown')
+        expect(props.onIdle.callCount).toBe(1)
+        expect(props.onActive.callCount).toBe(0)
+        expect(result.current.isIdle()).toBe(true)
+        done()
       })
 
-      it('Should start on reset() when stopOnIdle is set', done => {
+      it('Should start on reset() when stopOnIdle is set', async done => {
         props.onIdle = sinon.spy()
         props.onActive = sinon.spy()
         props.timeout = 400
         props.stopOnIdle = true
         const { result } = idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          expect(props.onIdle.callCount).toBe(1)
-          expect(props.onActive.callCount).toBe(0)
-          expect(result.current.isIdle()).toBe(true)
-          result.current.reset()
-          expect(result.current.isIdle()).toBe(false)
-          done()
-        }, 500)
+
+        await sleep(500)
+        simulant.fire(document, 'mousedown')
+        expect(props.onIdle.callCount).toBe(1)
+        expect(props.onActive.callCount).toBe(0)
+        expect(result.current.isIdle()).toBe(true)
+        result.current.reset()
+        expect(result.current.isIdle()).toBe(false)
+        done()
       })
 
-      it('Should go idle after reset() and user input when stopOnIdle is set', done => {
+      it('Should go idle after reset() and user input when stopOnIdle is set', async done => {
         props.onIdle = sinon.spy()
         props.onActive = sinon.spy()
         props.timeout = 400
         props.stopOnIdle = true
         const { result } = idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          expect(props.onIdle.callCount).toBe(1)
-          expect(props.onActive.callCount).toBe(0)
-          expect(result.current.isIdle()).toBe(true)
-          result.current.reset()
-          expect(result.current.isIdle()).toBe(false)
-          expect(result.current.getRemainingTime()).toBeAround(props.timeout, 3)
-          simulant.fire(document, 'mousedown')
 
-          setTimeout(() => {
-            expect(props.onIdle.callCount).toBe(2)
-            done()
-          }, 500)
-        }, 500)
+        await sleep(500)
+        simulant.fire(document, 'mousedown')
+        expect(props.onIdle.callCount).toBe(1)
+        expect(props.onActive.callCount).toBe(0)
+        expect(result.current.isIdle()).toBe(true)
+        result.current.reset()
+        expect(result.current.isIdle()).toBe(false)
+        expect(result.current.getRemainingTime()).toBeAround(props.timeout, 3)
+        simulant.fire(document, 'mousedown')
+
+        await sleep(500)
+        expect(props.onIdle.callCount).toBe(2)
+        done()
       })
 
-      it('Should allow timeout to be changed dynamically', done => {
+      it('Should allow timeout to be changed dynamically', async done => {
         props.onIdle = sinon.spy()
         props.timeout = 500
         const { result, rerender } = idleTimer()
-        setTimeout(() => {
-          expect(props.onIdle.callCount).toBe(1)
-          props.timeout = 300
-          rerender()
-          result.current.reset()
-          setTimeout(() => {
-            expect(props.onIdle.callCount).toBe(2)
-            done()
-          }, 400)
-        }, 600)
+
+        await sleep(600)
+        expect(props.onIdle.callCount).toBe(1)
+        props.timeout = 300
+        rerender()
+        result.current.reset()
+
+        await sleep(400)
+        expect(props.onIdle.callCount).toBe(2)
+        done()
       })
     })
 
     describe('events', () => {
-      it('Should set custom events', done => {
+      it('Should set custom events', async done => {
         props.onActive = sinon.spy()
         props.events = ['mousedown']
         props.timeout = 200
         idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          simulant.fire(document, 'keypress')
-          expect(props.onActive.callCount).toBe(1)
-          done()
-        }, 500)
+        await sleep(500)
+        simulant.fire(document, 'mousedown')
+        simulant.fire(document, 'keypress')
+        expect(props.onActive.callCount).toBe(1)
+        done()
       })
     })
 
     describe('event handlers', () => {
-      it('Should call onIdle on user idle', done => {
+      it('Should call onIdle on user idle', async done => {
         props.onIdle = sinon.spy()
         props.timeout = 400
         idleTimer()
-        setTimeout(() => {
-          expect(props.onIdle.callCount).toBe(1)
-          done()
-        }, 500)
+        await sleep(500)
+        expect(props.onIdle.callCount).toBe(1)
+        done()
       })
 
-      it('Should not call onIdle on larger timeouts', done => {
+      it('Should not call onIdle on larger timeouts', async done => {
         props.onIdle = sinon.spy()
         props.timeout = 2147483647
         idleTimer()
-        setTimeout(() => {
-          expect(props.onIdle.callCount).toBe(0)
-          done()
-        }, 100)
+        await sleep(100)
+        expect(props.onIdle.callCount).toBe(0)
+        done()
       })
 
-      it('Should call onActive on user input when user is idle', done => {
+      it('Should call onActive on user input when user is idle', async done => {
         props.onActive = sinon.spy()
         props.timeout = 400
         idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          expect(props.onActive.callCount).toBe(1)
-          done()
-        }, 500)
+        await sleep(500)
+        simulant.fire(document, 'mousedown')
+        expect(props.onActive.callCount).toBe(1)
+        done()
       })
 
-      it('Should not call onActive on user input when user is not idle', done => {
+      it('Should not call onActive on user input when user is not idle', async done => {
         props.onActive = sinon.spy()
         props.timeout = 400
         idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          expect(props.onActive.callCount).toBe(0)
-          done()
-        }, 300)
+        await sleep(300)
+        simulant.fire(document, 'mousedown')
+        expect(props.onActive.callCount).toBe(0)
+        done()
       })
 
-      it('Should call onAction on user input when user is not idle', done => {
+      it('Should call onAction on user input when user is not idle', async done => {
         props.onAction = sinon.spy()
         props.timeout = 400
         props.debounce = 0
         idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          expect(props.onAction.callCount).toBe(1)
-          done()
-        }, 300)
+        await sleep(300)
+        simulant.fire(document, 'mousedown')
+        expect(props.onAction.callCount).toBe(1)
+        done()
       })
 
-      it('Should call onAction on user input when user is idle', done => {
+      it('Should call onAction on user input when user is idle', async done => {
         props.onAction = sinon.spy()
         props.timeout = 400
         props.debounce = 0
         idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          expect(props.onAction.callCount).toBe(1)
-          done()
-        }, 500)
+        await sleep(500)
+        simulant.fire(document, 'mousedown')
+        expect(props.onAction.callCount).toBe(1)
+        done()
       })
 
       it('Should error if debounce and throttle are set', done => {
@@ -240,19 +238,18 @@ describe('useIdleTimer', () => {
         done()
       })
 
-      it('Should unbind all events on idle when stopOnIdle is set', done => {
+      it('Should unbind all events on idle when stopOnIdle is set', async done => {
         props.onAction = sinon.spy()
         props.stopOnIdle = true
         props.timeout = 400
         idleTimer()
-        setTimeout(() => {
-          simulant.fire(document, 'mousedown')
-          expect(props.onAction.callCount).toBe(0)
-          done()
-        }, 500)
+        await sleep(500)
+        simulant.fire(document, 'mousedown')
+        expect(props.onAction.callCount).toBe(0)
+        done()
       })
 
-      it('Should debounce calls to onAction', done => {
+      it('Should debounce calls to onAction', async done => {
         props.onAction = sinon.spy()
         props.timeout = 400
         props.debounce = 200
@@ -261,13 +258,12 @@ describe('useIdleTimer', () => {
         simulant.fire(document, 'mousedown')
         simulant.fire(document, 'mousedown')
         simulant.fire(document, 'mousedown')
-        setTimeout(() => {
-          expect(props.onAction.callCount).toBe(1)
-          done()
-        }, 200)
+        await sleep(200)
+        expect(props.onAction.callCount).toBe(1)
+        done()
       })
 
-      it('Should throttle calls to onAction', done => {
+      it('Should throttle calls to onAction', async done => {
         props.onAction = sinon.spy()
         props.timeout = 400
         props.throttle = 200
@@ -276,10 +272,9 @@ describe('useIdleTimer', () => {
         simulant.fire(document, 'mousedown')
         simulant.fire(document, 'mousedown')
         simulant.fire(document, 'mousedown')
-        setTimeout(() => {
-          expect(props.onAction.callCount).toBe(1)
-          done()
-        }, 200)
+        await sleep(200)
+        expect(props.onAction.callCount).toBe(1)
+        done()
       })
     })
 
@@ -292,19 +287,18 @@ describe('useIdleTimer', () => {
           expect(result.current.isIdle()).toBe(false)
         })
 
-        it('Should bind all events on reset()', done => {
+        it('Should bind all events on reset()', async done => {
           props.onAction = sinon.spy()
           props.stopOnIdle = true
           props.timeout = 400
           const { result } = idleTimer()
-          setTimeout(() => {
-            simulant.fire(document, 'mousedown')
-            expect(props.onAction.callCount).toBe(0)
-            result.current.reset()
-            simulant.fire(document, 'mousedown')
-            expect(props.onAction.callCount).toBe(1)
-            done()
-          }, 500)
+          await sleep(500)
+          simulant.fire(document, 'mousedown')
+          expect(props.onAction.callCount).toBe(0)
+          result.current.reset()
+          simulant.fire(document, 'mousedown')
+          expect(props.onAction.callCount).toBe(1)
+          done()
         })
       })
 
@@ -336,25 +330,23 @@ describe('useIdleTimer', () => {
       })
 
       describe('resume', () => {
-        it('Should resume a paused idleTimer instance', done => {
+        it('Should resume a paused idleTimer instance', async done => {
           const { result } = idleTimer()
           result.current.pause()
           const remaining = result.current.getRemainingTime()
           result.current.resume()
-          setTimeout(() => {
-            expect(result.current.getRemainingTime()).toBeLessThan(remaining)
-            done()
-          }, 100)
+          await sleep(100)
+          expect(result.current.getRemainingTime()).toBeLessThan(remaining)
+          done()
         })
 
-        it('Should not resume a running idleTimer instance', done => {
+        it('Should not resume a running idleTimer instance', async done => {
           const { result } = idleTimer()
           const remaining = result.current.getRemainingTime()
           result.current.resume()
-          setTimeout(() => {
-            expect(result.current.getRemainingTime()).toBeLessThan(remaining)
-            done()
-          }, 100)
+          await sleep(100)
+          expect(result.current.getRemainingTime()).toBeLessThan(remaining)
+          done()
         })
 
         it('Should bind all events on resume()', done => {
@@ -371,27 +363,25 @@ describe('useIdleTimer', () => {
           done()
         })
 
-        it('Should resume from paused time', done => {
+        it('Should resume from paused time', async done => {
           props.timeout = 3000
           const { result } = idleTimer()
           result.current.pause()
           const time = result.current.getRemainingTime()
-          setTimeout(() => {
-            result.current.resume()
-            expect(result.current.getRemainingTime()).toBeAround(time, 5)
-            done()
-          }, 2000)
+          await sleep(2000)
+          result.current.resume()
+          expect(result.current.getRemainingTime()).toBeAround(time, 5)
+          done()
         })
       })
 
       describe('getRemainingTime', () => {
-        it('Should return 0 for remaining time while idle', done => {
+        it('Should return 0 for remaining time while idle', async done => {
           props.timeout = 200
           const { result } = idleTimer()
-          setTimeout(() => {
-            expect(result.current.getRemainingTime()).toBe(0)
-            done()
-          }, 500)
+          await sleep(500)
+          expect(result.current.getRemainingTime()).toBe(0)
+          done()
         })
 
         it('Should return remaining time while paused', () => {
@@ -409,54 +399,94 @@ describe('useIdleTimer', () => {
       })
 
       describe('getElapsedTime', () => {
-        it('Should get the elapsed time', done => {
+        it('Should get the elapsed time', async done => {
           const { result } = idleTimer()
-          setTimeout(() => {
-            // Accurate within 20ms
-            expect(result.current.getElapsedTime()).toBeAround(500, 20)
-            done()
-          }, 500)
+          await sleep(500)
+          expect(result.current.getElapsedTime()).toBeAround(500, 20)
+          done()
+        })
+      })
+
+      describe('getLastIdleTime', () => {
+        it('Should get the last idle time', async done => {
+          props.timeout = 200
+          const { result } = idleTimer()
+          await sleep(300)
+          const lastIdle = result.current.getLastIdleTime()
+          simulant.fire(document, 'mousedown')
+          await sleep(100)
+          expect(result.current.getLastIdleTime()).toBe(lastIdle)
+          done()
+        })
+      })
+
+      describe('getTotalIdleTime', () => {
+        it('Should get the total idle time', async done => {
+          props.timeout = 200
+          const { result } = idleTimer()
+
+          await sleep(300)
+          expect(result.current.getTotalIdleTime()).toBeAround(300, 20)
+          simulant.fire(document, 'mousedown')
+
+          await sleep(100)
+          expect(result.current.getTotalIdleTime()).toBeAround(300, 20)
+          simulant.fire(document, 'mousedown')
+
+          await sleep(300)
+          expect(result.current.getTotalIdleTime()).toBeAround(700, 20)
+
+          done()
         })
       })
 
       describe('getLastActiveTime', () => {
-        it('Should get the last active time', done => {
+        it('Should get the last active time', async done => {
           props.timeout = 200
           const { result } = idleTimer()
           const lastActive = result.current.getLastActiveTime()
-          setTimeout(() => {
-            expect(result.current.getLastActiveTime()).toBe(lastActive)
-            done()
-          }, 300)
+          await sleep(300)
+          expect(result.current.getLastActiveTime()).toBe(lastActive)
+          done()
         })
       })
 
       describe('getTotalActiveTime', () => {
-        it('Should get the total active time', done => {
-          props.timeout = 200
+        it('Should get the total active time', async done => {
+          props.timeout = 300
           const { result } = idleTimer()
-          setTimeout(() => {
-            expect(result.current.getTotalActiveTime()).toBeAround(props.timeout, 5)
-            setTimeout(() => {
-              simulant.fire(document, 'mousedown')
-              setTimeout(() => {
-                expect(result.current.getTotalActiveTime()).toBeAround(props.timeout * 2, 10)
-                done()
-              }, 300)
-            }, 100)
-          }, 300)
+
+          // Test during active
+          await sleep(100)
+          expect(result.current.getTotalActiveTime()).toBeAround(100, 20)
+
+          // Test after idle
+          await sleep(400)
+          expect(result.current.getTotalActiveTime()).toBeAround(0, 20)
+
+          // Activate
+          simulant.fire(document, 'mousedown')
+          await sleep(100)
+
+          simulant.fire(document, 'mousedown')
+          await sleep(100)
+
+          simulant.fire(document, 'mousedown')
+          await sleep(400)
+
+          expect(result.current.getTotalActiveTime()).toBeAround(200, 50)
+          done()
         })
       })
 
       describe('isIdle', () => {
-        it('Should get the idle state', done => {
+        it('Should get the idle state', async done => {
           props.timeout = 200
           const { result } = idleTimer()
           expect(result.current.isIdle()).toBe(false)
-          setTimeout(() => {
-            expect(result.current.isIdle()).toBe(true)
-            done()
-          }, 500)
+          await sleep(500)
+          expect(result.current.isIdle()).toBe(true)
+          done()
         })
       })
     })

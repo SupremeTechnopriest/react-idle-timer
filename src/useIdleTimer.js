@@ -37,12 +37,13 @@ function useIdleTimer ({
   const eventsBound = useRef(false)
   const idle = useRef(true)
   const oldDate = useRef(+new Date())
-  const lastActive = useRef(+new Date())
   const remaining = useRef(null)
   const pageX = useRef(null)
   const pageY = useRef(null)
   const tId = useRef(null)
-  const activeTime = useRef(0)
+  const lastActive = useRef(null)
+  const lastIdle = useRef(null)
+  const idleTime = useRef(0)
 
   // Event emitters
   const emitOnIdle = useRef(onIdle)
@@ -65,10 +66,11 @@ function useIdleTimer ({
         // Unbind events
         _unbindEvents()
       }
-      activeTime.current += (+new Date()) - lastActive.current
+      lastIdle.current = (+new Date()) - timeout
       emitOnIdle.current(e)
     } else {
       if (!stopOnIdle) {
+        idleTime.current += (+new Date()) - lastIdle.current
         _bindEvents()
         emitOnActive.current(e)
       }
@@ -201,6 +203,26 @@ function useIdleTimer ({
   const getElapsedTime = () => (+new Date()) - oldDate.current
 
   /**
+   * Last time the user was idle
+   * @name getLastIdleTime
+   * @return {Timestamp}
+   */
+  const getLastIdleTime = () => lastIdle.current
+
+  /**
+   * Get the total time user is idle
+   * @name getTotalIdleTime
+   * @return {number} Milliseconds idle
+   */
+  const getTotalIdleTime = () => {
+    if (idle.current) {
+      return ((+new Date()) - lastIdle.current) + idleTime.current
+    } else {
+      return idleTime.current
+    }
+  }
+
+  /**
    * Last time the user was active
    * @name getLastActiveTime
    * @return {Timestamp}
@@ -212,7 +234,7 @@ function useIdleTimer ({
    * @name getTotalActiveTime
    * @return {number} Milliseconds active
    */
-  const getTotalActiveTime = () => activeTime.current
+  const getTotalActiveTime = () => getElapsedTime() - getTotalIdleTime()
 
   /**
    * Returns wether or not the user is idle
@@ -339,6 +361,8 @@ function useIdleTimer ({
     pause,
     reset,
     resume,
+    getLastIdleTime,
+    getTotalIdleTime,
     getLastActiveTime,
     getTotalActiveTime,
     getElapsedTime,
