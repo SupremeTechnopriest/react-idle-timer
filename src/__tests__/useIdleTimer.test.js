@@ -68,7 +68,6 @@ describe('useIdleTimer', () => {
         props.timeout = 200
         props.onActive = sinon.spy()
         idleTimer()
-
         await sleep(500)
         simulant.fire(props.element, 'mousedown')
         expect(props.onActive.callCount).toBe(1)
@@ -81,7 +80,6 @@ describe('useIdleTimer', () => {
         props.timeout = 400
         props.stopOnIdle = true
         const { result } = idleTimer()
-
         await sleep(500)
         simulant.fire(document, 'mousedown')
         expect(props.onIdle.callCount).toBe(1)
@@ -96,7 +94,6 @@ describe('useIdleTimer', () => {
         props.timeout = 400
         props.stopOnIdle = true
         const { result } = idleTimer()
-
         await sleep(500)
         simulant.fire(document, 'mousedown')
         expect(props.onIdle.callCount).toBe(1)
@@ -113,7 +110,6 @@ describe('useIdleTimer', () => {
         props.timeout = 400
         props.stopOnIdle = true
         const { result } = idleTimer()
-
         await sleep(500)
         simulant.fire(document, 'mousedown')
         expect(props.onIdle.callCount).toBe(1)
@@ -123,7 +119,6 @@ describe('useIdleTimer', () => {
         expect(result.current.isIdle()).toBe(false)
         expect(result.current.getRemainingTime()).toBeAround(props.timeout, 3)
         simulant.fire(document, 'mousedown')
-
         await sleep(500)
         expect(props.onIdle.callCount).toBe(2)
         done()
@@ -133,13 +128,11 @@ describe('useIdleTimer', () => {
         props.onIdle = sinon.spy()
         props.timeout = 500
         const { result, rerender } = idleTimer()
-
         await sleep(600)
         expect(props.onIdle.callCount).toBe(1)
         props.timeout = 300
         rerender()
         result.current.reset()
-
         await sleep(400)
         expect(props.onIdle.callCount).toBe(2)
         done()
