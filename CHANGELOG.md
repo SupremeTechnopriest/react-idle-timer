@@ -1,4 +1,5 @@
-### 4.4.3
+### 4.5.0
+- Refactor `getTotalActiveTime` to be accurate in more scenarios.
 - Added  `getLastIdleTime` and `getTotalIdleTime` methods.
 - Switched from travis to github actions.
 

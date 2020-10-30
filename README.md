@@ -14,6 +14,12 @@
 
 ## Latest News
 
+#### Version `4.5.0` adds user idle time tracking:
+
+☝️ Added `getTotalIdleTime()` and `getLastIdleTime()` methods to track user idle timings for the current session.
+
+✌️ Refactored `getTotalActiveTime()` to be accurate in all scenarios.
+
 #### Version `4.4.0` adds user active time tracking and reduces module size:
 
 ☝️ Added `getTotalActiveTime()` method to get the total milliseconds a user has been active for the current session.
@@ -25,7 +31,6 @@
 ☝️ The hook implementation is here! It takes the same properties and returns the same API as the component implementation. See [here](https://github.com/SupremeTechnopriest/react-idle-timer#hook-usage) for usage or check out the new [example](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/hook). There are now TypeScript [examples](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples) as well.
 
 ✌️ Added a new property called `eventsThrottle`. This will throttle the event handler to help decrease cpu usage on certain events (looking at you `mousemove`).  It defaults to 200ms, but can be set however you see fit. To disable this feature, set it to `0`.
-
 
 >  For the full patch notes please refer to the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md)
 
