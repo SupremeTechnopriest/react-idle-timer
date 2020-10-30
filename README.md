@@ -16,9 +16,7 @@
 
 #### Version `4.5.0` adds user idle time tracking:
 
-☝️ Added `getTotalIdleTime()` and `getLastIdleTime()` methods to track user idle timings for the current session.
-
-✌️ Refactored `getTotalActiveTime()` to be accurate in all scenarios.
+☝️ Added `getTotalIdleTime()` and `getLastIdleTime()` methods to track user idle timings.
 
 #### Version `4.4.0` adds user active time tracking and reduces module size:
 
