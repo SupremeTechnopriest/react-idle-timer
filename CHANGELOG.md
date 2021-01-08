@@ -1,3 +1,6 @@
+### 4.5.1
+- Added the ability to set timeout after the hook has been mounted. Doing so will reset the timer automatically.
+
 ### 4.5.0
 - Refactor `getTotalActiveTime` to be accurate in more scenarios.
 - Added  `getLastIdleTime` and `getTotalIdleTime` methods.
