@@ -44,6 +44,7 @@ function useIdleTimer ({
   const lastActive = useRef(null)
   const lastIdle = useRef(null)
   const idleTime = useRef(0)
+  const _timeout = useRef(timeout)
 
   // Event emitters
   const emitOnIdle = useRef(onIdle)
@@ -66,7 +67,7 @@ function useIdleTimer ({
         // Unbind events
         _unbindEvents()
       }
-      lastIdle.current = (+new Date()) - timeout
+      lastIdle.current = (+new Date()) - _timeout.current
       emitOnIdle.current(e)
     } else {
       if (!stopOnIdle) {
@@ -116,7 +117,7 @@ function useIdleTimer ({
     // If the user is idle or last active time is more than timeout, flip the idle state
     if (
       (idle.current && !stopOnIdle) ||
-      (!idle.current && elapsedTimeSinceLastActive > timeout)
+      (!idle.current && elapsedTimeSinceLastActive > _timeout.current)
     ) {
       _toggleIdleState(e)
     }
@@ -131,10 +132,10 @@ function useIdleTimer ({
     // set a new timeout
     if (idle.current) {
       if (!stopOnIdle) {
-        tId.current = setTimeout(_toggleIdleState, timeout)
+        tId.current = setTimeout(_toggleIdleState, _timeout.current)
       }
     } else {
-      tId.current = setTimeout(_toggleIdleState, timeout)
+      tId.current = setTimeout(_toggleIdleState, _timeout.current)
     }
   }
 
@@ -191,7 +192,7 @@ function useIdleTimer ({
     }
 
     // Determine remaining, if negative idle didn't finish flipping, just return 0
-    const timeLeft = timeout - ((+new Date()) - lastActive.current)
+    const timeLeft = _timeout.current - ((+new Date()) - lastActive.current)
     return timeLeft < 0 ? 0 : timeLeft
   }
 
@@ -262,7 +263,7 @@ function useIdleTimer ({
     remaining.current = null
 
     // Set new timeout
-    tId.current = setTimeout(_toggleIdleState, timeout)
+    tId.current = setTimeout(_toggleIdleState, _timeout.current)
   }
 
   /**
@@ -355,6 +356,11 @@ function useIdleTimer ({
       emitOnAction.current = onAction
     }
   }, [onAction])
+
+  useEffect(() => {
+    _timeout.current = timeout
+    if (tId.current !== null) reset()
+  }, [timeout])
 
   return {
     isIdle,

@@ -127,12 +127,11 @@ describe('useIdleTimer', () => {
       it('Should allow timeout to be changed dynamically', async done => {
         props.onIdle = sinon.spy()
         props.timeout = 500
-        const { result, rerender } = idleTimer()
+        const { rerender } = idleTimer()
         await sleep(600)
         expect(props.onIdle.callCount).toBe(1)
         props.timeout = 300
         rerender()
-        result.current.reset()
         await sleep(400)
         expect(props.onIdle.callCount).toBe(2)
         done()
