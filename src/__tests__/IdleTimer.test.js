@@ -203,6 +203,18 @@ describe('IdleTimer', () => {
       expect(props.onIdle.callCount).toBe(2)
       done()
     })
+
+    it('Should allow timeout to be changed dynamically', async done => {
+      props.onIdle = sinon.spy()
+      props.timeout = 500
+      const timer = idleTimer()
+      await sleep(600)
+      expect(props.onIdle.callCount).toBe(1)
+      timer.setProps({ timeout: 300 })
+      await sleep(400)
+      expect(props.onIdle.callCount).toBe(2)
+      done()
+    })
   })
 
   describe('events', () => {

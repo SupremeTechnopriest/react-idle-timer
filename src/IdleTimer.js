@@ -135,6 +135,10 @@ class IdleTimer extends Component {
     if (prevProps.eventsThrottle !== this.props.eventsThrottle) {
       this._handleEvent = throttled(this._handleEvent, this.props.eventsThrottle)
     }
+    // Update timeout value
+    if (prevProps.timeout !== this.props.timeout && this.tid !== null) {
+      this.reset()
+    }
   }
 
   /**
