@@ -1,3 +1,6 @@
+### 4.5.2
+- Added the ability to set timeout after the component has been mounted. Doing so will reset the timer automatically.
+
 ### 4.5.1
 - Added the ability to set timeout after the hook has been mounted. Doing so will reset the timer automatically.
 
