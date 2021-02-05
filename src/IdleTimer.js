@@ -106,6 +106,7 @@ class IdleTimer extends Component {
     this.isIdle = this.isIdle.bind(this)
     this.getLastIdleTime = this.getLastIdleTime.bind(this)
     this.getTotalIdleTime = this.getTotalIdleTime.bind(this)
+    this.getTotalActiveTime = this.getTotalActiveTime.bind(this)
   }
 
   /**
