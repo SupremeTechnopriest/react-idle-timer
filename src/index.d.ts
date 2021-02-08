@@ -111,6 +111,11 @@ declare module 'react-idle-timer' {
     resume(): void
 
     /**
+     * Returns wether or not the user is idle
+     */
+    isIdle(): boolean
+
+    /**
      * Time remaining before idle (number of ms)
      */
     getRemainingTime(): number
@@ -121,14 +126,24 @@ declare module 'react-idle-timer' {
     getElapsedTime(): number
 
     /**
+     * Last time the user was idle
+     */
+    getLastIdleTime(): number
+
+    /**
      * Last time the user was active
      */
     getLastActiveTime(): number
 
     /**
-     * Returns wether or not the user is idle
+     * Total time in milliseconds user was idle
      */
-    isIdle(): boolean
+    getTotalIdleTime(): number
+
+    /**
+     * Total time in milliseconds user was active
+     */
+    getTotalActiveTime(): number
   }
 
   interface IdleTimerProps {
@@ -216,6 +231,11 @@ declare module 'react-idle-timer' {
     resume(): void
 
     /**
+    * Returns wether or not the user is idle
+    */
+    isIdle(): boolean
+
+    /**
      * Time remaining before idle (number of ms)
      */
     getRemainingTime(): number
@@ -231,24 +251,19 @@ declare module 'react-idle-timer' {
     getLastIdleTime(): number
 
     /**
-     * Total time in milliseconds user was idle
-     */
-    getTotalIdleTime(): number
-
-    /**
      * Last time the user was active
      */
     getLastActiveTime(): number
 
     /**
+     * Total time in milliseconds user was idle
+     */
+    getTotalIdleTime(): number
+
+    /**
      * Total time in milliseconds user was active
      */
     getTotalActiveTime(): number
-
-    /**
-     * Returns wether or not the user is idle
-     */
-    isIdle(): boolean
   }
 
   export function useIdleTimer(props: IdleTimerProps): IdleTimerAPI
