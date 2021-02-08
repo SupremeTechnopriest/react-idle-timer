@@ -1,3 +1,6 @@
+### 4.5.3
+- Bind `getTotalActiveTime` and `getTotalIdleTime` to component scope making the methods callable.
+
 ### 4.5.2
 - Added the ability to set timeout after the component has been mounted. Doing so will reset the timer automatically.
 
