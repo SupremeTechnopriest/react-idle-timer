@@ -1,3 +1,6 @@
+### 4.5.4
+- Bind `getLastIdleTime` to component scope making the method callable.
+
 ### 4.5.3
 - Bind `getTotalActiveTime` and `getTotalIdleTime` to component scope making the methods callable.
 
