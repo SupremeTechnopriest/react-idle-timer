@@ -1,3 +1,6 @@
+### 4.5.5
+- Setting a timeout dynamically will now call onActive if the user is idle.
+
 ### 4.5.4
 - Bind `getLastIdleTime` to component scope making the method callable.
 
