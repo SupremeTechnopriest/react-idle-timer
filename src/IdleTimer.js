@@ -120,9 +120,7 @@ class IdleTimer extends Component {
     this._bindEvents()
     // If startOnMount is enabled start the timer
     const { startOnMount } = this.props
-    if (startOnMount) {
-      this.reset()
-    }
+    if (startOnMount) this.reset()
   }
 
   componentDidUpdate (prevProps) {
@@ -139,8 +137,9 @@ class IdleTimer extends Component {
       this._handleEvent = throttled(this._handleEvent, this.props.eventsThrottle)
     }
     // Update timeout value
-    if (prevProps.timeout !== this.props.timeout && this.tid !== null) {
-      this.reset()
+    if (prevProps.timeout !== this.props.timeout) {
+      if (this.state.idle) this._toggleIdleState()
+      if (this.tid !== null) this.reset()
     }
   }
 

@@ -215,6 +215,20 @@ describe('IdleTimer', () => {
       expect(props.onIdle.callCount).toBe(2)
       done()
     })
+
+    it('Should call onActive if timeout changes while idle', async done => {
+      props.onIdle = sinon.spy()
+      props.onActive = sinon.spy()
+      props.timeout = 500
+      const timer = idleTimer()
+      await sleep(600)
+      expect(props.onIdle.callCount).toBe(1)
+      timer.setProps({ timeout: 300 })
+      await sleep(400)
+      expect(props.onActive.callCount).toBe(1)
+      expect(props.onIdle.callCount).toBe(2)
+      done()
+    })
   })
 
   describe('events', () => {

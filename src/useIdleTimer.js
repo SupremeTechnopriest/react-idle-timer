@@ -44,6 +44,7 @@ function useIdleTimer ({
   const lastActive = useRef(null)
   const lastIdle = useRef(null)
   const idleTime = useRef(0)
+  const firstLoad = useRef(true)
   const _timeout = useRef(timeout)
 
   // Event emitters
@@ -359,7 +360,9 @@ function useIdleTimer ({
 
   useEffect(() => {
     _timeout.current = timeout
+    if (idle.current && !firstLoad.current) _toggleIdleState()
     if (tId.current !== null) reset()
+    firstLoad.current = false
   }, [timeout])
 
   return {

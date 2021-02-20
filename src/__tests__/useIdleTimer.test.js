@@ -136,6 +136,21 @@ describe('useIdleTimer', () => {
         expect(props.onIdle.callCount).toBe(2)
         done()
       })
+
+      it('Should call onActive if timeout changes while idle', async done => {
+        props.onIdle = sinon.spy()
+        props.onActive = sinon.spy()
+        props.timeout = 500
+        const { rerender } = idleTimer()
+        await sleep(600)
+        expect(props.onIdle.callCount).toBe(1)
+        props.timeout = 300
+        rerender()
+        await sleep(400)
+        expect(props.onActive.callCount).toBe(1)
+        expect(props.onIdle.callCount).toBe(2)
+        done()
+      })
     })
 
     describe('events', () => {
