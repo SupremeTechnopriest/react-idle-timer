@@ -83,7 +83,7 @@ function useIdleTimer ({
    * Event handler
    * @param {Event} e
    */
-  let _handleEvent = e => {
+  const _handleEvent = e => {
     // Fire onAction event
     emitOnAction.current(e)
 
@@ -141,6 +141,12 @@ function useIdleTimer ({
   }
 
   /**
+   * Reference to current handleEvent function.
+   * @private
+   */
+  const handleEvent = useRef(_handleEvent)
+
+  /**
    * Binds the specified events
    * @private
    */
@@ -152,7 +158,7 @@ function useIdleTimer ({
     // to the supplied element
     if (!eventsBound.current) {
       events.forEach(e => {
-        element.addEventListener(e, _handleEvent, {
+        element.addEventListener(e, handleEvent.current, {
           capture,
           passive
         })
@@ -172,7 +178,7 @@ function useIdleTimer ({
     // Unbind all events
     if (eventsBound.current || force) {
       events.forEach(e => {
-        element.removeEventListener(e, _handleEvent, {
+        element.removeEventListener(e, handleEvent.current, {
           capture,
           passive
         })
@@ -319,7 +325,7 @@ function useIdleTimer ({
 
     // Create a throttle event handler if applicable
     if (eventsThrottle > 0) {
-      _handleEvent = throttled(_handleEvent, eventsThrottle)
+      handleEvent.current = throttled(_handleEvent, eventsThrottle)
     }
 
     // Bind the events
