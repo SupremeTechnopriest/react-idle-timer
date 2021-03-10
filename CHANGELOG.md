@@ -1,3 +1,6 @@
+### 4.5.6
+- Calling `pause` or `resume` from inside a `useEffect` will now properly unbind and bind events.
+
 ### 4.5.5
 - Setting a timeout dynamically will now call onActive if the user is idle.
 
