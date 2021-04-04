@@ -54,12 +54,13 @@ function useIdleTimer ({
   let manager
   if (crossTab) {
     if (crossTab === true) crossTab = {}
-    crossTab = Object.assign(crossTab, {
+    crossTab = Object.assign({
       channelName: 'idle-timer',
       fallbackInterval: 2000,
       responseTime: 100,
-      removeTimeout: 1000 * 60
-    })
+      removeTimeout: 1000 * 60,
+      emitOnAllTabs: false
+    }, crossTab)
   }
 
   // Event emitters
@@ -372,6 +373,7 @@ function useIdleTimer ({
         channelName: crossTab.channelName,
         fallbackInterval: crossTab.fallbackInterval,
         responseTime: crossTab.responseTime,
+        emitOnAllTabs: crossTab.emitOnAllTabs,
         onIdle: emitOnIdle.current,
         onActive: emitOnActive.current
       })
@@ -551,7 +553,8 @@ useIdleTimer.propTypes = {
       channelName: PropTypes.string,
       fallbackInterval: PropTypes.number,
       responseTime: PropTypes.number,
-      removeTimeout: PropTypes.number
+      removeTimeout: PropTypes.number,
+      emitOnAllTabs: PropTypes.bool
     })
   ])
 }

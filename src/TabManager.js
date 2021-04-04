@@ -4,6 +4,7 @@ export const TabManager = ({
   channelName,
   fallbackInterval,
   responseTime,
+  emitOnAllTabs,
   onIdle,
   onActive
 }) => {
@@ -37,6 +38,12 @@ export const TabManager = ({
       case 'active':
         active(id)
         break
+      case 'emitIdle':
+        onIdle()
+        break
+      case 'emitActive':
+        onActive()
+        break
       default:
         // no op
     }
@@ -53,6 +60,9 @@ export const TabManager = ({
       if (!allIdle && idle) {
         allIdle = true
         onIdle()
+        if (emitOnAllTabs) {
+          send('emitIdle')
+        }
       }
     }
   }
@@ -64,6 +74,9 @@ export const TabManager = ({
       if (allIdle && active) {
         allIdle = false
         onActive()
+        if (emitOnAllTabs) {
+          send('emitActive')
+        }
       }
     }
   }

@@ -162,17 +162,17 @@ declare module 'react-idle-timer' {
     /**
      * Manager type. Selected automatically if left undefined. 
      */
-    type?: ManagerType,
+    type?: ManagerType
 
     /**
      * Broadcast Channel name. Default: idle-timer.
      */
-    channelName?: string,
+    channelName?: string
 
     /**
      * How often renegotiation for leader will occur. Default: 2000.
      */
-    fallbackInterval?: number,
+    fallbackInterval?: number
     
     /**
      * How long tab instances will have to respond. Default: 100.
@@ -183,6 +183,11 @@ declare module 'react-idle-timer' {
      * LocalStorage item time to live. Default: 60000.
      */
     removeTimeout?: number
+
+    /**
+     * Emits events on all tabs. Default: false.
+     */
+    emitOnAllTabs?: boolean
   }
 
   interface IdleTimerProps {
