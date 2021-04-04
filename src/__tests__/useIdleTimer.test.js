@@ -38,9 +38,11 @@ describe('useIdleTimer', () => {
       throttle: undefined,
       eventsThrottle: undefined,
       startOnMount: undefined,
+      startManually: undefined,
       stopOnIdle: undefined,
       capture: undefined,
-      passive: undefined
+      passive: undefined,
+      crossTab: undefined
     }
   })
 
@@ -151,6 +153,26 @@ describe('useIdleTimer', () => {
         expect(props.onIdle.callCount).toBe(2)
         done()
       })
+
+      it('Should require manual call to start when startManually is set', async done => {
+        props.startManually = true
+        props.onIdle = sinon.spy()
+        props.onActive = sinon.spy()
+        props.timeout = 400
+        const { result } = idleTimer()
+        expect(result.current.isIdle()).toBe(true)
+        simulant.fire(document, 'mousedown')
+        expect(result.current.isIdle()).toBe(true)
+        result.current.start()
+        expect(result.current.isIdle()).toBe(false)
+        await sleep(500)
+        expect(props.onIdle.callCount).toBe(1)
+        expect(props.onActive.callCount).toBe(0)
+        expect(result.current.isIdle()).toBe(true)
+        simulant.fire(document, 'mousedown')
+        expect(props.onActive.callCount).toBe(1)
+        done()
+      })
     })
 
     describe('events', () => {
@@ -230,18 +252,11 @@ describe('useIdleTimer', () => {
 
       it('Should error if debounce and throttle are set', done => {
         jest.spyOn(console, 'error')
-        console.error.mockImplementation(() => { })
         props.timeout = 400
         props.debounce = 200
         props.throttle = 200
-        let errorMessage
-        try {
-          idleTimer()
-        } catch (err) {
-          errorMessage = err.message
-        }
-        expect(errorMessage).toBe('onAction can either be throttled or debounced (not both)')
-        console.error.mockRestore()
+        const { result } = idleTimer()
+        expect(result.error).toEqual(new Error('onAction can either be throttled or debounced (not both)'))
         done()
       })
 
