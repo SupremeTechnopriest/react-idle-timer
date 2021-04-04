@@ -541,13 +541,13 @@ useIdleTimer.propTypes = {
   capture: PropTypes.bool,
   /**
    * Cross Tab functionality.
-   * default: true
+   * default: false
    * @type {Boolean|Object}
    */
   crossTab: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.shape({
-      type: PropTypes.oneOf(['native', 'localStorage', 'simulate']),
+      type: PropTypes.oneOf(['broadcastMessage', 'localStorage', 'simulate']),
       channelName: PropTypes.string,
       fallbackInterval: PropTypes.number,
       responseTime: PropTypes.number,
