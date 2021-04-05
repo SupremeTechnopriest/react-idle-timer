@@ -26,10 +26,7 @@ export default function App () {
   } = useIdleTimer({
     timeout,
     onActive: handleOnActive,
-    onIdle: handleOnIdle,
-    crossTab: {
-      emitOnAllTabs: true
-    }
+    onIdle: handleOnIdle
   })
 
   const handleReset = () => reset()

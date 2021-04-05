@@ -10,7 +10,7 @@
  * @private
  */
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { TabManager } from './TabManager'
 import { IS_BROWSER, DEFAULT_ELEMENT, DEFAULT_EVENTS, debounced, throttled } from './utils'
@@ -62,6 +62,11 @@ function useIdleTimer ({
       emitOnAllTabs: false
     }, crossTab)
   }
+
+  // Set callbacks
+  onActive = useCallback(onActive)
+  onIdle = useCallback(onIdle)
+  onAction = useCallback(onAction)
 
   // Event emitters
   const emitOnIdle = useRef(onIdle)
@@ -424,7 +429,7 @@ function useIdleTimer ({
     } else {
       emitOnAction.current = onAction
     }
-  }, [onAction])
+  }, [throttle, debounce])
 
   useEffect(() => {
     _timeout.current = timeout
