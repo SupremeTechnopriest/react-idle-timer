@@ -395,11 +395,14 @@ function useIdleTimer ({
   }, [])
 
   useEffect(() => {
+    const eventsWereBound = eventsBound.current
+    if (eventsWereBound) _unbindEvents()
     if (eventsThrottle > 0) {
       handleEvent.current = throttled(_handleEvent, eventsThrottle)
     } else {
       handleEvent.current = _handleEvent
     }
+    if (eventsWereBound) _bindEvents()
   }, [eventsThrottle])
 
   useEffect(() => {
