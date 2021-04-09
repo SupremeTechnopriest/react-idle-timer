@@ -1,6 +1,4 @@
-import { microSeconds as micro } from '../../utils'
-
-export const microSeconds = micro
+import { microSeconds } from '../../utils'
 
 export const type = 'simulate'
 
@@ -36,10 +34,12 @@ export function onMessage (channelState, fn) {
   channelState.messagesCallback = fn
 }
 
+/* istanbul ignore next */
 export function canBeUsed () {
   return true
 }
 
+/* istanbul ignore next */
 export function averageResponseTime () {
   return 5
 }

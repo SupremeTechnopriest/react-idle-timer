@@ -1,4 +1,4 @@
-import { sleep, randomToken, IS_BROWSER } from '../utils'
+import { IS_BROWSER, sleep, randomToken } from '../utils'
 
 class LeaderElection {
   constructor (channel, options) {
@@ -9,15 +9,16 @@ class LeaderElection {
     this.isDead = false
     this.token = randomToken()
 
-    this._isApl = false // _isApplying
+    this._isApplying = false
     this._reApply = false
 
     // things to clean up
-    this._unl = [] // _unloads
-    this._lstns = [] // _listeners
-    this._invs = [] // _intervals
-    this._dpL = () => { } // onduplicate listener
-    this._dpLC = false // true when onduplicate called
+    this._unloadFns = []
+    this._listeners = []
+    this._intervals = []
+    this._duplicateListeners = () => { }
+    this._duplicateCalled = false
+    this._onBeforeDie = () => {}
   }
 
   applyOnce () {
@@ -25,11 +26,11 @@ class LeaderElection {
     if (this.isDead) return Promise.resolve(false)
 
     // do nothing if already running
-    if (this._isApl) {
+    if (this._isApplying) {
       this._reApply = true
       return Promise.resolve(false)
     }
-    this._isApl = true
+    this._isApplying = true
 
     let stopCriteria = false
     const received = []
@@ -39,22 +40,22 @@ class LeaderElection {
         received.push(msg)
 
         if (msg.action === 'apply') {
-          // other is applying
+          // Other is applying
           if (msg.token > this.token) {
-            // other has higher token, stop applying
+            // Other has higher token, stop applying
             stopCriteria = true
           }
         }
 
         if (msg.action === 'tell') {
-          // other is already leader
+          // Other is already leader
           stopCriteria = true
         }
       }
     }
     this._channel.addEventListener('internal', handleMessage)
 
-    const ret = _sendMessage(this, 'apply') // send out that this one is applying
+    return _sendMessage(this, 'apply') // send out that this one is applying
       .then(() => sleep(this._options.responseTime)) // let others time to respond
       .then(() => {
         if (stopCriteria) return Promise.reject(new Error())
@@ -70,41 +71,49 @@ class LeaderElection {
       .catch(() => false) // apply not successful
       .then(success => {
         this._channel.removeEventListener('internal', handleMessage)
-        this._isApl = false
+        this._isApplying = false
         if (!success && this._reApply) {
           this._reApply = false
           return this.applyOnce()
         } else return success
       })
-    return ret
   }
 
   awaitLeadership () {
     if (
-      /* _awaitLeadershipPromise */
-      !this._aLP
+      !this._awaitLeadershipPromise
     ) {
-      this._aLP = _awaitLeadershipOnce(this)
+      this._awaitLeadershipPromise = _awaitLeadershipOnce(this)
     }
-    return this._aLP
+    return this._awaitLeadershipPromise
   }
 
-  set onduplicate (fn) {
-    this._dpL = fn
+  set onDuplicate (fn) {
+    this._duplicateListeners = fn
   }
 
-  get onduplicate () {
-    return this._dpL
+  /* istanbul ignore next */
+  get onDuplicate () {
+    return this._duplicateListeners
+  }
+
+  set onBeforeDie (fn) {
+    this._onBeforeDie = fn
+  }
+
+  /* istanbul ignore next */
+  get onBeforeDie () {
+    return this._onBeforeDie
   }
 
   die () {
     if (this.isDead) return
     this.isDead = true
 
-    this._channel.postMessage(['unregister', this.token])
-    this._lstns.forEach(listener => this._channel.removeEventListener('internal', listener))
-    this._invs.forEach(interval => clearInterval(interval))
-    this._unl.forEach(uFn => {
+    this.onBeforeDie()
+    this._listeners.forEach(listener => this._channel.removeEventListener('internal', listener))
+    this._intervals.forEach(interval => clearInterval(interval))
+    this._unloadFns.forEach(uFn => {
       if (IS_BROWSER) {
         window.removeEventListener(uFn[0], uFn[1])
       }
@@ -120,6 +129,7 @@ function _awaitLeadershipOnce (leaderElector) {
     let resolved = false
 
     function finish () {
+      /* istanbul ignore next */
       if (resolved) {
         return
       }
@@ -138,13 +148,14 @@ function _awaitLeadershipOnce (leaderElector) {
 
     // try on fallbackInterval
     const interval = setInterval(() => {
+      /* istanbul ignore next */
       leaderElector.applyOnce().then(() => {
         if (leaderElector.isLeader) {
           finish()
         }
       })
     }, leaderElector._options.fallbackInterval)
-    leaderElector._invs.push(interval)
+    leaderElector._intervals.push(interval)
 
     // try when other leader dies
     const whenDeathListener = msg => {
@@ -155,12 +166,12 @@ function _awaitLeadershipOnce (leaderElector) {
       }
     }
     leaderElector._channel.addEventListener('internal', whenDeathListener)
-    leaderElector._lstns.push(whenDeathListener)
+    leaderElector._listeners.push(whenDeathListener)
   })
 }
 
 /**
- * sends and internal message over the broadcast-channel
+ * Sends and internal message over the broadcast-channel
  */
 function _sendMessage (leaderElector, action) {
   const msgJson = {
@@ -173,46 +184,49 @@ function _sendMessage (leaderElector, action) {
 
 export function beLeader (leaderElector) {
   leaderElector.isLeader = true
-  const unloadFn = () => leaderElector.die()
+  const unloadFn = () => {
+    leaderElector.die()
+  }
+
   if (IS_BROWSER) {
     window.addEventListener('beforeUnload', unloadFn)
     window.addEventListener('unload', unloadFn)
   }
 
-  leaderElector._unl.push(['beforeUnload', unloadFn])
-  leaderElector._unl.push(['unload', unloadFn])
+  leaderElector._unloadFns.push(['beforeUnload', unloadFn])
+  leaderElector._unloadFns.push(['unload', unloadFn])
 
   const isLeaderListener = msg => {
     if (msg.context === 'leader' && msg.action === 'apply') {
       _sendMessage(leaderElector, 'tell')
     }
 
-    if (msg.context === 'leader' && msg.action === 'tell' && !leaderElector._dpLC) {
+    if (msg.context === 'leader' && msg.action === 'tell' && !leaderElector._duplicateCalled) {
       /**
-       * another instance is also leader!
+       * Another instance is also leader!
        * This can happen on rare events
        * like when the CPU is at 100% for long time
        * or the tabs are open very long and the browser throttles them.
-       * @link https://github.com/pubkey/broadcast-channel/issues/414
-       * @link https://github.com/pubkey/broadcast-channel/issues/385
        */
-      leaderElector._dpLC = true
-      leaderElector._dpL() // message the lib user so the app can handle the problem
+      leaderElector._duplicateCalled = true
+      leaderElector._duplicateListeners() // message the lib user so the app can handle the problem
       _sendMessage(leaderElector, 'tell') // ensure other leader also knows the problem
     }
   }
   leaderElector._channel.addEventListener('internal', isLeaderListener)
-  leaderElector._lstns.push(isLeaderListener)
+  leaderElector._listeners.push(isLeaderListener)
   return _sendMessage(leaderElector, 'tell')
 }
 
 export function createLeaderElection (channel, options) {
   if (channel._leaderElector) {
-    throw new Error('BroadcastChannel already has a leader-elector')
+    throw new Error('❌ MessageChannel already has a leader-elector')
   }
 
   const elector = new LeaderElection(channel, options)
-  channel._befC.push(() => elector.die())
+  channel._beforeClose.push(() => {
+    elector.die()
+  })
 
   channel._leaderElector = elector
   return elector

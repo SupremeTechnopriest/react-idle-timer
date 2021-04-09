@@ -1,7 +1,7 @@
-import { chooseMethod } from './method-chooser'
+import { chooseMethod } from './methodChooser'
 import { isPromise } from '../utils'
 
-export class BroadcastChannel {
+export class MessageChannel {
   constructor (name, options = {}) {
     this.name = name
     this.options = options
@@ -9,19 +9,19 @@ export class BroadcastChannel {
     this.closed = false
 
     // isListening
-    this._iL = false
+    this._isListening = false
 
     /**
      * _onMessageListener
      * setting onmessage twice,
      * will overwrite the first listener
      */
-    this._onML = null
+    this._onMessageListener = null
 
     /**
      * _addEventListeners
      */
-    this._addEL = {
+    this._addEventListeners = {
       message: [],
       internal: []
     }
@@ -31,19 +31,19 @@ export class BroadcastChannel {
      * where the sending is still in progress
      * @type {Set<Promise>}
      */
-    this._uMP = new Set()
+    this._unSendMessagePromises = new Set()
 
     /**
      * _beforeClose
      * array of promises that will be awaited
      * before the channel is closed
      */
-    this._befC = []
+    this._beforeClose = []
 
     /**
      * _preparePromise
      */
-    this._prepP = null
+    this._preparePromises = null
     _prepareChannel(this)
   }
 
@@ -67,17 +67,19 @@ export class BroadcastChannel {
       time,
       fn
     }
-    _removeListenerObject(this, 'message', this._onML)
+    _removeListenerObject(this, 'message', this._onMessageListener)
     if (fn && typeof fn === 'function') {
-      this._onML = listenObj
+      this._onMessageListener = listenObj
       _addListenerObject(this, 'message', listenObj)
     } else {
-      this._onML = null
+      /* istanbul ignore next */
+      this._onMessageListener = null
     }
   }
 
+  /* istanbul ignore next */
   get onmessage () {
-    return this._onML
+    return this._onMessageListener
   }
 
   addEventListener (type, fn) {
@@ -90,7 +92,7 @@ export class BroadcastChannel {
   }
 
   removeEventListener (type, fn) {
-    const obj = this._addEL[type].find(obj => obj.fn === fn)
+    const obj = this._addEventListeners[type].find(obj => obj.fn === fn)
     _removeListenerObject(this, type, obj)
   }
 
@@ -99,21 +101,21 @@ export class BroadcastChannel {
       return
     }
     this.closed = true
-    const awaitPrepare = this._prepP ? this._prepP : Promise.resolve()
+    const awaitPrepare = this._preparePromises ? this._preparePromises : Promise.resolve()
 
-    this._onML = null
-    this._addEL.message = []
+    this._onMessageListener = null
+    this._addEventListeners.message = []
 
     return awaitPrepare
-      // wait until all current sending are processed
-      .then(() => Promise.all(Array.from(this._uMP)))
-      // run before-close hooks
-      .then(() => Promise.all(this._befC.map(fn => fn())))
-      // close the channel
+      // Wait until all current sending are processed
+      .then(() => Promise.all(Array.from(this._unSendMessagePromises)))
+      // Run before-close hooks
+      .then(() => Promise.all(this._beforeClose.map(fn => fn())))
+      // Close the channel
       .then(() => this.method.close(this._state))
   }
 
-  type () {
+  get type () {
     return this.method.type
   }
 
@@ -122,10 +124,6 @@ export class BroadcastChannel {
   }
 }
 
-/**
- * Post a message over the channel
- * @returns {Promise} that resolved when the message sending is done
- */
 function _post (broadcastChannel, type, msg) {
   const time = broadcastChannel.method.microSeconds()
   const msgObj = {
@@ -134,18 +132,18 @@ function _post (broadcastChannel, type, msg) {
     data: msg
   }
 
-  const awaitPrepare = broadcastChannel._prepP ? broadcastChannel._prepP : Promise.resolve()
+  const awaitPrepare = broadcastChannel._preparePromises ? broadcastChannel._preparePromises : Promise.resolve()
   return awaitPrepare.then(() => {
     const sendPromise = broadcastChannel.method.postMessage(
       broadcastChannel._state,
       msgObj
     )
 
-    // add/remove to unsend messages list
-    broadcastChannel._uMP.add(sendPromise)
+    // add/remove to un-send messages list
+    broadcastChannel._unSendMessagePromises.add(sendPromise)
     sendPromise
       .catch()
-      .then(() => broadcastChannel._uMP.delete(sendPromise))
+      .then(() => broadcastChannel._unSendMessagePromises.delete(sendPromise))
 
     return sendPromise
   })
@@ -153,8 +151,9 @@ function _post (broadcastChannel, type, msg) {
 
 function _prepareChannel (channel) {
   const maybePromise = channel.method.create(channel.name, channel.options)
+  /* istanbul ignore next */
   if (isPromise(maybePromise)) {
-    channel._prepP = maybePromise
+    channel._preparePromises = maybePromise
     maybePromise.then(s => {
       channel._state = s
     })
@@ -164,27 +163,27 @@ function _prepareChannel (channel) {
 }
 
 function _hasMessageListeners (channel) {
-  if (channel._addEL.message.length > 0) return true
-  if (channel._addEL.internal.length > 0) return true
+  if (channel._addEventListeners.message.length > 0) return true
+  if (channel._addEventListeners.internal.length > 0) return true
   return false
 }
 
 function _addListenerObject (channel, type, obj) {
-  channel._addEL[type].push(obj)
+  channel._addEventListeners[type].push(obj)
   _startListening(channel)
 }
 
 function _removeListenerObject (channel, type, obj) {
-  channel._addEL[type] = channel._addEL[type].filter(o => o !== obj)
+  channel._addEventListeners[type] = channel._addEventListeners[type].filter(o => o !== obj)
   _stopListening(channel)
 }
 
 function _startListening (channel) {
-  if (!channel._iL && _hasMessageListeners(channel)) {
+  if (!channel._isListening && _hasMessageListeners(channel)) {
     // someone is listening, start subscribing
 
     const listenerFn = msgObj => {
-      channel._addEL[msgObj.type].forEach(obj => {
+      channel._addEventListeners[msgObj.type].forEach(obj => {
         if (msgObj.time >= obj.time) {
           obj.fn(msgObj.data)
         }
@@ -192,9 +191,10 @@ function _startListening (channel) {
     }
 
     const time = channel.method.microSeconds()
-    if (channel._prepP) {
-      channel._prepP.then(() => {
-        channel._iL = true
+    if (channel._preparePromises) {
+      /* istanbul ignore next */
+      channel._preparePromises.then(() => {
+        channel._isListening = true
         channel.method.onMessage(
           channel._state,
           listenerFn,
@@ -202,7 +202,7 @@ function _startListening (channel) {
         )
       })
     } else {
-      channel._iL = true
+      channel._isListening = true
       channel.method.onMessage(
         channel._state,
         listenerFn,
@@ -213,9 +213,9 @@ function _startListening (channel) {
 }
 
 function _stopListening (channel) {
-  if (channel._iL && !_hasMessageListeners(channel)) {
+  if (channel._isListening && !_hasMessageListeners(channel)) {
     // no one is listening, stop subscribing
-    channel._iL = false
+    channel._isListening = false
     const time = channel.method.microSeconds()
     channel.method.onMessage(
       channel._state,

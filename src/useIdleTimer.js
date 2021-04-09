@@ -52,6 +52,7 @@ function useIdleTimer ({
 
   // Tab manager reference
   let manager
+  /* istanbul ignore next */
   if (crossTab) {
     if (crossTab === true) crossTab = {}
     crossTab = Object.assign({
@@ -91,11 +92,8 @@ function useIdleTimer ({
       }
       lastIdle.current = (+new Date()) - _timeout.current
       if (manager) {
-        if (manager.isLeader()) {
-          manager.idle()
-        } else {
-          manager.send('idle')
-        }
+        /* istanbul ignore next */
+        manager.idle()
       } else {
         emitOnIdle.current(e)
       }
@@ -103,11 +101,8 @@ function useIdleTimer ({
       idleTime.current += (+new Date()) - lastIdle.current
       _bindEvents()
       if (manager) {
-        if (manager.isLeader()) {
-          manager.active()
-        } else {
-          manager.send('active')
-        }
+        /* istanbul ignore next */
+        manager.active()
       } else {
         emitOnActive.current(e)
       }
@@ -126,6 +121,7 @@ function useIdleTimer ({
     if (remaining.current) return
 
     // Mousemove event
+    /* istanbul ignore next */
     if (e.type === 'mousemove') {
       // If coords are same, it didn't move
       if (e.pageX === pageX && e.pageY === pageY) {
@@ -164,13 +160,8 @@ function useIdleTimer ({
     pageX.current = e.pageX
     pageY.current = e.pageY
 
-    // If the user is idle and stopOnIdle flag is not set
-    // set a new timeout
-    if (idle.current) {
-      if (!stopOnIdle) {
-        tId.current = setTimeout(_toggleIdleState, _timeout.current)
-      }
-    } else {
+    // If the user is active, set a new timeout
+    if (!idle.current) {
       tId.current = setTimeout(_toggleIdleState, _timeout.current)
     }
   }
@@ -366,12 +357,8 @@ function useIdleTimer ({
       throw new Error('onAction can either be throttled or debounced (not both)')
     }
 
-    // Create a throttle event handler if applicable
-    if (eventsThrottle > 0) {
-      handleEvent.current = throttled(_handleEvent, eventsThrottle)
-    }
-
     // Set up cross tab
+    /* istanbul ignore next */
     if (crossTab) {
       manager = TabManager({
         type: crossTab.type,
@@ -382,7 +369,6 @@ function useIdleTimer ({
         onIdle: emitOnIdle.current,
         onActive: emitOnActive.current
       })
-      manager.send('register')
     }
 
     // If startOnMount is enabled, start the timer
@@ -407,6 +393,14 @@ function useIdleTimer ({
       if (crossTab) await manager.close()
     }
   }, [])
+
+  useEffect(() => {
+    if (eventsThrottle > 0) {
+      handleEvent.current = throttled(_handleEvent, eventsThrottle)
+    } else {
+      handleEvent.current = _handleEvent
+    }
+  }, [eventsThrottle])
 
   useEffect(() => {
     emitOnIdle.current = onIdle

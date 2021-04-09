@@ -1,17 +1,10 @@
-/**
- * A localStorage-only method which uses localStorage and its 'storage'-event
- * @link https://caniuse.com/#feat=namevalue-storage
- */
-
-import ObliviousSet from '../oblivious-set'
+import ObliviousSet from '../ObliviousSet'
 
 import {
   sleep,
   randomToken,
-  microSeconds as micro
+  microSeconds
 } from '../../utils'
-
-export const microSeconds = micro
 
 const KEY_PREFIX = 'broadcastChannel-'
 export const type = 'localStorage'
@@ -84,8 +77,9 @@ export function removeStorageEventListener (listener) {
   window.removeEventListener('storage', listener)
 }
 
-export function create (channelName, options) {
+export function create (channelName, options = {}) {
   if (!canBeUsed()) {
+    /* istanbul ignore next */
     throw new Error('BroadcastChannel: localStorage cannot be used')
   }
 
@@ -142,12 +136,15 @@ export function canBeUsed () {
     // Safari 10 in private mode will not allow write access to local
     // storage and fail with a QuotaExceededError. See
     // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API#Private_Browsing_Incognito_modes
+
+    /* istanbul ignore next */
     return false
   }
 
   return true
 }
 
+/* istanbul ignore next */
 export function averageResponseTime () {
   const defaultTime = 120
   const userAgent = navigator.userAgent.toLowerCase()

@@ -1,4 +1,4 @@
-import { BroadcastChannel, createLeaderElection } from './manager'
+import { MessageChannel, createLeaderElection } from './MessageChannel'
 export const TabManager = ({
   type,
   channelName,
@@ -8,7 +8,7 @@ export const TabManager = ({
   onIdle,
   onActive
 }) => {
-  const channel = new BroadcastChannel(channelName, { type })
+  const channel = new MessageChannel(channelName, { type })
   const elector = createLeaderElection(channel, { fallbackInterval, responseTime })
   const registry = {}
 
@@ -55,6 +55,7 @@ export const TabManager = ({
 
   const idle = (id = elector.token) => {
     registry[id] = true
+
     if (isLeader()) {
       const idle = Object.values(registry).every(v => v)
       if (!allIdle && idle) {
@@ -64,6 +65,8 @@ export const TabManager = ({
           send('emitIdle')
         }
       }
+    } else {
+      send('idle')
     }
   }
 
@@ -78,10 +81,14 @@ export const TabManager = ({
           send('emitActive')
         }
       }
+    } else {
+      send('active')
     }
   }
 
-  elector.onduplicate = async () => await elector.die()
+  /* istanbul ignore next */
+  elector.onDuplicate = async () => await elector.die()
+  elector.onBeforeDie = () => send('unregister')
 
   const send = message => {
     if (!channel.isClosed()) channel.postMessage([message, elector.token])
@@ -91,6 +98,9 @@ export const TabManager = ({
     await elector.die()
     await channel.close()
   }
+
+  // Register self with remote tabs
+  send('register')
 
   return { close, send, isLeader, idle, active, setAllIdle }
 }

@@ -1,15 +1,12 @@
 /* eslint-env browser */
-import { microSeconds as micro } from '../../utils'
+import { microSeconds } from '../../utils'
 
-export const microSeconds = micro
-
-export const type = 'native'
+export const type = 'broadcastChannel'
 
 export function create (channelName) {
   const state = {
     messagesCallback: null,
-    bc: new BroadcastChannel(channelName),
-    subFns: [] // subscriberFunctions
+    bc: new BroadcastChannel(channelName)
   }
 
   state.bc.onmessage = msg => {
@@ -23,7 +20,6 @@ export function create (channelName) {
 
 export function close (channelState) {
   channelState.bc.close()
-  channelState.subFns = []
 }
 
 export function postMessage (channelState, messageJson) {
@@ -31,6 +27,7 @@ export function postMessage (channelState, messageJson) {
     channelState.bc.postMessage(messageJson, false)
     return Promise.resolve()
   } catch (err) {
+    /* istanbul ignore next */
     return Promise.reject(err)
   }
 }
@@ -42,7 +39,10 @@ export function onMessage (channelState, fn) {
 export function canBeUsed () {
   if (typeof BroadcastChannel === 'function') {
     return true
-  } else return false
+  } else {
+    /* istanbul ignore next */
+    return false
+  }
 }
 
 export function averageResponseTime () {

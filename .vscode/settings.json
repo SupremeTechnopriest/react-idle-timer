@@ -9,7 +9,6 @@
     "debounced",
     "idletimer",
     "module",
-    "onduplicate",
     "rerender",
     "sourcemap",
     "transitionend",

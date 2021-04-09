@@ -116,6 +116,7 @@ export function randomToken () {
  */
 export function isPromise (obj) {
   if (obj && typeof obj.then === 'function') {
+    /* istanbul ignore next */
     return true
   } else {
     return false
@@ -134,12 +135,47 @@ export function sleep (time = 0) {
 }
 
 /**
- * Creates a random integer between two numbers.
+ * Get the current timestamp.
  *
- * @param {Number} min  Lower bounds.
- * @param {Number} max  Upper bounds.
- * @returns {Number} A random integer.
+ * @returns {Number}
+ * @private
  */
-export function randomInt (min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min)
+export function now () {
+  return new Date().getTime()
+}
+
+/**
+ * Waits until the given function returns true
+ * @param  {function}  fn
+ * @return {Promise}
+ */
+export function waitUntil (fn, timeout = 0, interval = 20) {
+  let timedOut = false
+  let ok = false
+
+  /* istanbul ignore next */
+  if (timeout !== 0) {
+    sleep(timeout).then(() => {
+      timedOut = true
+    })
+  }
+
+  return new Promise((resolve, reject) => {
+    const runLoop = () => {
+      if (ok) {
+        resolve()
+        return
+      }
+      /* istanbul ignore next */
+      if (timedOut) {
+        reject(new Error(`❌ waitUntil reached timeout of ${timeout}ms`))
+        return
+      }
+      sleep(interval).then(() => {
+        ok = fn()
+        runLoop()
+      })
+    }
+    runLoop()
+  })
 }

@@ -1,10 +1,10 @@
-import BroadcastMessageMethod from './methods/broadcast-message'
-import LocalStorageMethod from './methods/local-storage'
+import BroadcastChannelMethod from './methods/broadcastChannel'
+import LocalStorageMethod from './methods/localStorage'
 import SimulateMethod from './methods/simulate'
 
-// order is important
+// Order is important
 const METHODS = [
-  BroadcastMessageMethod,
+  BroadcastChannelMethod,
   LocalStorageMethod
 ]
 
@@ -22,6 +22,8 @@ export function chooseMethod (options = {}) {
   }
 
   const useMethod = METHODS.find(method => method.canBeUsed())
+
+  /* istanbul ignore next */
   if (!useMethod) {
     throw new Error(`❌ No method found ${JSON.stringify(METHODS.map(m => m.type))}`)
   }
