@@ -8,7 +8,7 @@
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
-⚡️ **Support for React 16**<br/>
+⚡️ **Cross Tab Event Reconciliation**<br/>
 🚀 **Support for Isomorphic React**<br/>
 🎣 **Hook Implementation**
 
@@ -17,7 +17,7 @@
 #### Version `4.6.0` adds cross tab support:
 ☝️ Added robust cross tab support with configurable modes and messaging strategies. See the [documentation](https://github.com/SupremeTechnopriest/react-idle-timer#cross-tab) and [examples](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples) for capabilities and usage.
 
-✌️ Added a `startManually` configuration option if you want to be able to decide when to start the timer and activity detection.  An alias to `reset()` called `start()` is also exposed to keep implementations more semantic.
+✌️ Added a `startManually` configuration option enabling manual starting of the timer and activity detection.  An alias to `reset()` called `start()` is also exposed to keep implementations more semantic.
 
 > This release also includes updates to the test suite and various bug fixes.  See the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md) for a complete list of updates in this version.
 
@@ -157,11 +157,11 @@ useIdleTimer({
 })
 
 // Component
-<IdleTimer crossTab />
+<IdleTimer crossTab ... />
 ```
 
 ### Emit on All Tabs
-While in emit on all tabs mode, the lead tab will detect when all tabs have become idle or when a tab has become active from an "all idle" state and instruct all tabs to emit their `onIdle` and `onActive` events.  This is useful when your events are used to open a modal, or some other UI intermediary. To enable this mode, set `crossTab` to an object with a property of `emitOnAllTabs` set to true.
+While in emit on all tabs mode, the lead tab will detect when all tabs have become idle or when a tab has become active from an "all idle" state and instruct all tabs to emit their `onIdle` and `onActive` events.  This is useful when your events are used to open a modal, or some other UI intermediary. To enable this mode, set `crossTab` to an object with the property `emitOnAllTabs` set to true.
 
 ```javascript
 // Hook
@@ -182,7 +182,7 @@ useIdleTimer({
 ```
 
 ### Messaging Strategies
-There are three messaging strategies that can be used. `broadcastChannel`, `localStorage` and `simulate`.  By default, the best strategy is chosen automatically.  `broadcastChannel` where it is supported and `localStorage` as a fallback.  The `simulate` strategy is intended for use in test suites and is not considered during automatic strategy selection.
+There are three messaging strategies that can be used: `broadcastChannel`, `localStorage` and `simulate`.  By default, the best strategy is chosen automatically.  `broadcastChannel` where it is supported and `localStorage` as a fallback.  The `simulate` strategy is intended for use in test suites and is not considered during automatic strategy selection.
 
 You can override default selection by supplying a `type` parameter to the `crossTab` configuration.
 
