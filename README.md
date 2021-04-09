@@ -14,6 +14,13 @@
 
 ## Latest News
 
+#### Version `4.6.0` adds cross tab support:
+☝️ Added robust cross tab support with configurable modes and messaging strategies. See the [documentation](https://github.com/SupremeTechnopriest/react-idle-timer#cross-tab) and [examples](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples) for capabilities and usage.
+
+✌️ Added a `startManually` configuration option if you want to be able to decide when to start the timer and activity detection.  An alias to `reset()` called `start()` is also exposed to keep implementations more semantic.
+
+> This release also includes updates to the test suite and various bug fixes.  See the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md) for a complete list of updates in this version.
+
 #### Version `4.5.0` adds user idle time tracking:
 
 ☝️ Added `getTotalIdleTime()` and `getLastIdleTime()` methods to track user idle timings.
@@ -29,8 +36,6 @@
 ☝️ The hook implementation is here! It takes the same properties and returns the same API as the component implementation. See [here](https://github.com/SupremeTechnopriest/react-idle-timer#hook-usage) for usage or check out the new [example](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/hook). There are now TypeScript [examples](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples) as well.
 
 ✌️ Added a new property called `eventsThrottle`. This will throttle the event handler to help decrease cpu usage on certain events (looking at you `mousemove`).  It defaults to 200ms, but can be set however you see fit. To disable this feature, set it to `0`.
-
->  For the full patch notes please refer to the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md)
 
 ## Installation
 ```
@@ -136,53 +141,152 @@ export default function (props) {
 }
 ```
 
-## Migration from v3 to v4
+## Cross Tab
+The `IdleTimer` component and the `useIdleTimer` hook now support cross tab reconciliation of `onIdle` and `onActive` events. This functionality is off by default, so updating to this version will not change how your app operates unless you enable the feature.
 
-There are a few breaking changes in version 4:
+The cross tab feature has two modes of operation: **Emit on Leader** and **Emit on All Tabs**.  The default mode is emit on leader:
 
-- Although still capable of rendering children, as of version 4 we don't pass children to `IdleTimer`. Unless you are really good with `shouldComponentUpdate` you should avoid using `IdleTimer` as a wrapper component.
-- The property `startOnLoad` has been renamed to `startOnMount` in order to make more sense in a React context.
-- The property `activeAction` has been renamed to `onActive`.
-- The property `idleAction` has been renamed to `onIdle`.
+### Emit on Leader
+While in emit on leader mode, the lead tab will be the only emitter of `onIdle` and `onActive` functions.  This is useful if your events should only emit one time once all tabs are idle or when a tab becomes active from an "all idle" state.  To enable this mode, just set `crossTab` to true. 
+
+```javascript
+// Hook
+useIdleTimer({
+  ...
+  crossTab: true
+})
+
+// Component
+<IdleTimer crossTab />
+```
+
+### Emit on All Tabs
+While in emit on all tabs mode, the lead tab will detect when all tabs have become idle or when a tab has become active from an "all idle" state and instruct all tabs to emit their `onIdle` and `onActive` events.  This is useful when your events are used to open a modal, or some other UI intermediary. To enable this mode, set `crossTab` to an object with a property of `emitOnAllTabs` set to true.
+
+```javascript
+// Hook
+useIdleTimer({
+  ...
+  crossTab: {
+    emitOnAllTabs: true
+  }
+})
+
+// Component
+<IdleTimer 
+  ...
+  crossTab={{
+    emitOnAllTabs: true
+  }}
+/>
+```
+
+### Messaging Strategies
+There are three messaging strategies that can be used. `broadcastChannel`, `localStorage` and `simulate`.  By default, the best strategy is chosen automatically.  `broadcastChannel` where it is supported and `localStorage` as a fallback.  The `simulate` strategy is intended for use in test suites and is not considered during automatic strategy selection.
+
+You can override default selection by supplying a `type` parameter to the `crossTab` configuration.
+
+```javascript
+// Hook
+useIdleTimer({
+  ...
+  crossTab: {
+    type: 'simulate'
+  }
+})
+
+// Component
+<IdleTimer 
+  ...
+  crossTab={{
+    type: 'simulate'
+  }}
+/>
+```
+
+### Additional configuration
+The [typescript definitions](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/src/index.d.ts) and [documentation](https://github.com/SupremeTechnopriest/react-idle-timer#cross-tab) contain all the available configuration options, but you most likely won't need to change them. Here is an example of a fully configured hook and component with their default values. More information about each option is available in the [documentation](https://github.com/SupremeTechnopriest/react-idle-timer#cross-tab) below.
+
+```javascript
+// Hook
+useIdleTimer({
+  crossTab: {
+    type: undefined,
+    channelName: 'idle-timer',
+    fallbackInterval: 2000,
+    responseTime: 100,
+    removeTimeout: 1000 * 60,
+    emitOnAllTabs: false
+  }
+})
+
+// Component
+<IdleTimer 
+  crossTab={{
+    type: undefined,
+    channelName: 'idle-timer',
+    fallbackInterval: 2000,
+    responseTime: 100,
+    removeTimeout: 1000 * 60,
+    emitOnAllTabs: false
+  }}
+/>
+```
 
 ## Documentation
 
 ### Default Events
-- mousemove
-- keydown
-- wheel
-- DOMMouseScroll
-- mousewheel
-- mousedown
-- touchstart
-- touchmove
-- MSPointerDown
-- MSPointerMove
-- visibilitychange
+- `mousemove`
+- `keydown`
+- `wheel`
+- `DOMMouseScroll`
+- `mousewheel`
+- `mousedown`
+- `touchstart`
+- `touchmove`
+- `MSPointerDown`
+- `MSPointerMove`
+- `visibilitychange`
 
 ### Props
-- **timeout** {*Number*} - Idle timeout in milliseconds.
-- **events** {*Array*} - Events to bind. See [default events](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/src/utils.js#L22-L34) for list of defaults.
-- **onIdle** {*Function*} - Function to call when user is now idle.
-- **onActive** {*Function*} - Function to call when user is no longer idle.
-- **onAction** {*Function*} - Function to call on user action.
-- **debounce** {*Number*} - Debounce the `onAction` function with delay in milliseconds.  Defaults to `0`. Cannot be set if `throttle` is set.
-- **throttle** {*Number*} - Throttle the `onAction` function with delay in milliseconds. Defaults to `0`. Cannot be set if `debounce` is set.
-- **eventsThrottle** {*Number*} - Throttle the event handler. Helps to reduce cpu usage on repeated events (`mousemove`). Defaults to `200`.
-- **element** {*Object*} - Defaults to document, may pass a ref to another element.
-- **startOnMount** {*Boolean*} - Start the timer when the component mounts.  Defaults to `true`. Set to `false` to wait for user action before starting timer.
-- **stopOnIdle** {*Boolean*} - Stop the timer when user goes idle. Defaults to `false`.  If set to true you will need to manually call `reset()` to restart the timer.
-- **passive** {*Boolean*} - Bind events in [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to  `true`.
-- **capture** {*Boolean*} - Bind events in [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode. Defaults to  `true`.
+
+|Name|Type|Default|Description|
+|-|-|-|-|
+|timeout|`Number`|1000 * 60 * 20|Idle timeout in milliseconds.|
+|events|`Array`|[default events](https://github.com/SupremeTechnopriest/react-idle-timer#default-events)|Events to bind.|
+|onIdle|`Function`|() => {}|Function to call when user is now idle.|
+|onActive|`Function`|() => {}|Function to call when user is no longer idle.|
+|onAction|`Function`|() => {}|Function to call on user action.|
+|debounce|`Number`|0|Debounce the `onAction` function with delay in milliseconds. Cannot be set if `throttle` is set.|
+|throttle|`Number`|0|Throttle the `onAction` function with delay in milliseconds. Cannot be set if `debounce` is set.|
+|eventsThrottle|`Number`|200|Throttle the event handler. Helps to reduce cpu utilization on repeated events (`mousemove`).|
+|element|`Object`|document|Defaults to document, may pass a ref to another element.|
+|startOnMount|`Boolean`|true|Start the timer when the component mounts. Set to `false` to wait for user action before starting timer.|
+|startManually|`Boolean`|false|Require the timer to be started manually by calling `reset()` or `start()`.|
+|stopOnIdle|`Boolean`|false|Stop the timer when user goes idle. If set to true you will need to manually call `reset()` or `start()` to restart the timer.|
+|passive|`Boolean`|true|Bind events in [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode.|
+|capture|`Boolean`|true|Bind events in [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode.|
+|crossTab|`Boolean`\|`Object`|false|Enable cross tab event reconciliation.|
+|crossTab.emitOnAllTabs|`Boolean`|false|Emit events on all tabs.|
+|crossTab.type|`String`|undefined|Message strategy to use. Selected automatically if left `undefined`. Can be one of `broadcastMessage`, `localStorage` or `simulate`.|
+|crossTab.channelName|`String`|idle-timer|Name of the BroadcastChannel or localStorage key.|
+|crossTab.fallbackInterval|`Number`|2000|How often renegotiation for leader will occur.|
+|crossTab.responseTime|`Number`|100|How long tab instances will have to respond.|
+|crossTab.removeTimeout|`Number`|1000 * 60|LocalStorage item time to live.|
 
 ### Methods
-- **reset()** *{Void}* - Resets the idleTimer.
-- **pause()** *{Void}* - Pauses the idleTimer.
-- **resume()** *{Void}* - Resumes a paused idleTimer.
-- **getRemainingTime()** *{Number}* - Returns the remaining time in milliseconds.
-- **getElapsedTime()** *{Number}* - Returns the elapsed time in milliseconds.
-- **getLastIdleTime()** *{Number}* - Returns the `Timestamp` the user was last idle.
-- **getTotalIdleTime()** *{Number}* - Returns the amount of time in milliseconds the user was idle.
-- **getLastActiveTime()** *{Number}* - Returns the `Timestamp` the user was last active.
-- **getTotalActiveTime()** *{Number}* - Returns the amount of time in milliseconds the user was active.
-- **isIdle()** *{Boolean}* - Returns whether or not user is idle.
+| Name                 | Returns   | Description                                                                                |
+|----------------------|-----------|--------------------------------------------------------------------------------------------|
+| start()              | `Void`    | Starts the idleTimer.                                                                      |
+| reset()              | `Void`    | Resets the idleTimer.                                                                      |
+| pause()              | `Void`    | Pauses the idleTimer.                                                                      |
+| resume()             | `Void`    | Resumes a paused idleTimer.                                                                |
+| getRemainingTime()   | `Number`  | Returns the remaining time in milliseconds.                                                |
+| getElapsedTime()     | `Number`  | Returns the elapsed time in milliseconds.                                                  |
+| getLastIdleTime()    | `Number`  | Returns the `Timestamp` the user was last idle.                                            |
+| getTotalIdleTime()   | `Number`  | Returns the amount of time in milliseconds the user was idle.                              |
+| getLastActiveTime()  | `Number`  | Returns the `Timestamp` the user was last active.                                          |
+| getTotalActiveTime() | `Number`  | Returns the amount of time in milliseconds the user was active.                            |
+| isIdle()             | `Boolean` | Returns whether or not user is idle.                                                       |
+| isLeader()           | `Boolean` | Returns whether or not this is the leader tab. Always `true` if `crossTab` is not enabled. |
+
