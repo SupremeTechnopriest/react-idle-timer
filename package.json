@@ -1,6 +1,6 @@
 {
   "name": "react-idle-timer",
-  "version": "4.5.6",
+  "version": "4.6.0-rc.2",
   "description": "Activity detection for React.js",
   "main": "dist/index.min.js",
   "module": "dist/index.es.js",
@@ -9,7 +9,7 @@
     "build": "rollup -c && cp src/index.d.ts dist/index.d.ts",
     "watch": "rollup -c -w",
     "clean": "rimraf dist coverage",
-    "lint": "standard lint",
+    "lint": "standard",
     "fix": "standard --fix",
     "test": "npm run lint && jest",
     "prepackage": "npm run clean && npm run test && npm run build",
@@ -42,27 +42,26 @@
     "react-dom": ">=16"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.5",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/preset-react": "^7.10.4",
-    "@rollup/plugin-babel": "^5.1.0",
-    "@rollup/plugin-node-resolve": "^8.4.0",
-    "@testing-library/react-hooks": "^3.3.0",
-    "babel-jest": "^26.1.0",
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-react": "^7.13.13",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-node-resolve": "^11.2.1",
+    "@testing-library/react-hooks": "^5.1.1",
+    "babel-jest": "^26.6.3",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
-    "jest": "^26.1.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "jest": "^26.6.3",
     "jest-esm-transformer": "^1.0.0",
     "prompt-list": "^3.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "regenerator-runtime": "^0.13.7",
     "rimraf": "^3.0.2",
-    "rollup": "^2.21.0",
-    "rollup-plugin-terser": "^6.1.0",
+    "rollup": "^2.44.0",
+    "rollup-plugin-terser": "^7.0.2",
     "simulant": "^0.2.2",
-    "sinon": "^9.0.2",
-    "standard": "^14.3.4"
+    "standard": "^16.0.3"
   },
   "babel": {
     "presets": [
@@ -85,6 +84,10 @@
       "describe",
       "it",
       "expect"
+    ],
+    "ignore": [
+      "examples/**",
+      "**/__tests__/**"
     ]
   }
 }

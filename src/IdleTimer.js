@@ -12,6 +12,7 @@
 
 import { Component } from 'react'
 import PropTypes from 'prop-types'
+import { TabManager } from './TabManager'
 import { IS_BROWSER, DEFAULT_ELEMENT, DEFAULT_EVENTS, debounced, throttled } from './utils'
 
 /**
@@ -75,28 +76,48 @@ class IdleTimer extends Component {
       this._onAction = throttled(props.onAction, props.throttle)
 
     // Set custom onAction
-    } else if (props.onAction) {
-      this._onAction = props.onAction
-
-    // Set default onAction
     } else {
-      this._onAction = () => {}
+      this._onAction = props.onAction
     }
 
     // Create a throttle event handler if applicable
     if (props.eventsThrottle > 0) {
-      this._handleEvent = throttled(this._handleEvent.bind(this), props.eventsThrottle)
+      this.handleEvent = throttled(this._handleEvent.bind(this), props.eventsThrottle)
     } else {
-      this._handleEvent = this._handleEvent.bind(this)
+      this.handleEvent = this._handleEvent.bind(this)
     }
 
     // If startOnMount is set, idle state defaults to true
-    if (!props.startOnMount) {
+    if (!props.startOnMount || props.startManually) {
       this.state.idle = true
+    }
+
+    // Set up cross tab
+    /* istanbul ignore next */
+    if (props.crossTab) {
+      const crossTabOptions = props.crossTab === true ? {} : props.crossTab
+      const crossTab = Object.assign({
+        channelName: 'idle-timer',
+        fallbackInterval: 2000,
+        responseTime: 100,
+        removeTimeout: 1000 * 60,
+        emitOnAllTabs: false
+      }, crossTabOptions)
+
+      this.manager = TabManager({
+        type: crossTab.type,
+        channelName: crossTab.channelName,
+        fallbackInterval: crossTab.fallbackInterval,
+        responseTime: crossTab.responseTime,
+        emitOnAllTabs: crossTab.emitOnAllTabs,
+        onIdle: props.onIdle,
+        onActive: props.onActive
+      })
     }
 
     // Bind all events to component scope, built for speed 🚀
     this._toggleIdleState = this._toggleIdleState.bind(this)
+    this.start = this.reset.bind(this)
     this.reset = this.reset.bind(this)
     this.pause = this.pause.bind(this)
     this.resume = this.resume.bind(this)
@@ -117,24 +138,27 @@ class IdleTimer extends Component {
    */
   componentDidMount () {
     // Bind the event listeners
-    this._bindEvents()
+    if (!this.props.startManually) this._bindEvents()
     // If startOnMount is enabled start the timer
-    const { startOnMount } = this.props
+    const { startOnMount, startManually } = this.props
+    if (startManually) return
     if (startOnMount) this.reset()
   }
 
   componentDidUpdate (prevProps) {
     // Update debounce function
     if (prevProps.debounce !== this.props.debounce) {
-      this._onAction = debounced(this._onAction, this.props.debounce)
+      this._onAction = debounced(this.props.onAction, this.props.debounce)
     }
     // Update throttle function
     if (prevProps.throttle !== this.props.throttle) {
-      this._onAction = throttled(this._onAction, this.props.throttle)
+      this._onAction = throttled(this.props.onAction, this.props.throttle)
     }
     // Update event throttle function
     if (prevProps.eventsThrottle !== this.props.eventsThrottle) {
-      this._handleEvent = throttled(this._handleEvent, this.props.eventsThrottle)
+      this._unbindEvents()
+      this.handleEvent = throttled(this._handleEvent.bind(this), this.props.eventsThrottle)
+      this._bindEvents()
     }
     // Update timeout value
     if (prevProps.timeout !== this.props.timeout) {
@@ -144,7 +168,7 @@ class IdleTimer extends Component {
   }
 
   /**
-   * Called before the component unmounts
+   * Called before the component un-mounts
    * here we clear the timer and remove
    * all the event listeners
    * @private
@@ -153,6 +177,10 @@ class IdleTimer extends Component {
     // Clear timeout to prevent delayed state changes
     clearTimeout(this.tId)
     this._unbindEvents(true)
+    /* istanbul ignore next */
+    if (this.props.crossTab) {
+      this.manager.close().catch(console.error)
+    }
   }
 
   /**
@@ -178,7 +206,7 @@ class IdleTimer extends Component {
     const { element, events, passive, capture } = this.props
     if (!this.eventsBound) {
       events.forEach(e => {
-        element.addEventListener(e, this._handleEvent, {
+        element.addEventListener(e, this.handleEvent, {
           capture,
           passive
         })
@@ -199,7 +227,7 @@ class IdleTimer extends Component {
     const { element, events, passive, capture } = this.props
     if (this.eventsBound || force) {
       events.forEach(e => {
-        element.removeEventListener(e, this._handleEvent, {
+        element.removeEventListener(e, this.handleEvent, {
           capture,
           passive
         })
@@ -233,10 +261,18 @@ class IdleTimer extends Component {
           this._unbindEvents()
         }
 
-        onIdle(e)
+        if (this.manager) {
+          /* istanbul ignore next */
+          this.manager.idle()
+        } else {
+          onIdle(e)
+        }
       } else {
-        if (!stopOnIdle) {
-          this._bindEvents()
+        this._bindEvents()
+        if (this.manager) {
+          /* istanbul ignore next */
+          this.manager.active()
+        } else {
           onActive(e)
         }
       }
@@ -261,6 +297,7 @@ class IdleTimer extends Component {
     // Mousemove event
     if (e.type === 'mousemove') {
       // If coords are same, it didn't move
+      /* istanbul ignore next */
       if (e.pageX === pageX && e.pageY === pageY) {
         return
       }
@@ -270,7 +307,9 @@ class IdleTimer extends Component {
       }
       // Under 200 ms is hard to do
       // continuous activity will bypass this
+      /* istanbul ignore next */
       const elapsed = this.getElapsedTime()
+      /* istanbul ignore next */
       if (elapsed < 200) {
         return
       }
@@ -367,7 +406,7 @@ class IdleTimer extends Component {
     this._bindEvents()
 
     // Start timer and clear remaining
-    // if we are in the idle state
+    // if we are in the active state
     if (!idle) {
       // Set a new timeout
       this.tId = setTimeout(this._toggleIdleState, remaining)
@@ -457,6 +496,15 @@ class IdleTimer extends Component {
     const { idle } = this.state
     return idle
   }
+
+  /**
+   * Returns wether or not this is the leader tab
+   * @name isLeader
+   * @return {boolean}
+   */
+  isLeader () {
+    return this.manager ? this.manager.isLeader() : true
+  }
 }
 
 /**
@@ -526,6 +574,12 @@ IdleTimer.propTypes = {
    */
   startOnMount: PropTypes.bool,
   /**
+   * Require the timer to be started manually.
+   * default: false
+   * @type {Boolean}
+   */
+  startManually: PropTypes.bool,
+  /**
    * Once the user goes idle the IdleTimer will not
    * reset on user input instead, reset() must be
    * called manually to restart the timer
@@ -544,7 +598,23 @@ IdleTimer.propTypes = {
    * default: true
    * @type {Boolean}
    */
-  capture: PropTypes.bool
+  capture: PropTypes.bool,
+  /**
+   * Cross Tab functionality.
+   * default: false
+   * @type {Boolean|Object}
+   */
+  crossTab: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      type: PropTypes.oneOf(['broadcastMessage', 'localStorage', 'simulate']),
+      channelName: PropTypes.string,
+      fallbackInterval: PropTypes.number,
+      responseTime: PropTypes.number,
+      removeTimeout: PropTypes.number,
+      emitOnAllTabs: PropTypes.bool
+    })
+  ])
 }
 
 /**
@@ -563,9 +633,11 @@ IdleTimer.defaultProps = {
   throttle: 0,
   eventsThrottle: 200,
   startOnMount: true,
+  startManually: false,
   stopOnIdle: false,
   capture: true,
-  passive: true
+  passive: true,
+  crossTab: false
 }
 
 export default IdleTimer

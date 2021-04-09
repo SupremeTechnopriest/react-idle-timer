@@ -10,8 +10,9 @@
  * @private
  */
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import PropTypes from 'prop-types'
+import { TabManager } from './TabManager'
 import { IS_BROWSER, DEFAULT_ELEMENT, DEFAULT_EVENTS, debounced, throttled } from './utils'
 
 /**
@@ -30,9 +31,11 @@ function useIdleTimer ({
   throttle = 0,
   eventsThrottle = 200,
   startOnMount = true,
+  startManually = false,
   stopOnIdle = false,
   capture = true,
-  passive = true
+  passive = true,
+  crossTab = false
 } = {}) {
   const eventsBound = useRef(false)
   const idle = useRef(true)
@@ -46,6 +49,25 @@ function useIdleTimer ({
   const idleTime = useRef(0)
   const firstLoad = useRef(true)
   const _timeout = useRef(timeout)
+
+  // Tab manager reference
+  let manager
+  /* istanbul ignore next */
+  if (crossTab) {
+    if (crossTab === true) crossTab = {}
+    crossTab = Object.assign({
+      channelName: 'idle-timer',
+      fallbackInterval: 2000,
+      responseTime: 100,
+      removeTimeout: 1000 * 60,
+      emitOnAllTabs: false
+    }, crossTab)
+  }
+
+  // Set callbacks
+  onActive = useCallback(onActive)
+  onIdle = useCallback(onIdle)
+  onAction = useCallback(onAction)
 
   // Event emitters
   const emitOnIdle = useRef(onIdle)
@@ -69,11 +91,19 @@ function useIdleTimer ({
         _unbindEvents()
       }
       lastIdle.current = (+new Date()) - _timeout.current
-      emitOnIdle.current(e)
+      if (manager) {
+        /* istanbul ignore next */
+        manager.idle()
+      } else {
+        emitOnIdle.current(e)
+      }
     } else {
-      if (!stopOnIdle) {
-        idleTime.current += (+new Date()) - lastIdle.current
-        _bindEvents()
+      idleTime.current += (+new Date()) - lastIdle.current
+      _bindEvents()
+      if (manager) {
+        /* istanbul ignore next */
+        manager.active()
+      } else {
         emitOnActive.current(e)
       }
     }
@@ -91,6 +121,7 @@ function useIdleTimer ({
     if (remaining.current) return
 
     // Mousemove event
+    /* istanbul ignore next */
     if (e.type === 'mousemove') {
       // If coords are same, it didn't move
       if (e.pageX === pageX && e.pageY === pageY) {
@@ -129,13 +160,8 @@ function useIdleTimer ({
     pageX.current = e.pageX
     pageY.current = e.pageY
 
-    // If the user is idle and stopOnIdle flag is not set
-    // set a new timeout
-    if (idle.current) {
-      if (!stopOnIdle) {
-        tId.current = setTimeout(_toggleIdleState, _timeout.current)
-      }
-    } else {
+    // If the user is active, set a new timeout
+    if (!idle.current) {
       tId.current = setTimeout(_toggleIdleState, _timeout.current)
     }
   }
@@ -252,9 +278,15 @@ function useIdleTimer ({
   const isIdle = () => idle.current
 
   /**
- * Restore initial state and restart timer
- * @name reset
- */
+   * Returns wether or not this is the leader tab
+   * @returns {Boolean}
+   */
+  const isLeader = () => manager ? manager.isLeader() : true
+
+  /**
+  * Restore initial state and restart timer
+  * @name reset
+  */
   const reset = () => {
     // Clear timeout
     clearTimeout(tId.current)
@@ -268,6 +300,8 @@ function useIdleTimer ({
     oldDate.current = +new Date()
     lastActive.current = +new Date()
     remaining.current = null
+
+    if (manager) manager.setAllIdle(false)
 
     // Set new timeout
     tId.current = setTimeout(_toggleIdleState, _timeout.current)
@@ -323,23 +357,50 @@ function useIdleTimer ({
       throw new Error('onAction can either be throttled or debounced (not both)')
     }
 
-    // Create a throttle event handler if applicable
-    if (eventsThrottle > 0) {
-      handleEvent.current = throttled(_handleEvent, eventsThrottle)
+    // Set up cross tab
+    /* istanbul ignore next */
+    if (crossTab) {
+      manager = TabManager({
+        type: crossTab.type,
+        channelName: crossTab.channelName,
+        fallbackInterval: crossTab.fallbackInterval,
+        responseTime: crossTab.responseTime,
+        emitOnAllTabs: crossTab.emitOnAllTabs,
+        onIdle: emitOnIdle.current,
+        onActive: emitOnActive.current
+      })
     }
-
-    // Bind the events
-    _bindEvents()
 
     // If startOnMount is enabled, start the timer
-    if (startOnMount) reset()
+    if (startManually) {
+      return async () => {
+        clearTimeout(tId.current)
+        _unbindEvents(true)
+        if (crossTab) await manager.close()
+      }
+    }
+
+    if (startOnMount) {
+      reset()
+    } else {
+      _bindEvents()
+    }
 
     // Clear and unbind on unmount
-    return () => {
+    return async () => {
       clearTimeout(tId.current)
       _unbindEvents(true)
+      if (crossTab) await manager.close()
     }
   }, [])
+
+  useEffect(() => {
+    if (eventsThrottle > 0) {
+      handleEvent.current = throttled(_handleEvent, eventsThrottle)
+    } else {
+      handleEvent.current = _handleEvent
+    }
+  }, [eventsThrottle])
 
   useEffect(() => {
     emitOnIdle.current = onIdle
@@ -362,7 +423,7 @@ function useIdleTimer ({
     } else {
       emitOnAction.current = onAction
     }
-  }, [onAction])
+  }, [throttle, debounce])
 
   useEffect(() => {
     _timeout.current = timeout
@@ -373,6 +434,8 @@ function useIdleTimer ({
 
   return {
     isIdle,
+    isLeader,
+    start: reset,
     pause,
     reset,
     resume,
@@ -404,73 +467,95 @@ useIdleTimer.propTypes = {
    */
   events: PropTypes.arrayOf(PropTypes.string),
   /**
-   * Function to call when user is idle
+   * Function to call when user is idle.
    * default: () => {}
    * @type {Function}
    */
   onIdle: PropTypes.func,
   /**
-   * Function to call when user becomes active
+   * Function to call when user becomes active.
    * default: () => {}
    * @type {Function}
    */
   onActive: PropTypes.func,
   /**
-   * Function to call on user actions
+   * Function to call on user actions.
    * default: () => {}
    * @type {Function}
    */
   onAction: PropTypes.func,
   /**
-   * Debounce the onAction function by setting delay in milliseconds
+   * Debounce the onAction function by setting delay in milliseconds.
    * default: 0
    * @type {number}
    */
   debounce: PropTypes.number,
   /**
-   * Throttle the onAction function by setting delay in milliseconds
+   * Throttle the onAction function by setting delay in milliseconds.
    * default: 0
    * @type {number}
    */
   throttle: PropTypes.number,
   /**
-   * Throttle the event handler function by setting delay in milliseconds
+   * Throttle the event handler function by setting delay in milliseconds.
    * default: 200
    * @type {number}
    */
   eventsThrottle: PropTypes.number,
   /**
-   * Element reference to bind activity listeners to
+   * Element reference to bind activity listeners to.
    * default: document
    * @type {Object}
    */
   element: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
   /**
-   * Start the timer on mount
+   * Start the timer on mount.
    * default: true
    * @type {Boolean}
    */
   startOnMount: PropTypes.bool,
   /**
+   * Require the timer to be started manually.
+   * default: false
+   * @type {Boolean}
+   */
+  startManually: PropTypes.bool,
+  /**
    * Once the user goes idle the IdleTimer will not
-   * reset on user input instead, reset() must be
-   * called manually to restart the timer
+   * reset on user input instead, start() or reset() must be
+   * called manually to restart the timer.
    * default: false
    * @type {Boolean}
    */
   stopOnIdle: PropTypes.bool,
   /**
-   * Bind events passively
+   * Bind events passively.
    * default: true
    * @type {Boolean}
    */
   passive: PropTypes.bool,
   /**
-   * Capture events
+   * Capture events.
    * default: true
    * @type {Boolean}
    */
-  capture: PropTypes.bool
+  capture: PropTypes.bool,
+  /**
+   * Cross Tab functionality.
+   * default: false
+   * @type {Boolean|Object}
+   */
+  crossTab: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      type: PropTypes.oneOf(['broadcastMessage', 'localStorage', 'simulate']),
+      channelName: PropTypes.string,
+      fallbackInterval: PropTypes.number,
+      responseTime: PropTypes.number,
+      removeTimeout: PropTypes.number,
+      emitOnAllTabs: PropTypes.bool
+    })
+  ])
 }
 
 /**
@@ -489,9 +574,11 @@ useIdleTimer.defaultProps = {
   throttle: 0,
   eventsThrottle: 200,
   startOnMount: true,
+  startManually: false,
   stopOnIdle: false,
   capture: true,
-  passive: true
+  passive: true,
+  crossTab: false
 }
 
 export default useIdleTimer

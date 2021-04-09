@@ -1,3 +1,10 @@
+### 4.6.0
+- Added cross tab support. See examples and README for usage and documentation.
+- Added an `isLeader()` method that returns a boolean indicating wether or not the current tab is the lead orchestrator for cross tab reconciliation. 
+- Added a `startManually` configuration option to enable starting of the timer and activity detection manually. An alias to `reset()` called `start()` is also exposed to keep the code more semantic. If `startManually` is set to `true`, the `IdleTimer` component and `useIdleTimer` hook wont start until `reset()` or `start()` are called.
+- Fixed a bug where throttle and debounce wouldn't work at higher values in useIdleTimer.
+- Updated test suite.
+
 ### 4.5.6
 - Calling `resume` or `pause` from inside a `useEffect` will now properly bind and unbind events.
 

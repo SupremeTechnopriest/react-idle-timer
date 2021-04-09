@@ -76,3 +76,106 @@ export function throttled (fn, delay) {
     return fn(...args)
   }
 }
+
+let lastMs = 0
+let additional = 0
+
+/**
+ * Returns current time in microseconds.
+ *
+ * @returns {Number} current time in microseconds
+ * @private
+ */
+export function microSeconds () {
+  const ms = new Date().getTime()
+  if (ms === lastMs) {
+    additional++
+    return ms * 1000 + additional
+  } else {
+    lastMs = ms
+    additional = 0
+    return ms * 1000
+  }
+}
+
+/**
+ * Generate and return a random token.
+ *
+ * @returns {String} Random token.
+ * @private
+ */
+export function randomToken () {
+  return Math.random().toString(36).substring(2)
+}
+
+/**
+ * Checks if a js object is a promise.
+ *
+ * @param {*} obj  Any javascript object.
+ * @returns {Boolean} Wether or not this object is a promise.
+ */
+export function isPromise (obj) {
+  if (obj && typeof obj.then === 'function') {
+    /* istanbul ignore next */
+    return true
+  } else {
+    return false
+  }
+}
+
+/**
+ * Sleeps for x amount of milliseconds.
+ *
+ * @param {Number} time   Amount of time in milliseconds.
+ * @returns {Promise}
+ * @private
+ */
+export function sleep (time = 0) {
+  return new Promise(resolve => setTimeout(resolve, time))
+}
+
+/**
+ * Get the current timestamp.
+ *
+ * @returns {Number}
+ * @private
+ */
+export function now () {
+  return new Date().getTime()
+}
+
+/**
+ * Waits until the given function returns true
+ * @param  {function}  fn
+ * @return {Promise}
+ */
+export function waitUntil (fn, timeout = 0, interval = 20) {
+  let timedOut = false
+  let ok = false
+
+  /* istanbul ignore next */
+  if (timeout !== 0) {
+    sleep(timeout).then(() => {
+      timedOut = true
+    })
+  }
+
+  return new Promise((resolve, reject) => {
+    const runLoop = () => {
+      if (ok) {
+        resolve()
+        return
+      }
+      /* istanbul ignore next */
+      if (timedOut) {
+        reject(new Error(`❌ waitUntil reached timeout of ${timeout}ms`))
+        return
+      }
+      sleep(interval).then(() => {
+        ok = fn()
+        runLoop()
+      })
+    }
+    runLoop()
+  })
+}

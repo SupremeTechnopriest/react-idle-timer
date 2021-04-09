@@ -8,10 +8,11 @@ export default function App () {
   const [remaining, setRemaining] = useState(timeout)
   const [elapsed, setElapsed] = useState(0)
   const [lastActive, setLastActive] = useState(+new Date())
-  const [isIdle, setIsIdle] = useState(false)
+  const [lastEvent, setLastEvent] = useState('Events Emitted on Leader')
+  const [leader, setLeader] = useState(true)
 
-  const handleOnActive = () => setIsIdle(false)
-  const handleOnIdle = () => setIsIdle(true)
+  const handleOnActive = () => setLastEvent('active')
+  const handleOnIdle = () => setLastEvent('idle')
 
   const {
     reset,
@@ -19,11 +20,16 @@ export default function App () {
     resume,
     getRemainingTime,
     getLastActiveTime,
-    getElapsedTime
+    getElapsedTime,
+    isIdle,
+    isLeader
   } = useIdleTimer({
     timeout,
     onActive: handleOnActive,
-    onIdle: handleOnIdle
+    onIdle: handleOnIdle,
+    crossTab: {
+      emitOnAllTabs: true
+    }
   })
 
   const handleReset = () => reset()
@@ -39,6 +45,7 @@ export default function App () {
       setRemaining(getRemainingTime())
       setLastActive(getLastActiveTime())
       setElapsed(getElapsedTime())
+      setLeader(isLeader())
     }, 1000)
   }, [])
 
@@ -49,7 +56,9 @@ export default function App () {
         <h1>Time Remaining: {remaining}</h1>
         <h1>Time Elapsed: {elapsed}</h1>
         <h1>Last Active: {format(lastActive, 'MM-dd-yyyy HH:MM:ss.SSS')}</h1>
-        <h1>Idle: {isIdle.toString()}</h1>
+        <h1>Last Event: {lastEvent}</h1>
+        <h1>Is Leader: {leader.toString()}</h1>
+        <h1>Idle: {isIdle().toString()}</h1>
       </div>
       <div>
         <button onClick={handleReset}>RESET</button>
