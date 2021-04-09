@@ -673,5 +673,13 @@ describe('IdleTimer', () => {
         expect(timer.instance().isIdle()).toBe(true)
       })
     })
+
+    describe('.isLeader()', () => {
+      it('Should return true when crossTab is off', async () => {
+        props.timeout = 200
+        const timer = idleTimer()
+        expect(timer.instance().isLeader()).toBe(true)
+      })
+    })
   })
 })
