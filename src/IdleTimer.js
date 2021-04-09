@@ -113,6 +113,8 @@ class IdleTimer extends Component {
         onIdle: props.onIdle,
         onActive: props.onActive
       })
+
+      this.isLeader = () => this.manager.isLeader()
     }
 
     // Bind all events to component scope, built for speed 🚀
