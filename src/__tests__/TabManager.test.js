@@ -41,7 +41,10 @@ describe('TabManager', () => {
 
   it('Should set all idle', async () => {
     const manager = createTabManager()
-    expect(() => manager.setAllIdle(false)).not.toThrow()
+    manager.setAllIdle(false)
+    expect(manager.isAllIdle()).toBe(false)
+    manager.setAllIdle(true)
+    expect(manager.isAllIdle()).toBe(true)
   })
 
   it('Should close the TabManager', async () => {

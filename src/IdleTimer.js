@@ -383,13 +383,11 @@ class IdleTimer extends Component {
     // Bind the events
     this._bindEvents()
 
-    if (this.state.idle) {
-      if (this.manager) {
-        /* istanbul ignore next */
-        this.manager.active()
-      } else {
-        this.props.onActive()
-      }
+    if (this.manager) {
+      /* istanbul ignore next */
+      if (this.manager.isAllIdle()) this.manager.active()
+    } else {
+      if (this.state.idle) this.props.onActive()
     }
 
     // Reset state

@@ -319,13 +319,11 @@ function useIdleTimer ({
     // Bind the events
     _bindEvents()
 
-    if (idle.current) {
-      if (manager) {
-        /* istanbul ignore next */
-        manager.active()
-      } else {
-        emitOnActive.current()
-      }
+    if (manager) {
+      /* istanbul ignore next */
+      if (manager.isAllIdle()) manager.active()
+    } else {
+      if (idle.current) emitOnActive.current()
     }
 
     // Reset state

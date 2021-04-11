@@ -53,6 +53,8 @@ export const TabManager = ({
     allIdle = bool
   }
 
+  const isAllIdle = () => allIdle
+
   const idle = (id = elector.token) => {
     registry[id] = true
 
@@ -102,5 +104,5 @@ export const TabManager = ({
   // Register self with remote tabs
   send('register')
 
-  return { close, send, isLeader, idle, active, setAllIdle }
+  return { close, send, isLeader, idle, active, isAllIdle, setAllIdle }
 }
