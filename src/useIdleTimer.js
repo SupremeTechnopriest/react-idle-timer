@@ -284,7 +284,31 @@ function useIdleTimer ({
   const isLeader = () => manager ? manager.isLeader() : true
 
   /**
-  * Restore initial state and restart timer
+  * Set initial state and start timer
+  * @name reset
+  */
+  const start = () => {
+    // Clear timeout
+    clearTimeout(tId.current)
+    tId.current = null
+
+    // Bind the events
+    _bindEvents()
+
+    // Set state
+    idle.current = false
+    oldDate.current = +new Date()
+    lastActive.current = +new Date()
+    remaining.current = null
+
+    if (manager) manager.setAllIdle(false)
+
+    // Set new timeout
+    tId.current = setTimeout(_toggleIdleState, _timeout.current)
+  }
+
+  /**
+  * Restore initial state and restart timer, calling onActive
   * @name reset
   */
   const reset = () => {
@@ -294,6 +318,15 @@ function useIdleTimer ({
 
     // Bind the events
     _bindEvents()
+
+    if (idle.current) {
+      if (manager) {
+        /* istanbul ignore next */
+        manager.active()
+      } else {
+        emitOnActive.current()
+      }
+    }
 
     // Reset state
     idle.current = false
@@ -381,7 +414,7 @@ function useIdleTimer ({
     }
 
     if (startOnMount) {
-      reset()
+      start()
     } else {
       _bindEvents()
     }
@@ -430,15 +463,16 @@ function useIdleTimer ({
 
   useEffect(() => {
     _timeout.current = timeout
-    if (idle.current && !firstLoad.current) _toggleIdleState()
-    if (tId.current !== null) reset()
+    if (!firstLoad.current && idle.current) {
+      reset()
+    }
     firstLoad.current = false
   }, [timeout])
 
   return {
     isIdle,
     isLeader,
-    start: reset,
+    start,
     pause,
     reset,
     resume,

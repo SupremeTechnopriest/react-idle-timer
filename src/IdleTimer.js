@@ -117,7 +117,7 @@ class IdleTimer extends Component {
 
     // Bind all events to component scope, built for speed 🚀
     this._toggleIdleState = this._toggleIdleState.bind(this)
-    this.start = this.reset.bind(this)
+    this.start = this.start.bind(this)
     this.reset = this.reset.bind(this)
     this.pause = this.pause.bind(this)
     this.resume = this.resume.bind(this)
@@ -137,12 +137,13 @@ class IdleTimer extends Component {
    * @private
    */
   componentDidMount () {
-    // Bind the event listeners
-    if (!this.props.startManually) this._bindEvents()
-    // If startOnMount is enabled start the timer
     const { startOnMount, startManually } = this.props
     if (startManually) return
-    if (startOnMount) this.reset()
+    if (startOnMount) {
+      this.start()
+    } else {
+      this._bindEvents()
+    }
   }
 
   componentDidUpdate (prevProps) {
@@ -162,8 +163,7 @@ class IdleTimer extends Component {
     }
     // Update timeout value
     if (prevProps.timeout !== this.props.timeout) {
-      if (this.state.idle) this._toggleIdleState()
-      if (this.tid !== null) this.reset()
+      if (this.state.idle) this.reset()
     }
   }
 
@@ -347,7 +347,32 @@ class IdleTimer extends Component {
   }
 
   /**
-   * Restore initial state and restart timer
+   * Set initial state and start timer
+   * @name start
+   */
+  start () {
+    // Clear timeout
+    clearTimeout(this.tId)
+    this.tId = null
+
+    // Bind the events
+    this._bindEvents()
+
+    // Reset state
+    this.setState({
+      idle: false,
+      oldDate: +new Date(),
+      lastActive: +new Date(),
+      remaining: null
+    })
+
+    // Set new timeout
+    const { timeout } = this.props
+    this.tId = setTimeout(this._toggleIdleState, timeout)
+  }
+
+  /**
+   * Restore initial state and restart timer, calling onActive
    * @name reset
    */
   reset () {
@@ -357,6 +382,15 @@ class IdleTimer extends Component {
 
     // Bind the events
     this._bindEvents()
+
+    if (this.state.idle) {
+      if (this.manager) {
+        /* istanbul ignore next */
+        this.manager.active()
+      } else {
+        this.props.onActive()
+      }
+    }
 
     // Reset state
     this.setState({
