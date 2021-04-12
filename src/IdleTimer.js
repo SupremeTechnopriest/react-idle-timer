@@ -92,6 +92,20 @@ class IdleTimer extends Component {
       this.state.idle = true
     }
 
+    // Bind all events to component scope, built for speed 🚀
+    this._toggleIdleState = this._toggleIdleState.bind(this)
+    this.start = this.start.bind(this)
+    this.reset = this.reset.bind(this)
+    this.pause = this.pause.bind(this)
+    this.resume = this.resume.bind(this)
+    this.isIdle = this.isIdle.bind(this)
+    this.getRemainingTime = this.getRemainingTime.bind(this)
+    this.getElapsedTime = this.getElapsedTime.bind(this)
+    this.getLastActiveTime = this.getLastActiveTime.bind(this)
+    this.getLastIdleTime = this.getLastIdleTime.bind(this)
+    this.getTotalIdleTime = this.getTotalIdleTime.bind(this)
+    this.getTotalActiveTime = this.getTotalActiveTime.bind(this)
+
     // Set up cross tab
     /* istanbul ignore next */
     if (props.crossTab) {
@@ -111,23 +125,13 @@ class IdleTimer extends Component {
         responseTime: crossTab.responseTime,
         emitOnAllTabs: crossTab.emitOnAllTabs,
         onIdle: props.onIdle,
-        onActive: props.onActive
+        onActive: props.onActive,
+        start: this.start,
+        reset: this.reset,
+        pause: this.pause,
+        resume: this.resume
       })
     }
-
-    // Bind all events to component scope, built for speed 🚀
-    this._toggleIdleState = this._toggleIdleState.bind(this)
-    this.start = this.start.bind(this)
-    this.reset = this.reset.bind(this)
-    this.pause = this.pause.bind(this)
-    this.resume = this.resume.bind(this)
-    this.isIdle = this.isIdle.bind(this)
-    this.getRemainingTime = this.getRemainingTime.bind(this)
-    this.getElapsedTime = this.getElapsedTime.bind(this)
-    this.getLastActiveTime = this.getLastActiveTime.bind(this)
-    this.getLastIdleTime = this.getLastIdleTime.bind(this)
-    this.getTotalIdleTime = this.getTotalIdleTime.bind(this)
-    this.getTotalActiveTime = this.getTotalActiveTime.bind(this)
   }
 
   /**
@@ -350,7 +354,7 @@ class IdleTimer extends Component {
    * Set initial state and start timer
    * @name start
    */
-  start () {
+  start (remote = true) {
     // Clear timeout
     clearTimeout(this.tId)
     this.tId = null
@@ -366,6 +370,15 @@ class IdleTimer extends Component {
       remaining: null
     })
 
+    if (this.manager) {
+      /* istanbul ignore next */
+      this.manager.setAllIdle(false)
+      /* istanbul ignore next */
+      if (!remote && this.props.crossTab.emitOnAllTabs) {
+        this.manager.send('start')
+      }
+    }
+
     // Set new timeout
     const { timeout } = this.props
     this.tId = setTimeout(this._toggleIdleState, timeout)
@@ -375,7 +388,7 @@ class IdleTimer extends Component {
    * Restore initial state and restart timer, calling onActive
    * @name reset
    */
-  reset () {
+  reset (remote = false) {
     // Clear timeout
     clearTimeout(this.tId)
     this.tId = null
@@ -383,11 +396,15 @@ class IdleTimer extends Component {
     // Bind the events
     this._bindEvents()
 
+    if (this.state.idle) this.props.onActive()
+
     if (this.manager) {
       /* istanbul ignore next */
-      if (this.manager.isAllIdle()) this.manager.active()
-    } else {
-      if (this.state.idle) this.props.onActive()
+      this.manager.setAllIdle(false)
+      /* istanbul ignore next */
+      if (!remote && this.props.crossTab.emitOnAllTabs) {
+        this.manager.send('reset')
+      }
     }
 
     // Reset state
@@ -407,7 +424,7 @@ class IdleTimer extends Component {
    * Store remaining time and stop timer
    * @name pause
    */
-  pause () {
+  pause (remote = false) {
     // Timer is already paused
     const { remaining } = this.state
     if (remaining !== null) return
@@ -419,6 +436,14 @@ class IdleTimer extends Component {
     clearTimeout(this.tId)
     this.tId = null
 
+    // Send event to other tabs
+    if (this.manager) {
+      /* istanbul ignore next */
+      if (!remote && this.props.crossTab.emitOnAllTabs) {
+        this.manager.send('pause')
+      }
+    }
+
     // Define how much is left on the timer
     this.setState({
       remaining: this.getRemainingTime()
@@ -429,13 +454,21 @@ class IdleTimer extends Component {
    * Resumes a paused timer
    * @name resume
    */
-  resume () {
+  resume (remote = false) {
     // Timer is not paused
     const { remaining, idle } = this.state
     if (remaining === null) return
 
     // Bind events
     this._bindEvents()
+
+    // Send event to other tabs
+    if (this.manager) {
+      /* istanbul ignore next */
+      if (!remote && this.props.crossTab.emitOnAllTabs) {
+        this.manager.send('resume')
+      }
+    }
 
     // Start timer and clear remaining
     // if we are in the active state
@@ -639,7 +672,7 @@ IdleTimer.propTypes = {
   crossTab: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.shape({
-      type: PropTypes.oneOf(['broadcastMessage', 'localStorage', 'simulate']),
+      type: PropTypes.oneOf(['broadcastChannel', 'localStorage', 'simulate']),
       channelName: PropTypes.string,
       fallbackInterval: PropTypes.number,
       responseTime: PropTypes.number,

@@ -10,7 +10,7 @@
  * @private
  */
 
-import { useEffect, useCallback, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { TabManager } from './TabManager'
 import { IS_BROWSER, DEFAULT_ELEMENT, DEFAULT_EVENTS, debounced, throttled } from './utils'
@@ -24,9 +24,9 @@ function useIdleTimer ({
   timeout = 1000 * 60 * 20,
   element = DEFAULT_ELEMENT,
   events = DEFAULT_EVENTS,
-  onIdle = () => {},
-  onActive = () => {},
-  onAction = () => {},
+  onIdle = () => { },
+  onActive = () => { },
+  onAction = () => { },
   debounce = 0,
   throttle = 0,
   eventsThrottle = 200,
@@ -49,9 +49,8 @@ function useIdleTimer ({
   const idleTime = useRef(0)
   const firstLoad = useRef(true)
   const _timeout = useRef(timeout)
+  const manager = useRef(null)
 
-  // Tab manager reference
-  let manager
   /* istanbul ignore next */
   if (crossTab) {
     if (crossTab === true) crossTab = {}
@@ -63,11 +62,6 @@ function useIdleTimer ({
       emitOnAllTabs: false
     }, crossTab)
   }
-
-  // Set callbacks
-  onActive = useCallback(onActive)
-  onIdle = useCallback(onIdle)
-  onAction = useCallback(onAction)
 
   // Event emitters
   const emitOnIdle = useRef(onIdle)
@@ -91,18 +85,18 @@ function useIdleTimer ({
         _unbindEvents()
       }
       lastIdle.current = (+new Date()) - _timeout.current
-      if (manager) {
+      if (manager.current) {
         /* istanbul ignore next */
-        manager.idle()
+        manager.current.idle()
       } else {
         emitOnIdle.current(e)
       }
     } else {
       idleTime.current += (+new Date()) - lastIdle.current
       _bindEvents()
-      if (manager) {
+      if (manager.current) {
         /* istanbul ignore next */
-        manager.active()
+        manager.current.active()
       } else {
         emitOnActive.current(e)
       }
@@ -281,13 +275,13 @@ function useIdleTimer ({
    * Returns wether or not this is the leader tab
    * @returns {Boolean}
    */
-  const isLeader = () => manager ? manager.isLeader() : true
+  const isLeader = () => manager.current ? manager.current.isLeader() : true
 
   /**
   * Set initial state and start timer
   * @name reset
   */
-  const start = () => {
+  const start = (remote = false) => {
     // Clear timeout
     clearTimeout(tId.current)
     tId.current = null
@@ -301,7 +295,14 @@ function useIdleTimer ({
     lastActive.current = +new Date()
     remaining.current = null
 
-    if (manager) manager.setAllIdle(false)
+    if (manager.current) {
+      /* istanbul ignore next */
+      manager.current.setAllIdle(false)
+      /* istanbul ignore next */
+      if (!remote && crossTab.emitOnAllTabs) {
+        manager.current.send('start')
+      }
+    }
 
     // Set new timeout
     tId.current = setTimeout(_toggleIdleState, _timeout.current)
@@ -311,7 +312,7 @@ function useIdleTimer ({
   * Restore initial state and restart timer, calling onActive
   * @name reset
   */
-  const reset = () => {
+  const reset = (remote = false) => {
     // Clear timeout
     clearTimeout(tId.current)
     tId.current = null
@@ -319,12 +320,7 @@ function useIdleTimer ({
     // Bind the events
     _bindEvents()
 
-    if (manager) {
-      /* istanbul ignore next */
-      if (manager.isAllIdle()) manager.active()
-    } else {
-      if (idle.current) emitOnActive.current()
-    }
+    if (idle.current) emitOnActive.current()
 
     // Reset state
     idle.current = false
@@ -332,7 +328,14 @@ function useIdleTimer ({
     lastActive.current = +new Date()
     remaining.current = null
 
-    if (manager) manager.setAllIdle(false)
+    if (manager.current) {
+      /* istanbul ignore next */
+      manager.current.setAllIdle(false)
+      /* istanbul ignore next */
+      if (!remote && crossTab.emitOnAllTabs) {
+        manager.current.send('reset')
+      }
+    }
 
     // Set new timeout
     tId.current = setTimeout(_toggleIdleState, _timeout.current)
@@ -342,7 +345,7 @@ function useIdleTimer ({
    * Store remaining time and stop timer
    * @name pause
    */
-  const pause = () => {
+  const pause = (remote = false) => {
     // Timer is already paused
     if (remaining.current !== null) return
 
@@ -355,13 +358,20 @@ function useIdleTimer ({
 
     // Define how much is left on the timer
     remaining.current = getRemainingTime()
+
+    if (manager.current) {
+      /* istanbul ignore next */
+      if (!remote && crossTab.emitOnAllTabs) {
+        manager.current.send('pause')
+      }
+    }
   }
 
   /**
    * Resumes a paused timer
    * @name resume
    */
-  const resume = () => {
+  const resume = (remote = false) => {
     // Timer is not paused
     if (remaining.current === null) return
 
@@ -377,6 +387,13 @@ function useIdleTimer ({
       remaining.current = null
       lastActive.current = +new Date()
     }
+
+    if (manager.current) {
+      /* istanbul ignore next */
+      if (!remote && crossTab.emitOnAllTabs) {
+        manager.current.send('resume')
+      }
+    }
   }
 
   /**
@@ -391,14 +408,18 @@ function useIdleTimer ({
     // Set up cross tab
     /* istanbul ignore next */
     if (crossTab) {
-      manager = TabManager({
+      manager.current = TabManager({
         type: crossTab.type,
         channelName: crossTab.channelName,
         fallbackInterval: crossTab.fallbackInterval,
         responseTime: crossTab.responseTime,
         emitOnAllTabs: crossTab.emitOnAllTabs,
         onIdle: emitOnIdle.current,
-        onActive: emitOnActive.current
+        onActive: emitOnActive.current,
+        start,
+        reset,
+        pause,
+        resume
       })
     }
 
@@ -407,7 +428,7 @@ function useIdleTimer ({
       return async () => {
         clearTimeout(tId.current)
         _unbindEvents(true)
-        if (crossTab) await manager.close()
+        if (crossTab) await manager.current.close()
       }
     }
 
@@ -421,7 +442,7 @@ function useIdleTimer ({
     return async () => {
       clearTimeout(tId.current)
       _unbindEvents(true)
-      if (crossTab) await manager.close()
+      if (crossTab) await manager.current.close()
     }
   }, [])
 
@@ -449,15 +470,15 @@ function useIdleTimer ({
     if (debounce > 0) {
       emitOnAction.current = debounced(onAction, debounce)
 
-    // Create throttled action if applicable
+      // Create throttled action if applicable
     } else if (throttle > 0) {
       emitOnAction.current = throttled(onAction, throttle)
 
-    // No throttle or debounce
+      // No throttle or debounce
     } else {
       emitOnAction.current = onAction
     }
-  }, [throttle, debounce])
+  }, [throttle, debounce, onAction])
 
   useEffect(() => {
     _timeout.current = timeout
@@ -583,7 +604,7 @@ useIdleTimer.propTypes = {
   crossTab: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.shape({
-      type: PropTypes.oneOf(['broadcastMessage', 'localStorage', 'simulate']),
+      type: PropTypes.oneOf(['broadcastChannel', 'localStorage', 'simulate']),
       channelName: PropTypes.string,
       fallbackInterval: PropTypes.number,
       responseTime: PropTypes.number,

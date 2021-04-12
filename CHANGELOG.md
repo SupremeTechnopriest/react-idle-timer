@@ -1,4 +1,10 @@
-### 4.6.0
+### 4.6.1
+- When `emitOnAllTabs` is set to `true`, `start`, `reset`, `pause` and `resume` will be called on all tabs.
+- When using the `useIdleTimer` hook in a functional component, event handlers `onIdle`, `onActive` and `onAction` must be wrapped in `useCallback`.
+- Calling `reset` will now automatically fire `onActive` while calling `start` will not. Otherwise these two methods are functionally equivalent.
+- Fixed a type-o in propTypes and typescript definitions.
+
+## 4.6.0
 - Added cross tab support. See examples and README for usage and documentation.
 - Added an `isLeader()` method that returns a boolean indicating wether or not the current tab is the lead orchestrator for cross tab reconciliation. 
 - Added a `startManually` configuration option to enable starting of the timer and activity detection manually. An alias to `reset()` called `start()` is also exposed to keep the code more semantic. If `startManually` is set to `true`, the `IdleTimer` component and `useIdleTimer` hook wont start until `reset()` or `start()` are called.
@@ -23,7 +29,7 @@
 ### 4.5.1
 - Added the ability to set timeout after the hook has been mounted. Doing so will reset the timer automatically.
 
-### 4.5.0
+## 4.5.0
 - Refactor `getTotalActiveTime` to be accurate in more scenarios.
 - Added  `getLastIdleTime` and `getTotalIdleTime` methods.
 - Switched from travis to github actions.
@@ -35,7 +41,7 @@
 - Reduce bundle size by excluding examples from npm package.
 - Update README.md.
 
-### 4.4.0
+## 4.4.0
 - Added `getTotalActiveTime` method.  Returns the total time in milliseconds the user was active.
 
 ### 4.3.7
@@ -58,7 +64,7 @@
 - Added TypeScript examples.
 - Fixed an issue with TypeScript typings.
 
-### 4.3.0
+## 4.3.0
 - Added `useIdleTimer` hook implementation.
 - Added `eventsThrottle` to reduce cpu using on events that can spam the event handler. Defaults to 200ms.
 - Updated all dependencies, added new examples and cleaned up build chain.
@@ -105,7 +111,7 @@
 - Added a typescript definition that will now be maintained along with this library. It expects that you have the react type definitions installed.
 - Fixed a documentation error
 
-# 4.2.0
+## 4.2.0
 
 Version `4.2.0` will now dynamically bind and unbind events.
 
@@ -127,11 +133,7 @@ Events are bound when:
 ### 4.1.1
 - Fixes a bug where initial `onIdle` event was not firing when `stopOnIdle` is set
 
-# 4.1.0
-
-Version `4.1.0` adds support for some commonly requested features:
-
-## Features
+## 4.1.0
 
 - Added property `stopOnIdle` defaults to `false`. Setting to `true` will prevent user activity from restarting the `IdleTimer` once it has gone idle.  This useful if you want to do some custom async stuff before the `IdleTimer` gets restarted.  In order to restart the `IdleTimer` call `reset()` on your ref.
 - Added event handler `onActive` which enables reporting of all user activity from `IdleTimer`.  The built in `debounce` or `throttle` properties will help increase performance if you are using the `onActive` event. By default `debounce` and `throttle` are off.  Only one can be enabled at a time.
@@ -176,7 +178,7 @@ Version 4.0 contains a rewrite of the build system and a refactor of the source 
 - Fixed installation bug on windows machines. This was due to the use of environment variables in the build scripts. The new build system does not rely on environment variables defined at the cli level
 
 # 3.0.0
-We dropped support for date formatting in version 3.  React idle timer returns raw date objects and you can use which ever library you like to format it. If you would like to continue using the built in formatter, stick with version 2.
+We dropped support for date formatting in version 3. React idle timer returns raw date objects and you can use which ever library you like to format it. If you would like to continue using the built in formatter, stick with version 2.
 
 ## Breaking Changes
 - Removed built in date formatter.

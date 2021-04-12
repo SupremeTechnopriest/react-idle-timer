@@ -317,6 +317,54 @@ describe('useIdleTimer', () => {
         simulant.fire(document, 'mousedown')
         expect(props.onActive.mock.calls.length).toBe(4)
       })
+
+      it('Should allow reassignment of onIdle', async () => {
+        const fn1 = jest.fn()
+        const fn2 = jest.fn()
+        props.onIdle = fn1
+        props.timeout = 200
+        const { result, rerender } = idleTimer()
+        await waitUntil(() => result.current.isIdle())
+        simulant.fire(document, 'mousedown')
+        expect(fn1.mock.calls.length).toBe(1)
+        props.onIdle = fn2
+        rerender()
+        await waitUntil(() => result.current.isIdle())
+        simulant.fire(document, 'mousedown')
+        expect(fn2.mock.calls.length).toBe(1)
+      })
+
+      it('Should allow reassignment of onActive', async () => {
+        const fn1 = jest.fn()
+        const fn2 = jest.fn()
+        props.onActive = fn1
+        props.timeout = 200
+        const { result, rerender } = idleTimer()
+        await waitUntil(() => result.current.isIdle())
+        simulant.fire(document, 'mousedown')
+        expect(fn1.mock.calls.length).toBe(1)
+        props.onActive = fn2
+        rerender()
+        await waitUntil(() => result.current.isIdle())
+        simulant.fire(document, 'mousedown')
+        expect(fn2.mock.calls.length).toBe(1)
+      })
+
+      it('Should allow reassignment of onAction', async () => {
+        const fn1 = jest.fn()
+        const fn2 = jest.fn()
+        props.onAction = fn1
+        props.timeout = 200
+        const { result, rerender } = idleTimer()
+        await waitUntil(() => result.current.isIdle())
+        simulant.fire(document, 'mousedown')
+        expect(fn1.mock.calls.length).toBe(1)
+        props.onAction = fn2
+        rerender()
+        await waitUntil(() => result.current.isIdle())
+        simulant.fire(document, 'mousedown')
+        expect(fn2.mock.calls.length).toBe(1)
+      })
     })
 
     describe('methods', () => {

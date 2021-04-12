@@ -94,7 +94,7 @@ declare module 'react-idle-timer' {
     'wheel' |
     'visibilitychange'
 
-  export type ManagerType = 'broadcastMessage' | 'localStorage' | 'simulate'
+  export type ManagerType = 'broadcastChannel' | 'localStorage' | 'simulate'
 
   export default class IdleTimer extends React.Component<IdleTimerProps> {
     /**

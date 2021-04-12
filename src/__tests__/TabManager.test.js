@@ -14,7 +14,11 @@ describe('TabManager', () => {
       responseTime: 100,
       emitOnAllTabs: false,
       onIdle: () => { },
-      onActive: () => { }
+      onActive: () => { },
+      start: () => { },
+      reset: () => { },
+      pause: () => { },
+      resume: () => { },
     }, props)
     const manager = TabManager(props)
     managers.push(manager)
@@ -59,9 +63,6 @@ describe('TabManager', () => {
     await waitUntil(() => manager.isLeader() === true)
 
     const manager2 = createTabManager()
-    manager2.send('register')
-    await sleep(200)
-
     manager2.idle()
     manager.idle()
 
@@ -125,5 +126,61 @@ describe('TabManager', () => {
 
     expect(onActive.mock.calls.length).toBe(2)
     expect(onIdle.mock.calls.length).toBe(2)
+  })
+
+  it('Should emit the start event', async () => {
+    const start = jest.fn()
+    const options = { start }
+
+    const manager = createTabManager(options)
+    await waitUntil(() => manager.isLeader() === true)
+
+    const manager2 = createTabManager()
+    manager2.send('start')
+
+    await waitUntil(() => start.mock.calls.length === 1)
+    expect(start.mock.calls.length).toBe(1)
+  })
+
+  it('Should emit the reset event', async () => {
+    const reset = jest.fn()
+    const options = { reset }
+
+    const manager = createTabManager(options)
+    await waitUntil(() => manager.isLeader() === true)
+
+    const manager2 = createTabManager()
+    manager2.send('reset')
+
+    await waitUntil(() => reset.mock.calls.length === 1)
+    expect(reset.mock.calls.length).toBe(1)
+  })
+
+  it('Should emit the pause event', async () => {
+    const pause = jest.fn()
+    const options = { pause }
+
+    const manager = createTabManager(options)
+    await waitUntil(() => manager.isLeader() === true)
+
+    const manager2 = createTabManager()
+    manager2.send('pause')
+
+    await waitUntil(() => pause.mock.calls.length === 1)
+    expect(pause.mock.calls.length).toBe(1)
+  })
+
+  it('Should emit the resume event', async () => {
+    const resume = jest.fn()
+    const options = { resume }
+
+    const manager = createTabManager(options)
+    await waitUntil(() => manager.isLeader() === true)
+
+    const manager2 = createTabManager()
+    manager2.send('resume')
+
+    await waitUntil(() => resume.mock.calls.length === 1)
+    expect(resume.mock.calls.length).toBe(1)
   })
 })

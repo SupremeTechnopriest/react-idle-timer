@@ -6,7 +6,11 @@ export const TabManager = ({
   responseTime,
   emitOnAllTabs,
   onIdle,
-  onActive
+  onActive,
+  start,
+  reset,
+  pause,
+  resume
 }) => {
   const channel = new MessageChannel(channelName, { type })
   const elector = createLeaderElection(channel, { fallbackInterval, responseTime })
@@ -44,6 +48,18 @@ export const TabManager = ({
       case 'emitActive':
         onActive()
         break
+      case 'start':
+        start(true)
+        break
+      case 'reset':
+        reset(true)
+        break
+      case 'pause':
+        pause(true)
+        break
+      case 'resume':
+        resume(true)
+        break
       default:
         // no op
     }
@@ -57,34 +73,29 @@ export const TabManager = ({
 
   const idle = (id = elector.token) => {
     registry[id] = true
-
-    if (isLeader()) {
-      const idle = Object.values(registry).every(v => v)
-      if (!allIdle && idle) {
-        allIdle = true
+    const idle = Object.values(registry).every(v => v)
+    if (!allIdle && idle) {
+      allIdle = true
+      if (isLeader()) {
         onIdle()
-        if (emitOnAllTabs) {
-          send('emitIdle')
-        }
+        if (emitOnAllTabs) send('emitIdle')
+      } else {
+        send('idle')
       }
-    } else {
-      send('idle')
     }
   }
 
   const active = (id = elector.token) => {
     registry[id] = false
-    if (isLeader()) {
-      const active = Object.values(registry).some(v => !v)
-      if (allIdle && active) {
-        allIdle = false
+    const active = Object.values(registry).some(v => !v)
+    if (allIdle && active) {
+      allIdle = false
+      if (isLeader()) {
         onActive()
-        if (emitOnAllTabs) {
-          send('emitActive')
-        }
+        if (emitOnAllTabs) send('emitActive')
+      } else {
+        send('active')
       }
-    } else {
-      send('active')
     }
   }
 

@@ -17,7 +17,7 @@
 #### Version `4.6.0` adds cross tab support:
 ☝️ Added robust cross tab support with configurable modes and messaging strategies. See the [documentation](https://github.com/SupremeTechnopriest/react-idle-timer#cross-tab) and [examples](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples) for capabilities and usage.
 
-✌️ Added a `startManually` configuration option enabling manual starting of the timer and activity detection.  An alias to `reset()` called `start()` is also exposed to keep implementations more semantic.
+✌️ Added a `startManually` configuration option enabling manual starting of the timer and activity detection.  A new method called `start()` is also exposed to keep implementations more semantic. It is functionally equivalent to `reset`, but won't call `onActive`.
 
 > This release also includes updates to the test suite and various bug fixes.  See the [CHANGELOG](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/CHANGELOG.md) for a complete list of updates in this version.
 
@@ -103,27 +103,29 @@ export default class YourApp extends Component {
 
 ## Hook Usage
 
+When using the hook implementation, it is important to wrap your callback handlers in `useCallback`.  Since `useIdleTimer` supports redefining your event handlers dynamically, you have to ensure that the functions are not recreated every time your parent component is rendered. Otherwise, `useIdleTimer` will be constantly updating the event handlers under the covers. This can have adverse effects when using `throttle` and `debounce`.
+
 > Run `npm run example-hook` to build and run the hook example. The example is a [create-react-app](https://github.com/facebook/create-react-app) project. IdleTimer is implemented in the [App Component](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/hook/src/App.js).
 
 ```javascript
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useIdleTimer } from 'react-idle-timer'
 import App from './App'
 
 export default function (props) {
-  const handleOnIdle = event => {
+  const handleOnIdle = useCallBack(event => {
     console.log('user is idle', event)
     console.log('last active', getLastActiveTime())
-  }
+  }, [])
 
-  const handleOnActive = event => {
+  const handleOnActive = useCallBack(event => {
     console.log('user is active', event)
     console.log('time remaining', getRemainingTime())
-  }
+  }, [])
 
-  const handleOnAction = (e) => {
-    console.log('user did something', e)
-  }
+  const handleOnAction = useCallback(event => {
+    console.log('user did something', event)
+  }, [])
 
   const { getRemainingTime, getLastActiveTime } = useIdleTimer({
     timeout: 1000 * 60 * 15,
@@ -162,6 +164,8 @@ useIdleTimer({
 
 ### Emit on All Tabs
 While in emit on all tabs mode, the lead tab will detect when all tabs have become idle or when a tab has become active from an "all idle" state and instruct all tabs to emit their `onIdle` and `onActive` events.  This is useful when your events are used to open a modal, or some other UI intermediary. To enable this mode, set `crossTab` to an object with the property `emitOnAllTabs` set to true.
+
+> If `emitOnAllTabs` is enabled, `start`, `reset`, `pause` and `resume` will also be emitted on all tabs.
 
 ```javascript
 // Hook
@@ -277,8 +281,8 @@ useIdleTimer({
 ### Methods
 | Name                 | Returns   | Description                                                                                |
 |----------------------|-----------|--------------------------------------------------------------------------------------------|
-| start()              | `Void`    | Starts the idleTimer.                                                                      |
-| reset()              | `Void`    | Resets the idleTimer.                                                                      |
+| start()              | `Void`    | Starts the idleTimer. Won't call `onActive`.                                               |
+| reset()              | `Void`    | Resets the idleTimer. Calls `onActive`.                                                    |
 | pause()              | `Void`    | Pauses the idleTimer.                                                                      |
 | resume()             | `Void`    | Resumes a paused idleTimer.                                                                |
 | getRemainingTime()   | `Number`  | Returns the remaining time in milliseconds.                                                |
