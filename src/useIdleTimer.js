@@ -68,6 +68,40 @@ function useIdleTimer ({
   const emitOnActive = useRef(onActive)
   const emitOnAction = useRef(onAction)
 
+  useEffect(() => {
+    emitOnIdle.current = onIdle
+  }, [onIdle])
+
+  useEffect(() => {
+    emitOnActive.current = onActive
+  }, [onActive])
+
+  useEffect(() => {
+    emitOnAction.current = onAction
+  }, [onAction])
+
+  const intermediateOnAction = useMemo(() => {
+    function callOnAction (e) {
+      emitOnAction.current(e)
+    }
+
+    // Cancel any existing debounce timeouts
+    if (callOnAction.cancel) callOnAction.cancel()
+
+    // Create debounced action if applicable
+    if (debounce > 0) {
+      return debounced(callOnAction, debounce)
+
+      // Create throttled action if applicable
+    } else if (throttle > 0) {
+      return throttled(callOnAction, throttle)
+
+      // No throttle or debounce
+    } else {
+      return callOnAction
+    }
+  }, [throttle, debounce])
+
   /**
    * Toggles the idle state and calls
    * the correct action function
@@ -456,37 +490,6 @@ function useIdleTimer ({
     }
     if (eventsWereBound) _bindEvents()
   }, [eventsThrottle])
-
-  useEffect(() => {
-    emitOnIdle.current = onIdle
-  }, [onIdle])
-
-  useEffect(() => {
-    emitOnActive.current = onActive
-  }, [onActive])
-
-  useEffect(() => {
-    emitOnAction.current = onAction
-  }, [onAction])
-
-  const intermediateOnAction = useMemo(() => {
-    function callOnAction (e) {
-      emitOnAction.current(e)
-    }
-
-    // Create debounced action if applicable
-    if (debounce > 0) {
-      return debounced(callOnAction, debounce)
-
-      // Create throttled action if applicable
-    } else if (throttle > 0) {
-      return throttled(callOnAction, throttle)
-
-      // No throttle or debounce
-    } else {
-      return callOnAction
-    }
-  }, [throttle, debounce])
 
   useEffect(() => {
     _timeout.current = timeout

@@ -45,7 +45,7 @@ export const DEFAULT_EVENTS = [
  **/
 export function debounced (fn, delay) {
   let timerId
-  return function (...args) {
+  function result (...args) {
     if (timerId) {
       clearTimeout(timerId)
     }
@@ -54,6 +54,12 @@ export function debounced (fn, delay) {
       timerId = null
     }, delay)
   }
+
+  result.cancel = function () {
+    clearTimeout(timerId)
+  }
+
+  return result
 }
 
 /**
