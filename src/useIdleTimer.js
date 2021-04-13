@@ -476,6 +476,7 @@ function useIdleTimer ({
     return async () => {
       clearTimeout(tId.current)
       _unbindEvents(true)
+      if (intermediateOnAction.cancel) intermediateOnAction.cancel()
       if (crossTab) await manager.current.close()
     }
   }, [])
