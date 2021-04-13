@@ -1,6 +1,5 @@
 ### 4.6.1
 - When `emitOnAllTabs` is set to `true`, `start`, `reset`, `pause` and `resume` will be called on all tabs.
-- When using the `useIdleTimer` hook in a functional component, event handlers `onIdle`, `onActive` and `onAction` must be wrapped in `useCallback`.
 - Calling `reset` will now automatically fire `onActive` while calling `start` will not. Otherwise these two methods are functionally equivalent.
 - Fixed a type-o in propTypes and typescript definitions.
 

@@ -103,29 +103,27 @@ export default class YourApp extends Component {
 
 ## Hook Usage
 
-When using the hook implementation, it is important to wrap your callback handlers in `useCallback`.  Since `useIdleTimer` supports redefining your event handlers dynamically, you have to ensure that the functions are not recreated every time your parent component is rendered. Otherwise, `useIdleTimer` will be constantly updating the event handlers under the covers. This can have adverse effects when using `throttle` and `debounce`.
-
 > Run `npm run example-hook` to build and run the hook example. The example is a [create-react-app](https://github.com/facebook/create-react-app) project. IdleTimer is implemented in the [App Component](https://github.com/SupremeTechnopriest/react-idle-timer/blob/master/examples/hook/src/App.js).
 
 ```javascript
-import React, { useCallback } from 'react'
+import React from 'react'
 import { useIdleTimer } from 'react-idle-timer'
 import App from './App'
 
 export default function (props) {
-  const handleOnIdle = useCallBack(event => {
+  const handleOnIdle = event => {
     console.log('user is idle', event)
     console.log('last active', getLastActiveTime())
-  }, [])
+  }
 
-  const handleOnActive = useCallBack(event => {
+  const handleOnActive = event => {
     console.log('user is active', event)
     console.log('time remaining', getRemainingTime())
-  }, [])
+  }
 
-  const handleOnAction = useCallback(event => {
+  const handleOnAction = event => {
     console.log('user did something', event)
-  }, [])
+  }
 
   const { getRemainingTime, getLastActiveTime } = useIdleTimer({
     timeout: 1000 * 60 * 15,

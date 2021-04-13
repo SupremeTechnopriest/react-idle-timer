@@ -10,7 +10,7 @@
  * @private
  */
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { TabManager } from './TabManager'
 import { IS_BROWSER, DEFAULT_ELEMENT, DEFAULT_EVENTS, debounced, throttled } from './utils'
@@ -109,7 +109,7 @@ function useIdleTimer ({
    */
   const _handleEvent = e => {
     // Fire onAction event
-    emitOnAction.current(e)
+    intermediateOnAction(e)
 
     // Already active, ignore events
     if (remaining.current) return
@@ -466,19 +466,27 @@ function useIdleTimer ({
   }, [onActive])
 
   useEffect(() => {
+    emitOnAction.current = onAction
+  }, [onAction])
+
+  const intermediateOnAction = useMemo(() => {
+    function callOnAction (e) {
+      emitOnAction.current(e)
+    }
+
     // Create debounced action if applicable
     if (debounce > 0) {
-      emitOnAction.current = debounced(onAction, debounce)
+      return debounced(callOnAction, debounce)
 
       // Create throttled action if applicable
     } else if (throttle > 0) {
-      emitOnAction.current = throttled(onAction, throttle)
+      return throttled(callOnAction, throttle)
 
       // No throttle or debounce
     } else {
-      emitOnAction.current = onAction
+      return callOnAction
     }
-  }, [throttle, debounce, onAction])
+  }, [throttle, debounce])
 
   useEffect(() => {
     _timeout.current = timeout

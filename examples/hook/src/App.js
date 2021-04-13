@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { useIdleTimer } from 'react-idle-timer'
 
@@ -12,8 +12,8 @@ export default function App () {
   const [lastEvent, setLastEvent] = useState('Events Emitted on Leader')
   const [leader, setLeader] = useState(true)
   
-  const handleOnActive = useCallback(() => setLastEvent('active'), [])
-  const handleOnIdle = useCallback(() => setLastEvent('idle'), [])
+  const handleOnActive = () => setLastEvent('active')
+  const handleOnIdle = () => setLastEvent('idle')
 
   const {
     reset,
