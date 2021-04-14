@@ -152,13 +152,24 @@ class IdleTimer extends Component {
 
   componentDidUpdate (prevProps) {
     // Update debounce function
-    if (prevProps.debounce !== this.props.debounce) {
+    if ((prevProps.debounce !== this.props.debounce) && this.props.debounce > 0) {
+      if (this._onAction.cancel) this._onAction.cancel()
       this._onAction = debounced(this.props.onAction, this.props.debounce)
-    }
+    } else
     // Update throttle function
-    if (prevProps.throttle !== this.props.throttle) {
+    if ((prevProps.throttle !== this.props.throttle) && this.props.throttle > 0) {
+      if (this._onAction.cancel) this._onAction.cancel()
       this._onAction = throttled(this.props.onAction, this.props.throttle)
+    } else
+    // Remove throttle or debounce
+    if (
+      (prevProps.throttle && this.props.throttle === 0) ||
+      (prevProps.debounce && this.props.debounce === 0)
+    ) {
+      if (this._onAction.cancel) this._onAction.cancel()
+      this._onAction = this.props.onAction
     }
+
     // Update event throttle function
     if (prevProps.eventsThrottle !== this.props.eventsThrottle) {
       this._unbindEvents()
@@ -181,6 +192,8 @@ class IdleTimer extends Component {
     // Clear timeout to prevent delayed state changes
     clearTimeout(this.tId)
     this._unbindEvents(true)
+    // Cancel any debounced onAction handlers
+    if (this._onAction.cancel) this._onAction.cancel()
     /* istanbul ignore next */
     if (this.manager) {
       this.manager.close().catch(console.error)
