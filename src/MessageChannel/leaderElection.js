@@ -106,20 +106,19 @@ class LeaderElection {
     return this._onBeforeDie
   }
 
-  die () {
+  async die () {
     if (this.isDead) return
     this.isDead = true
 
-    return this.onBeforeDie().then(() => {
-      this._listeners.forEach(listener => this._channel.removeEventListener('internal', listener))
-      this._intervals.forEach(interval => clearInterval(interval))
-      this._unloadFns.forEach(uFn => {
-        if (IS_BROWSER) {
-          window.removeEventListener(uFn[0], uFn[1])
-        }
-      })
-      return _sendMessage(this, 'death')
+    await this.onBeforeDie()
+    this._listeners.forEach(listener => this._channel.removeEventListener('internal', listener))
+    this._intervals.forEach(interval => clearInterval(interval))
+    this._unloadFns.forEach(uFn => {
+      if (IS_BROWSER) {
+        window.removeEventListener(uFn[0], uFn[1])
+      }
     })
+    return _sendMessage(this, 'death')
   }
 }
 

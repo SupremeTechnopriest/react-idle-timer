@@ -123,26 +123,26 @@ export class MessageChannel {
   }
 }
 
-function _post (broadcastChannel, type, msg) {
-  const time = broadcastChannel.method.microSeconds()
+function _post (messageChannel, type, msg) {
+  const time = messageChannel.method.microSeconds()
   const msgObj = {
     time,
     type,
     data: msg
   }
 
-  const awaitPrepare = broadcastChannel._preparePromises ? broadcastChannel._preparePromises : Promise.resolve()
+  const awaitPrepare = messageChannel._preparePromises ? messageChannel._preparePromises : Promise.resolve()
   return awaitPrepare.then(() => {
-    const sendPromise = broadcastChannel.method.postMessage(
-      broadcastChannel._state,
+    const sendPromise = messageChannel.method.postMessage(
+      messageChannel._state,
       msgObj
     )
 
     // add/remove to un-send messages list
-    broadcastChannel._unSendMessagePromises.add(sendPromise)
+    messageChannel._unSendMessagePromises.add(sendPromise)
     sendPromise
       .catch()
-      .then(() => broadcastChannel._unSendMessagePromises.delete(sendPromise))
+      .then(() => messageChannel._unSendMessagePromises.delete(sendPromise))
 
     return sendPromise
   })
