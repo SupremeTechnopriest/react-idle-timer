@@ -182,7 +182,7 @@ class IdleTimer extends Component {
     clearTimeout(this.tId)
     this._unbindEvents(true)
     /* istanbul ignore next */
-    if (this.props.crossTab) {
+    if (this.manager) {
       this.manager.close().catch(console.error)
     }
   }

@@ -73,8 +73,8 @@ export const TabManager = ({
 
   const idle = (id = elector.token) => {
     registry[id] = true
-    const idle = Object.values(registry).every(v => v)
-    if (!allIdle && idle) {
+    const isIdle = Object.values(registry).every(v => v)
+    if (!allIdle && isIdle) {
       allIdle = true
       if (isLeader()) {
         onIdle()
@@ -87,8 +87,8 @@ export const TabManager = ({
 
   const active = (id = elector.token) => {
     registry[id] = false
-    const active = Object.values(registry).some(v => !v)
-    if (allIdle && active) {
+    const isActive = Object.values(registry).some(v => !v)
+    if (allIdle && isActive) {
       allIdle = false
       if (isLeader()) {
         onActive()
