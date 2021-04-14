@@ -34,12 +34,9 @@ function runTest(options) {
       })
 
       it('Should throw if channel is already closed', async () => {
-        const spy = jest.spyOn(console, 'error').mockImplementation()
         const channel = createMessageChannel()
         await channel.close()
-        channel.postMessage('foobar')
-        expect(spy).toHaveBeenCalledTimes(1)
-        spy.mockRestore()
+        expect(() => channel.postMessage('foobar')).toThrow()
       })
     })
 

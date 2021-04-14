@@ -18,7 +18,7 @@ class LeaderElection {
     this._intervals = []
     this._duplicateListeners = () => { }
     this._duplicateCalled = false
-    this._onBeforeDie = () => {}
+    this._onBeforeDie = async () => {}
   }
 
   applyOnce () {
@@ -110,15 +110,16 @@ class LeaderElection {
     if (this.isDead) return
     this.isDead = true
 
-    this.onBeforeDie()
-    this._listeners.forEach(listener => this._channel.removeEventListener('internal', listener))
-    this._intervals.forEach(interval => clearInterval(interval))
-    this._unloadFns.forEach(uFn => {
-      if (IS_BROWSER) {
-        window.removeEventListener(uFn[0], uFn[1])
-      }
+    return this.onBeforeDie().then(() => {
+      this._listeners.forEach(listener => this._channel.removeEventListener('internal', listener))
+      this._intervals.forEach(interval => clearInterval(interval))
+      this._unloadFns.forEach(uFn => {
+        if (IS_BROWSER) {
+          window.removeEventListener(uFn[0], uFn[1])
+        }
+      })
+      return _sendMessage(this, 'death')
     })
-    return _sendMessage(this, 'death')
   }
 }
 

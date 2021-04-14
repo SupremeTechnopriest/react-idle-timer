@@ -48,8 +48,8 @@ function runTest (channelOptions, leaderOptions) {
         const channel2 = createMessageChannel(channelName)
         
         const elector = createLeaderElection(channel, leaderOptions)
-        elector.onBeforeDie = () => {
-          channel.postMessage('unregister')
+        elector.onBeforeDie = async () => {
+          await channel.postMessage('unregister')
         }
 
         channel2.addEventListener('message', msg => {

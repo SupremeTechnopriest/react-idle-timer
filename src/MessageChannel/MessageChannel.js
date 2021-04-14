@@ -49,7 +49,9 @@ export class MessageChannel {
 
   postMessage (msg) {
     if (this.closed) {
-      return console.error('Cannot post message after channel has closed', msg)
+      throw new Error(
+        '❌ Cannot post message after channel has closed'
+      )
     }
     return _post(this, 'message', msg)
   }

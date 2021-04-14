@@ -101,10 +101,12 @@ export const TabManager = ({
 
   /* istanbul ignore next */
   elector.onDuplicate = async () => await elector.die()
-  elector.onBeforeDie = () => send('unregister')
+  elector.onBeforeDie = async () => await send('unregister')
 
-  const send = message => {
-    if (!channel.isClosed()) channel.postMessage([message, elector.token])
+  const send = async message => {
+    if (!channel.isClosed()) {
+      return channel.postMessage([message, elector.token])
+    }
   }
 
   const close = async () => {
