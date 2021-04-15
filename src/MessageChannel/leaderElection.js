@@ -19,6 +19,16 @@ class LeaderElection {
     this._duplicateListeners = () => { }
     this._duplicateCalled = false
     this._onBeforeDie = async () => {}
+
+    const unloadFn = async () => this.die()
+
+    if (IS_BROWSER) {
+      window.addEventListener('beforeUnload', unloadFn)
+      window.addEventListener('unload', unloadFn)
+
+      this._unloadFns.push(['beforeUnload', unloadFn])
+      this._unloadFns.push(['unload', unloadFn])
+    }
   }
 
   applyOnce () {
@@ -184,17 +194,6 @@ function _sendMessage (leaderElector, action) {
 
 export function beLeader (leaderElector) {
   leaderElector.isLeader = true
-  const unloadFn = () => {
-    leaderElector.die()
-  }
-
-  if (IS_BROWSER) {
-    window.addEventListener('beforeUnload', unloadFn)
-    window.addEventListener('unload', unloadFn)
-  }
-
-  leaderElector._unloadFns.push(['beforeUnload', unloadFn])
-  leaderElector._unloadFns.push(['unload', unloadFn])
 
   const isLeaderListener = msg => {
     if (msg.context === 'leader' && msg.action === 'apply') {
@@ -224,9 +223,7 @@ export function createLeaderElection (channel, options) {
   }
 
   const elector = new LeaderElection(channel, options)
-  channel._beforeClose.push(() => {
-    elector.die()
-  })
+  channel._beforeClose.push(async () => elector.die())
 
   channel._leaderElector = elector
   return elector

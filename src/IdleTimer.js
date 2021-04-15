@@ -105,33 +105,6 @@ class IdleTimer extends Component {
     this.getLastIdleTime = this.getLastIdleTime.bind(this)
     this.getTotalIdleTime = this.getTotalIdleTime.bind(this)
     this.getTotalActiveTime = this.getTotalActiveTime.bind(this)
-
-    // Set up cross tab
-    /* istanbul ignore next */
-    if (props.crossTab) {
-      const crossTabOptions = props.crossTab === true ? {} : props.crossTab
-      const crossTab = Object.assign({
-        channelName: 'idle-timer',
-        fallbackInterval: 2000,
-        responseTime: 100,
-        removeTimeout: 1000 * 60,
-        emitOnAllTabs: false
-      }, crossTabOptions)
-
-      this.manager = TabManager({
-        type: crossTab.type,
-        channelName: crossTab.channelName,
-        fallbackInterval: crossTab.fallbackInterval,
-        responseTime: crossTab.responseTime,
-        emitOnAllTabs: crossTab.emitOnAllTabs,
-        onIdle: props.onIdle,
-        onActive: props.onActive,
-        start: this.start,
-        reset: this.reset,
-        pause: this.pause,
-        resume: this.resume
-      })
-    }
   }
 
   /**
@@ -141,7 +114,40 @@ class IdleTimer extends Component {
    * @private
    */
   componentDidMount () {
-    const { startOnMount, startManually } = this.props
+    const { startOnMount, startManually, crossTab, onIdle, onActive } = this.props
+
+    // Set up cross tab
+    /* istanbul ignore next */
+    if (crossTab) {
+      const {
+        type,
+        channelName,
+        fallbackInterval,
+        responseTime,
+        emitOnAllTabs
+      } = Object.assign({
+        channelName: 'idle-timer',
+        fallbackInterval: 2000,
+        responseTime: 100,
+        removeTimeout: 1000 * 60,
+        emitOnAllTabs: false
+      }, crossTab === true ? {} : crossTab)
+
+      this.manager = TabManager({
+        type,
+        channelName,
+        fallbackInterval,
+        responseTime,
+        emitOnAllTabs,
+        onIdle,
+        onActive,
+        start: this.start,
+        reset: this.reset,
+        pause: this.pause,
+        resume: this.resume
+      })
+    }
+
     if (startManually) return
     if (startOnMount) {
       this.start()

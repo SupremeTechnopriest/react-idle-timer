@@ -1,12 +1,10 @@
 import ObliviousSet from '../ObliviousSet'
 
 import {
-  sleep,
   randomToken,
   microSeconds
 } from '../../utils'
 
-const KEY_PREFIX = 'broadcastChannel-'
 export const type = 'localStorage'
 
 /**
@@ -27,7 +25,7 @@ export function getLocalStorage () {
 }
 
 export function storageKey (channelName) {
-  return KEY_PREFIX + channelName
+  return channelName
 }
 
 /**
@@ -36,30 +34,28 @@ export function storageKey (channelName) {
 */
 export function postMessage (channelState, messageJson) {
   return new Promise(resolve => {
-    sleep().then(() => {
-      const key = storageKey(channelState.channelName)
-      const writeObj = {
-        token: randomToken(),
-        time: new Date().getTime(),
-        data: messageJson,
-        uuid: channelState.uuid
-      }
-      const value = JSON.stringify(writeObj)
-      getLocalStorage().setItem(key, value)
+    const key = storageKey(channelState.channelName)
+    const writeObj = {
+      token: randomToken(),
+      time: new Date().getTime(),
+      data: messageJson,
+      uuid: channelState.uuid
+    }
+    const value = JSON.stringify(writeObj)
+    getLocalStorage().setItem(key, value)
 
-      /**
+    /**
        * StorageEvent does not fire the 'storage' event
        * in the window that changes the state of the local storage.
        * So we fire it manually
        */
-      const ev = document.createEvent('Event')
-      ev.initEvent('storage', true, true)
-      ev.key = key
-      ev.newValue = value
-      window.dispatchEvent(ev)
+    const ev = document.createEvent('Event')
+    ev.initEvent('storage', true, true)
+    ev.key = key
+    ev.newValue = value
+    window.dispatchEvent(ev)
 
-      resolve()
-    })
+    resolve()
   })
 }
 
@@ -80,7 +76,7 @@ export function removeStorageEventListener (listener) {
 export function create (channelName, options = {}) {
   if (!canBeUsed()) {
     /* istanbul ignore next */
-    throw new Error('BroadcastChannel: localStorage cannot be used')
+    throw new Error('❌ localStorage cannot be used.')
   }
 
   const uuid = randomToken()
@@ -129,7 +125,7 @@ export function canBeUsed () {
   if (!ls) return false
 
   try {
-    const key = '__broadcastchannel_check'
+    const key = '__check'
     ls.setItem(key, 'works')
     ls.removeItem(key)
   } catch (e) {
