@@ -270,7 +270,7 @@ useIdleTimer({
 |capture|`Boolean`|true|Bind events in [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) mode.|
 |crossTab|`Boolean`\|`Object`|false|Enable cross tab event reconciliation.|
 |crossTab.emitOnAllTabs|`Boolean`|false|Emit events on all tabs.|
-|crossTab.type|`String`|undefined|Message strategy to use. Selected automatically if left `undefined`. Can be one of `broadcastMessage`, `localStorage` or `simulate`.|
+|crossTab.type|`String`|undefined|Message strategy to use. Selected automatically if left `undefined`. Can be one of `broadcastChannel`, `localStorage` or `simulate`.|
 |crossTab.channelName|`String`|idle-timer|Name of the BroadcastChannel or localStorage key.|
 |crossTab.fallbackInterval|`Number`|2000|How often renegotiation for leader will occur.|
 |crossTab.responseTime|`Number`|100|How long tab instances will have to respond.|
