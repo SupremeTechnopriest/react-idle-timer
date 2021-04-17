@@ -1,7 +1,9 @@
 ### 4.6.1
 - When `emitOnAllTabs` is set to `true`, `start`, `reset`, `pause` and `resume` will be called on all tabs.
 - Calling `reset` will now automatically fire `onActive` while calling `start` will not. Otherwise these two methods are functionally equivalent.
-- Fixed a type-o in propTypes and typescript definitions.
+- Fixed a type-o in propTypes, typescript definitions and docs.
+- Fixed an issue where the `localStorage` method would not call `idle` if there wasn't any user activity on the page.
+- Fixed an issue where the `TabManager` would not deregister itself when the tab was closed if it was not the leader tab.
 
 ## 4.6.0
 - Added cross tab support. See examples and README for usage and documentation.
