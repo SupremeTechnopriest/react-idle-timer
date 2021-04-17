@@ -41,7 +41,7 @@ function runTest (channelOptions, leaderOptions) {
     })
 
     describe('unload', () => {
-      it('Should fire unregister on unload', async () => {
+      it('Should fire deregister on unload', async () => {
         let done = false
         const channelName = randomToken()
         const channel = createMessageChannel(channelName)
@@ -49,11 +49,11 @@ function runTest (channelOptions, leaderOptions) {
         
         const elector = createLeaderElection(channel, leaderOptions)
         elector.onBeforeDie = async () => {
-          await channel.postMessage('unregister')
+          await channel.postMessage('deregister')
         }
 
         channel2.addEventListener('message', msg => {
-          if (msg === 'unregister') done = true
+          if (msg === 'deregister') done = true
         })
 
         await elector.applyOnce()

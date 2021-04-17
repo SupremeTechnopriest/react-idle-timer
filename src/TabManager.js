@@ -33,7 +33,7 @@ export const TabManager = ({
       case 'register':
         registry[id] = false
         break
-      case 'unregister':
+      case 'deregister':
         delete registry[id]
         break
       case 'idle':
@@ -101,7 +101,7 @@ export const TabManager = ({
 
   /* istanbul ignore next */
   elector.onDuplicate = async () => await elector.die()
-  elector.onBeforeDie = async () => await send('unregister')
+  elector.onBeforeDie = async () => await send('deregister')
 
   const send = async message => channel.postMessage([message, elector.token])
 

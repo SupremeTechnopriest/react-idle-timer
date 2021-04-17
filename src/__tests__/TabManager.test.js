@@ -86,7 +86,7 @@ describe('TabManager', () => {
     expect(onActive.mock.calls.length).toBe(1)
   })
 
-  it('Should unregister when tab closes', async () => {
+  it('Should deregister when tab closes', async () => {
     const onIdle = jest.fn()
     const manager = createTabManager({ onIdle })
     await waitUntil(() => manager.isLeader() === true)
