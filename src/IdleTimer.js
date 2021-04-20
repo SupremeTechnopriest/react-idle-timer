@@ -114,39 +114,10 @@ class IdleTimer extends Component {
    * @private
    */
   componentDidMount () {
-    const { startOnMount, startManually, crossTab, onIdle, onActive } = this.props
+    const { startOnMount, startManually } = this.props
 
     // Set up cross tab
-    /* istanbul ignore next */
-    if (crossTab) {
-      const {
-        type,
-        channelName,
-        fallbackInterval,
-        responseTime,
-        emitOnAllTabs
-      } = Object.assign({
-        channelName: 'idle-timer',
-        fallbackInterval: 2000,
-        responseTime: 100,
-        removeTimeout: 1000 * 60,
-        emitOnAllTabs: false
-      }, crossTab === true ? {} : crossTab)
-
-      this.manager = TabManager({
-        type,
-        channelName,
-        fallbackInterval,
-        responseTime,
-        emitOnAllTabs,
-        onIdle,
-        onActive,
-        start: this.start,
-        reset: this.reset,
-        pause: this.pause,
-        resume: this.resume
-      })
-    }
+    this._setupTabManager()
 
     if (startManually) return
     if (startOnMount) {
@@ -186,6 +157,19 @@ class IdleTimer extends Component {
     if (prevProps.timeout !== this.props.timeout) {
       if (this.state.idle) this.reset()
     }
+
+    // Update TabManager
+    if (
+      this.manager && (
+        (prevProps.crossTab !== this.props.crossTab) ||
+        (prevProps.onIdle !== this.props.onIdle) ||
+        (prevProps.onAction !== this.props.onAction)
+      )
+    ) {
+      this.manager.close().then(() => {
+        this._setupTabManager()
+      })
+    }
   }
 
   /**
@@ -214,6 +198,45 @@ class IdleTimer extends Component {
   render () {
     const { children } = this.props
     return children || null
+  }
+
+  /**
+   * Setup the Tab Manager.
+   * @private
+   */
+  _setupTabManager () {
+    const { crossTab, onIdle, onActive } = this.props
+
+    /* istanbul ignore next */
+    if (crossTab) {
+      const {
+        type,
+        channelName,
+        fallbackInterval,
+        responseTime,
+        emitOnAllTabs
+      } = Object.assign({
+        channelName: 'idle-timer',
+        fallbackInterval: 2000,
+        responseTime: 100,
+        removeTimeout: 1000 * 60,
+        emitOnAllTabs: false
+      }, crossTab === true ? {} : crossTab)
+
+      this.manager = TabManager({
+        type,
+        channelName,
+        fallbackInterval,
+        responseTime,
+        emitOnAllTabs,
+        onIdle,
+        onActive,
+        start: this.start,
+        reset: this.reset,
+        pause: this.pause,
+        resume: this.resume
+      })
+    }
   }
 
   /**
