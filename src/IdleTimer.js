@@ -62,6 +62,8 @@ class IdleTimer extends Component {
      */
     this.eventsBound = false
 
+    this.callbackRefs = {}
+
     // Debounce and throttle can't both be set
     if (props.debounce > 0 && props.throttle > 0) {
       throw new Error('onAction can either be throttled or debounced (not both)')
@@ -158,18 +160,9 @@ class IdleTimer extends Component {
       if (this.state.idle) this.reset()
     }
 
-    // Update TabManager
-    if (
-      this.manager && (
-        (prevProps.crossTab !== this.props.crossTab) ||
-        (prevProps.onIdle !== this.props.onIdle) ||
-        (prevProps.onAction !== this.props.onAction)
-      )
-    ) {
-      this.manager.close().then(() => {
-        this._setupTabManager()
-      })
-    }
+    // Update callback refs
+    if (prevProps.onActive !== this.props.onActive) this.callbackRefs.onActive = this.props.onActive
+    if (prevProps.onIdle !== this.props.onIdle) this.callbackRefs.onIdle = this.props.onIdle
   }
 
   /**
@@ -206,6 +199,7 @@ class IdleTimer extends Component {
    */
   _setupTabManager () {
     const { crossTab, onIdle, onActive } = this.props
+    this.callbackRefs = { onIdle, onActive }
 
     /* istanbul ignore next */
     if (crossTab) {
@@ -229,8 +223,8 @@ class IdleTimer extends Component {
         fallbackInterval,
         responseTime,
         emitOnAllTabs,
-        onIdle,
-        onActive,
+        onIdle: this.callbackRefs.onIdle,
+        onActive: this.callbackRefs.onActive,
         start: this.start,
         reset: this.reset,
         pause: this.pause,
