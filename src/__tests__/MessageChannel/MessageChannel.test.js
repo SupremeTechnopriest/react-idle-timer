@@ -288,9 +288,18 @@ function runTest(options) {
         expect(emitted.length).toBe(1)
       })
     })
+    
+    describe('.isClosed()', () => {
+      it('Should return closed state', async () => {
+        const channel = createMessageChannel()
+        expect(channel.isClosed()).toBe(false)
+        await channel.close()
+        expect(channel.isClosed()).toBe(true)
+      })
+    })
 
     describe('.type', () => {
-      it('should get a type', () => {
+      it('Should get a type', () => {
         const channel = createMessageChannel()
         const type = channel.type
         expect(typeof type).toBe('string')

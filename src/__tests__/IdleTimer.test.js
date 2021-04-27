@@ -425,6 +425,19 @@ describe('IdleTimer', () => {
       expect(props.onAction.mock.calls.length).toBe(0)
     })
 
+    it('Should remove throttle/debounce prop', async () => {
+      props.onAction = jest.fn()
+      props.timeout = 400
+      props.debounce = 200
+      const timer = idleTimer()
+      timer.setProps({ debounce: 0 })
+      simulant.fire(document, 'mousedown')
+      await sleep(200)
+      simulant.fire(document, 'mousedown')
+      expect(timer.props().debounce).toBe(0)
+      expect(props.onAction.mock.calls.length).toBe(2)
+    })
+
     it('Should not throttle events', async () => {
       props.eventsThrottle = 0
       props.timeout = 200
