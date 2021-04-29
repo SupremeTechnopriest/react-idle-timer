@@ -13,8 +13,10 @@ describe('TabManager', () => {
       fallbackInterval: 2000,
       responseTime: 100,
       emitOnAllTabs: false,
-      onIdle: () => { },
-      onActive: () => { },
+      callbacks: {
+        onIdle: () => { },
+        onActive: () => { }
+      },
       start: () => { },
       reset: () => { },
       pause: () => { },
@@ -57,8 +59,11 @@ describe('TabManager', () => {
   })
 
   it('Should call onIdle when all tabs are idle', async () => {
-    const onIdle = jest.fn()
-    const manager = createTabManager({ onIdle })
+    const callbacks = {
+      onIdle: jest.fn(),
+      onActive: jest.fn()
+    }
+    const manager = createTabManager({ callbacks })
     manager.setAllIdle(false)
     await waitUntil(() => manager.isLeader() === true)
 
@@ -66,14 +71,17 @@ describe('TabManager', () => {
     manager2.idle()
     manager.idle()
 
-    await waitUntil(() => onIdle.mock.calls.length === 1)
+    await waitUntil(() => callbacks.onIdle.mock.calls.length === 1)
 
-    expect(onIdle.mock.calls.length).toBe(1)
+    expect(callbacks.onIdle.mock.calls.length).toBe(1)
   })
 
   it('Should call onActive when one tab becomes active', async () => {
-    const onActive = jest.fn()
-    const manager = createTabManager({ onActive })
+    const callbacks = {
+      onIdle: jest.fn(),
+      onActive: jest.fn()
+    }
+    const manager = createTabManager({ callbacks })
     manager.setAllIdle(true)
     await waitUntil(() => manager.isLeader() === true)
 
@@ -81,14 +89,17 @@ describe('TabManager', () => {
     manager2.active()
     manager.active()
 
-    await waitUntil(() => onActive.mock.calls.length === 1)
+    await waitUntil(() => callbacks.onActive.mock.calls.length === 1)
 
-    expect(onActive.mock.calls.length).toBe(1)
+    expect(callbacks.onActive.mock.calls.length).toBe(1)
   })
 
   it('Should deregister when tab closes', async () => {
-    const onIdle = jest.fn()
-    const manager = createTabManager({ onIdle })
+    const callbacks = {
+      onIdle: jest.fn(),
+      onActive: jest.fn()
+    }
+    const manager = createTabManager({ callbacks })
     await waitUntil(() => manager.isLeader() === true)
 
     const manager2 = createTabManager()
@@ -98,16 +109,17 @@ describe('TabManager', () => {
     await manager2.close()
     manager.idle()
 
-    await waitUntil(() => onIdle.mock.calls.length === 1)
-    expect(onIdle.mock.calls.length).toBe(1)
+    await waitUntil(() => callbacks.onIdle.mock.calls.length === 1)
+    expect(callbacks.onIdle.mock.calls.length).toBe(1)
   })
 
   it('Should emit events on all tabs', async () => {
-    const onIdle = jest.fn()
-    const onActive = jest.fn()
+    const callbacks = {
+      onIdle: jest.fn(),
+      onActive: jest.fn()
+    }
     const options = {
-      onIdle, 
-      onActive, 
+      callbacks,
       emitOnAllTabs: true 
     }
 
@@ -118,14 +130,14 @@ describe('TabManager', () => {
     await sleep(200)
     
     manager2.active()
-    await waitUntil(() => onActive.mock.calls.length === 2)
+    await waitUntil(() => callbacks.onActive.mock.calls.length === 2)
     
     manager.idle()
     manager2.idle()
-    await waitUntil(() => onIdle.mock.calls.length === 2)
+    await waitUntil(() => callbacks.onIdle.mock.calls.length === 2)
 
-    expect(onActive.mock.calls.length).toBe(2)
-    expect(onIdle.mock.calls.length).toBe(2)
+    expect(callbacks.onActive.mock.calls.length).toBe(2)
+    expect(callbacks.onIdle.mock.calls.length).toBe(2)
   })
 
   it('Should emit the start event', async () => {

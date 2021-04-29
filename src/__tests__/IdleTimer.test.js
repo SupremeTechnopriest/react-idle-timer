@@ -340,6 +340,37 @@ describe('IdleTimer', () => {
       expect(props.onAction.mock.calls.length).toBe(1)
     })
 
+    it('Should allow dynamic setting of onIdle and onActive on TabManager', async () => {
+      props.timeout = 200
+      props.startManually = true
+      props.crossTab = {
+        type: 'simulate'
+      }
+      const active1 = jest.fn()
+      const idle1 = jest.fn()
+      const active2 = jest.fn()
+      const idle2 = jest.fn()
+      props.onActive = active1
+      props.onIdle = idle1
+
+      const timer = idleTimer()
+      await waitUntil(() => timer.instance().isLeader())
+
+      timer.instance().start()
+      await waitUntil(() => timer.state('idle'))
+
+      expect(idle1.mock.calls.length).toBe(1)
+      simulant.fire(document, 'mousedown')
+      expect(active1.mock.calls.length).toBe(1)
+
+      timer.setProps({ onActive: active2, onIdle: idle2 })
+
+      await waitUntil(() => timer.state('idle'))
+      expect(idle2.mock.calls.length).toBe(1)
+      simulant.fire(document, 'mousedown')
+      expect(active2.mock.calls.length).toBe(1)
+    })
+
     it('Should error if debounce and throttle are set', done => {
       jest.spyOn(console, 'error')
       console.error.mockImplementation(() => {})
@@ -451,8 +482,8 @@ describe('IdleTimer', () => {
     })
 
     it('Should throttle events', async () => {
-      props.eventsThrottle = 1000
-      props.timeout = 200
+      props.eventsThrottle = 2000
+      props.timeout = 1000
       props.onActive = jest.fn()
       const timer = idleTimer()
       await waitUntil(() => timer.state('idle'))

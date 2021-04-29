@@ -5,8 +5,7 @@ export const TabManager = ({
   fallbackInterval,
   responseTime,
   emitOnAllTabs,
-  onIdle,
-  onActive,
+  callbacks,
   start,
   reset,
   pause,
@@ -43,10 +42,10 @@ export const TabManager = ({
         active(id)
         break
       case 'emitIdle':
-        onIdle()
+        callbacks.onIdle()
         break
       case 'emitActive':
-        onActive()
+        callbacks.onActive()
         break
       case 'start':
         start(true)
@@ -77,7 +76,7 @@ export const TabManager = ({
     if (!allIdle && isIdle) {
       allIdle = true
       if (isLeader()) {
-        onIdle()
+        callbacks.onIdle()
         if (emitOnAllTabs) send('emitIdle')
       } else {
         send('idle')
@@ -91,7 +90,7 @@ export const TabManager = ({
     if (allIdle && isActive) {
       allIdle = false
       if (isLeader()) {
-        onActive()
+        callbacks.onActive()
         if (emitOnAllTabs) send('emitActive')
       } else {
         send('active')

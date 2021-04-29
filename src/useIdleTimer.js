@@ -448,8 +448,10 @@ function useIdleTimer ({
         fallbackInterval: crossTab.fallbackInterval,
         responseTime: crossTab.responseTime,
         emitOnAllTabs: crossTab.emitOnAllTabs,
-        onIdle: emitOnIdle.current,
-        onActive: emitOnActive.current,
+        callbacks: {
+          onIdle: emitOnIdle.current,
+          onActive: emitOnActive.current
+        },
         start,
         reset,
         pause,
