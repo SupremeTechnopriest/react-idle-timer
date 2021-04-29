@@ -1,3 +1,6 @@
+### 4.6.2
+- Allow for dynamically setting `onActive` and `onIdle` event handlers in conjunction with cross tab event reconciliation.
+
 ### 4.6.1
 - When `emitOnAllTabs` is set to `true`, `start`, `reset`, `pause` and `resume` will be called on all tabs.
 - Calling `reset` will now automatically fire `onActive` while calling `start` will not. Otherwise these two methods are functionally equivalent.
