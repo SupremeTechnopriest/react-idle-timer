@@ -29,7 +29,7 @@ export default {
     resolve(),
     commonjs(),
     babel({
-      babelHelpers: 'runtime',
+      babelHelpers: 'bundled',
       skipPreflightCheck: true
     }),
     terser()
