@@ -96,7 +96,7 @@ declare module 'react-idle-timer' {
 
   export type ManagerType = 'broadcastChannel' | 'localStorage' | 'simulate'
 
-  export default class IdleTimer extends React.Component<IdleTimerProps> {
+  export default class IdleTimer extends React.Component<IdleTimerClassProps> {
     /**
      * Alias to reset.
      */
@@ -188,6 +188,13 @@ declare module 'react-idle-timer' {
      * Emits events on all tabs. Default: false.
      */
     emitOnAllTabs?: boolean
+  }
+
+  interface IdleTimerClassProps extends IdleTimerProps {
+    /**
+     * React reference to the IdleTimer Component instance.
+     */
+    ref: (ref: IdleTimer) => any
   }
 
   interface IdleTimerProps {
