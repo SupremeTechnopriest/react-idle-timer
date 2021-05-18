@@ -364,6 +364,8 @@ function useIdleTimer ({
 
     if (manager.current) {
       /* istanbul ignore next */
+      if (idle.current) manager.current.active()
+      /* istanbul ignore next */
       manager.current.setAllIdle(false)
       /* istanbul ignore next */
       if (!remote && crossTab.emitOnAllTabs) {

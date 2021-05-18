@@ -435,6 +435,8 @@ class IdleTimer extends Component {
 
     if (this.manager) {
       /* istanbul ignore next */
+      if (this.state.idle) this.manager.current.active()
+      /* istanbul ignore next */
       this.manager.setAllIdle(false)
       /* istanbul ignore next */
       if (!remote && this.props.crossTab.emitOnAllTabs) {
