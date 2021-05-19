@@ -354,7 +354,14 @@ function useIdleTimer ({
     // Bind the events
     _bindEvents()
 
-    if (idle.current) emitOnActive.current()
+    // Emit active
+    if (idle.current) {
+      if (manager.current) {
+        manager.current.active()
+      } else {
+        emitOnActive.current()
+      }
+    }
 
     // Reset state
     idle.current = false
@@ -363,8 +370,6 @@ function useIdleTimer ({
     remaining.current = null
 
     if (manager.current) {
-      /* istanbul ignore next */
-      if (idle.current) manager.current.active()
       /* istanbul ignore next */
       manager.current.setAllIdle(false)
       /* istanbul ignore next */
