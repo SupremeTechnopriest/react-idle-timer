@@ -433,6 +433,7 @@ class IdleTimer extends Component {
 
     if (this.state.idle) {
       if (this.manager) {
+        /* istanbul ignore next */
         this.manager.active()
       } else {
         this.props.onActive()

@@ -357,6 +357,7 @@ function useIdleTimer ({
     // Emit active
     if (idle.current) {
       if (manager.current) {
+        /* istanbul ignore next */
         manager.current.active()
       } else {
         emitOnActive.current()
