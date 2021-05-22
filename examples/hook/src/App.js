@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { useIdleTimer } from 'react-idle-timer'
 
-
 export default function App () {
   const timeout = 3000
   const [remaining, setRemaining] = useState(timeout)
