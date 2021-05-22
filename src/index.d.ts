@@ -340,3 +340,11 @@ declare module 'react-idle-timer' {
 
   export function useIdleTimer(props: IdleTimerProps): IdleTimerAPI
 }
+
+declare module 'react-idle-timer/modern' {
+  export * from 'react-idle-timer'
+}
+
+declare module 'react-idle-timer/dist/modern' {
+  export * from 'react-idle-timer'
+}
