@@ -11,6 +11,8 @@ npm-debug.log.*
 # Config
 #
 .env
+.github
+.vscode
 .codeclimate.yml
 .travis.yml
 .babelrc
