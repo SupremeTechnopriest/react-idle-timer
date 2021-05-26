@@ -1,3 +1,8 @@
+### 4.6.3
+- Add missing `ref` to TypeScript definitions.
+- Fixed a bug where reset would not propagate cross tab.
+- Exported a bundle for modern browsers.  This will become the default in version 5.  If you require dead browser support, you will need to import from legacy. `import IdleTimer from 'react-idle-timer/legacy' for Webpack 5 and `import IdleTimer from 'react-idle-timer/dist/legacy' for webpack 4 and below.
+
 ### 4.6.2
 - Allow for dynamically setting `onActive` and `onIdle` event handlers in conjunction with cross tab event reconciliation.
 

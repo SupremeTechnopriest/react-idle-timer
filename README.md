@@ -12,6 +12,34 @@
 🚀 **Support for Isomorphic React**<br/>
 🎣 **Hook Implementation**
 
+## Upcoming breaking changes in v5
+
+In the next major version, IdleTimer will be dropping default support for dead browsers. The main exports will be for modern browsers and ES Modules only. Version `4.6.3` added a new export for modern browsers to allow Content Security Policies to be added without regenerator-runtime violations:
+
+```javascript
+import IdleTimer, { useIdleTimer } from 'react-idle-timer/modern'
+```
+
+If your build chain does not support node sub-modules (Webpack <= v4), you will need to import directly from dist. 
+
+```javascript
+import IdleTimer, { useIdleTimer } from 'react-idle-timer/dist/modern'
+```
+
+In version 5 this will be inverted. The default export will be for modern browsers. If you need support for CommonJS/ Babel compiled source, you will need to import the legacy package:
+
+```javascript
+import IdleTimer, { useIdleTimer } from 'react-idle-timer/legacy'
+``` 
+
+Again, if your build chain does not support node sub-modules (Webpack <= v4), you will need to import directly from dist.
+
+```javascript
+import IdleTimer, { useIdleTimer } from 'react-idle-timer/dist/legacy' 
+```
+
+If you have any questions or concerns feel free to open an issue on [github](https://github.com/SupremeTechnopriest/react-idle-timer/issues). The version 5 release is planned for late Q3 - early Q4 2021.
+
 ## Latest News
 
 #### Version `4.6.0` adds cross tab support:
