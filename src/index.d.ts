@@ -194,7 +194,7 @@ declare module 'react-idle-timer' {
     /**
      * React reference to the IdleTimer Component instance.
      */
-    ref: (ref: IdleTimer) => any
+    ref?: (ref: IdleTimer) => any
   }
 
   interface IdleTimerProps {
