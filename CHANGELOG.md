@@ -1,3 +1,6 @@
+### 4.6.4
+- Make `ref` optional in typedef.
+
 ### 4.6.3
 - Add missing `ref` to TypeScript definitions.
 - Fixed a bug where reset would not propagate cross tab.
