@@ -1,3 +1,4 @@
+import timer from '../timer'
 import { IS_BROWSER, sleep, randomToken } from '../utils'
 
 class LeaderElection {
@@ -122,7 +123,7 @@ class LeaderElection {
 
     await this.onBeforeDie()
     this._listeners.forEach(listener => this._channel.removeEventListener('internal', listener))
-    this._intervals.forEach(interval => clearInterval(interval))
+    this._intervals.forEach(interval => timer.clearInterval(interval))
     this._unloadFns.forEach(uFn => {
       if (IS_BROWSER) {
         window.removeEventListener(uFn[0], uFn[1])
@@ -144,7 +145,7 @@ function _awaitLeadershipOnce (leaderElector) {
         return
       }
       resolved = true
-      clearInterval(interval)
+      timer.clearInterval(interval)
       leaderElector._channel.removeEventListener('internal', whenDeathListener)
       resolve(true)
     }
@@ -157,7 +158,7 @@ function _awaitLeadershipOnce (leaderElector) {
     })
 
     // try on fallbackInterval
-    const interval = setInterval(() => {
+    const interval = timer.setInterval(() => {
       /* istanbul ignore next */
       leaderElector.applyOnce().then(() => {
         if (leaderElector.isLeader) {

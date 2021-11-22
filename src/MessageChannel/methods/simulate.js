@@ -1,3 +1,4 @@
+import timer from '../../timer'
 import { microSeconds } from '../../utils'
 
 export const type = 'simulate'
@@ -19,7 +20,7 @@ export function close (channelState) {
 }
 
 export function postMessage (channelState, messageJson) {
-  return new Promise(resolve => setTimeout(() => {
+  return new Promise(resolve => timer.setTimeout(() => {
     const channelArray = Array.from(SIMULATE_CHANNELS)
     channelArray
       .filter(channel => channel.name === channelState.name)

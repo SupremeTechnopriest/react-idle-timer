@@ -12,6 +12,7 @@
 
 import { useEffect, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
+import timer from './timer'
 import { TabManager } from './TabManager'
 import { IS_BROWSER, DEFAULT_ELEMENT, DEFAULT_EVENTS, debounced, throttled } from './utils'
 
@@ -113,7 +114,7 @@ function useIdleTimer ({
     if (nextIdle) {
       if (stopOnIdle) {
         // Clear any existing timeout
-        clearTimeout(tId.current)
+        timer.clearTimeout(tId.current)
         tId.current = null
         // Unbind events
         _unbindEvents()
@@ -168,10 +169,10 @@ function useIdleTimer ({
     }
 
     // Clear any existing timeout
-    clearTimeout(tId.current)
+    timer.clearTimeout(tId.current)
     tId.current = null
 
-    // Determine last time User was active, as can't rely on setTimeout ticking at the correct interval
+    // Determine last time User was active, as can't rely on timer.setTimeout ticking at the correct interval
     const elapsedTimeSinceLastActive = +new Date() - getLastActiveTime()
 
     // If the user is idle or last active time is more than timeout, flip the idle state
@@ -190,7 +191,7 @@ function useIdleTimer ({
 
     // If the user is active, set a new timeout
     if (!idle.current) {
-      tId.current = setTimeout(_toggleIdleState, _timeout.current)
+      tId.current = timer.setTimeout(_toggleIdleState, _timeout.current)
     }
   }
 
@@ -317,7 +318,7 @@ function useIdleTimer ({
   */
   const start = (remote = false) => {
     // Clear timeout
-    clearTimeout(tId.current)
+    timer.clearTimeout(tId.current)
     tId.current = null
 
     // Bind the events
@@ -339,7 +340,7 @@ function useIdleTimer ({
     }
 
     // Set new timeout
-    tId.current = setTimeout(_toggleIdleState, _timeout.current)
+    tId.current = timer.setTimeout(_toggleIdleState, _timeout.current)
   }
 
   /**
@@ -348,7 +349,7 @@ function useIdleTimer ({
   */
   const reset = (remote = false) => {
     // Clear timeout
-    clearTimeout(tId.current)
+    timer.clearTimeout(tId.current)
     tId.current = null
 
     // Bind the events
@@ -380,7 +381,7 @@ function useIdleTimer ({
     }
 
     // Set new timeout
-    tId.current = setTimeout(_toggleIdleState, _timeout.current)
+    tId.current = timer.setTimeout(_toggleIdleState, _timeout.current)
   }
 
   /**
@@ -395,7 +396,7 @@ function useIdleTimer ({
     _unbindEvents()
 
     // Clear existing timeout
-    clearTimeout(tId.current)
+    timer.clearTimeout(tId.current)
     tId.current = null
 
     // Define how much is left on the timer
@@ -424,7 +425,7 @@ function useIdleTimer ({
     // if we are in the idle state
     if (!idle.current) {
       // Set a new timeout
-      tId.current = setTimeout(_toggleIdleState, remaining.current)
+      tId.current = timer.setTimeout(_toggleIdleState, remaining.current)
       // Set states
       remaining.current = null
       lastActive.current = +new Date()
@@ -470,7 +471,7 @@ function useIdleTimer ({
     // If startOnMount is enabled, start the timer
     if (startManually) {
       return async () => {
-        clearTimeout(tId.current)
+        timer.clearTimeout(tId.current)
         _unbindEvents(true)
         if (crossTab) await manager.current.close()
       }
@@ -484,7 +485,7 @@ function useIdleTimer ({
 
     // Clear and unbind on unmount
     return async () => {
-      clearTimeout(tId.current)
+      timer.clearTimeout(tId.current)
       _unbindEvents(true)
       if (intermediateOnAction.cancel) intermediateOnAction.cancel()
       if (crossTab) await manager.current.close()

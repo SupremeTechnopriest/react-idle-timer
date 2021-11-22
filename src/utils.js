@@ -1,3 +1,5 @@
+import timer from './timer'
+
 /**
  * Determine if we are in a browser
  * or a server environment
@@ -47,16 +49,16 @@ export function debounced (fn, delay) {
   let timerId
   function result (...args) {
     if (timerId) {
-      clearTimeout(timerId)
+      timer.clearTimeout(timerId)
     }
-    timerId = setTimeout(() => {
+    timerId = timer.setTimeout(() => {
       fn(...args)
       timerId = null
     }, delay)
   }
 
   result.cancel = function () {
-    clearTimeout(timerId)
+    timer.clearTimeout(timerId)
   }
 
   return result
@@ -137,7 +139,7 @@ export function isPromise (obj) {
  * @private
  */
 export function sleep (time = 0) {
-  return new Promise(resolve => setTimeout(resolve, time))
+  return new Promise(resolve => timer.setTimeout(resolve, time))
 }
 
 /**

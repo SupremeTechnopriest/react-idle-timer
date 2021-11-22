@@ -12,6 +12,7 @@
 
 import { Component } from 'react'
 import PropTypes from 'prop-types'
+import timer from './timer'
 import { TabManager } from './TabManager'
 import { IS_BROWSER, DEFAULT_ELEMENT, DEFAULT_EVENTS, debounced, throttled } from './utils'
 
@@ -173,7 +174,7 @@ class IdleTimer extends Component {
    */
   componentWillUnmount () {
     // Clear timeout to prevent delayed state changes
-    clearTimeout(this.tId)
+    timer.clearTimeout(this.tId)
     this._unbindEvents(true)
     // Cancel any debounced onAction handlers
     if (this._onAction.cancel) this._onAction.cancel()
@@ -294,7 +295,7 @@ class IdleTimer extends Component {
       if (idle) {
         if (stopOnIdle) {
           // Clear any existing timeout
-          clearTimeout(this.tId)
+          timer.clearTimeout(this.tId)
           this.tId = null
           // Unbind events
           this._unbindEvents()
@@ -355,10 +356,10 @@ class IdleTimer extends Component {
     }
 
     // Clear any existing timeout
-    clearTimeout(this.tId)
+    timer.clearTimeout(this.tId)
     this.tId = null
 
-    // Determine last time User was active, as can't rely on setTimeout ticking at the correct interval
+    // Determine last time User was active, as can't rely on timer.setTimeout ticking at the correct interval
     const elapsedTimeSinceLastActive = +new Date() - this.getLastActiveTime()
 
     // If the user is idle or last active time is more than timeout, flip the idle state
@@ -378,10 +379,10 @@ class IdleTimer extends Component {
     // set a new timeout
     if (idle) {
       if (!stopOnIdle) {
-        this.tId = setTimeout(this._toggleIdleState, timeout)
+        this.tId = timer.setTimeout(this._toggleIdleState, timeout)
       }
     } else {
-      this.tId = setTimeout(this._toggleIdleState, timeout)
+      this.tId = timer.setTimeout(this._toggleIdleState, timeout)
     }
   }
 
@@ -391,7 +392,7 @@ class IdleTimer extends Component {
    */
   start (remote = true) {
     // Clear timeout
-    clearTimeout(this.tId)
+    timer.clearTimeout(this.tId)
     this.tId = null
 
     // Bind the events
@@ -416,7 +417,7 @@ class IdleTimer extends Component {
 
     // Set new timeout
     const { timeout } = this.props
-    this.tId = setTimeout(this._toggleIdleState, timeout)
+    this.tId = timer.setTimeout(this._toggleIdleState, timeout)
   }
 
   /**
@@ -425,7 +426,7 @@ class IdleTimer extends Component {
    */
   reset (remote = false) {
     // Clear timeout
-    clearTimeout(this.tId)
+    timer.clearTimeout(this.tId)
     this.tId = null
 
     // Bind the events
@@ -459,7 +460,7 @@ class IdleTimer extends Component {
 
     // Set new timeout
     const { timeout } = this.props
-    this.tId = setTimeout(this._toggleIdleState, timeout)
+    this.tId = timer.setTimeout(this._toggleIdleState, timeout)
   }
 
   /**
@@ -475,7 +476,7 @@ class IdleTimer extends Component {
     this._unbindEvents()
 
     // Clear existing timeout
-    clearTimeout(this.tId)
+    timer.clearTimeout(this.tId)
     this.tId = null
 
     // Send event to other tabs
@@ -516,7 +517,7 @@ class IdleTimer extends Component {
     // if we are in the active state
     if (!idle) {
       // Set a new timeout
-      this.tId = setTimeout(this._toggleIdleState, remaining)
+      this.tId = timer.setTimeout(this._toggleIdleState, remaining)
       // Set new state
       this.setState({ remaining: null, lastActive: +new Date() })
     }
