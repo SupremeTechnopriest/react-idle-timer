@@ -100,5 +100,8 @@
       "examples/**",
       "**/__tests__/**"
     ]
+  },
+  "dependencies": {
+    "worker-timers": "^7.0.42"
   }
 }
