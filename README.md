@@ -287,7 +287,7 @@ useIdleTimer({
 |onIdle|`Function`|() => {}|Function to call when user is now idle.|
 |onActive|`Function`|() => {}|Function to call when user is no longer idle.|
 |onAction|`Function`|() => {}|Function to call on user action.|
-|debounce|`Number`|0|Debounce the `onAction` function with delay in milliseconds. Cannot be set if `throttle` is set.|
+|debounce|`Number`|0|Debounce the `onAction`, which can be understood as the minimum idle time, function with delay in milliseconds. Cannot be set if `throttle` is set.|
 |throttle|`Number`|0|Throttle the `onAction` function with delay in milliseconds. Cannot be set if `debounce` is set.|
 |eventsThrottle|`Number`|200|Throttle the event handler. Helps to reduce cpu utilization on repeated events (`mousemove`).|
 |element|`Object`|document|Defaults to document, may pass a ref to another element.|
