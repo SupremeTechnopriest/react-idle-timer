@@ -45,6 +45,7 @@ export default function NotFoundPage () {
             aria-label='Back to Home'
             colorScheme='red'
             size='lg'
+            variant='outline'
           >
             {t('notFound.back-to-home')}
           </Button>
