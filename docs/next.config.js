@@ -12,6 +12,9 @@ module.exports = withContentlayer()({
   images: {
     domains: ['avatars.githubusercontent.com']
   },
+  eslint: {
+    ignoreDuringBuilds: true
+  },
   webpack (config) {
     config.resolve.alias.react = path.resolve(__dirname, 'node_modules/react')
     return config
