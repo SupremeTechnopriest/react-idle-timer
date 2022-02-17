@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
 import { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
@@ -15,6 +15,8 @@ import { getSeo } from '@utils/seo'
 import { pageView } from '@utils/ga'
 import { theme } from '../src/theme'
 import 'focus-visible'
+
+React.useLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect
 
 function App ({ Component, pageProps }: AppProps) {
   const seo = getSeo()

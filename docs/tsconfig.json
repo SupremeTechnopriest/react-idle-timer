@@ -24,10 +24,13 @@
       "@hooks/*": ["src/hooks/*"],
       "@components/*": ["src/components/*"],
       "@utils/*": ["src/utils/*"],
-      "@analytics/*": ["src/analytics/*"]
+      "contentlayer/generated": [
+        ".contentlayer/generated"
+      ]
     }
   },
   "include": [
+    ".contentlayer/generated",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"

@@ -1,16 +1,15 @@
+import Layout from 'layouts'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useMDXComponent } from 'next-contentlayer/hooks'
-
-import { allDocs } from '.contentlayer/data'
-import type { Doc } from '.contentlayer/types'
 
 import { MDXComponents } from '@components/mdx'
 import { Announcer } from '@components/Announcer'
 import { Header } from '@components/Header'
 
-import { translationProps } from '@utils/i18n'
-import Layout from 'layouts'
 import { useTranslation } from 'next-i18next'
+import { translationProps } from '@utils/i18n'
+
+import { allDocs, Doc } from 'contentlayer/generated'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const docs = allDocs

@@ -49,6 +49,15 @@ export function MobileNavContent (props: MobileNavContentProps) {
     }
   }, [isOpen])
 
+  const [isLoaded, setLoaded] = useState<boolean>(false)
+  useEffect(() => {
+    setLoaded(true)
+  }, [])
+
+  if (!isLoaded) {
+    return <></>
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
