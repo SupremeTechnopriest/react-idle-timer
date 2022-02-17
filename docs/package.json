@@ -31,5 +31,8 @@
     "remark-slug": "^7.0.1",
     "unified": "^10.1.1",
     "unist-util-visit": "^4.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.5"
   }
 }
