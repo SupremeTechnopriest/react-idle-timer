@@ -27,9 +27,6 @@
   <a href="https://codeclimate.com/github/SupremeTechnopriest/react-idle-timer/maintainability">
     <img src="https://img.shields.io/codeclimate/maintainability/SupremeTechnopriest/react-idle-timer?color=ff3266" alt="Maintainability">
   </a>
-  <a href="https://standardjs.com">
-    <img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg?color=ff117d" alt="JavaScript Style Guide">
-  </a>
   <a href="https://discord.gg/YPuxNdWA4D">
     <img src="https://img.shields.io/discord/942899080621862913?color=ff2371&label=discord" alt="Discord">
   </a>
@@ -51,6 +48,12 @@ Welcome to the all new IdleTimer! The documentation has moved to [https://idleti
   </a>
   <a href="https://github.com/supremetechnopriest/react-idle-timer/issues/new/choose">
     <img src="https://img.shields.io/badge/%20-issues-FF2371.svg?&longCache=true&style=for-the-badge" alt="Issues" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/standard/standard">
+    <img src="https://cdn.rawgit.com/standard/standard/master/badge.svg" alt="JavaScript Style Guide" />
   </a>
 </p>
 
