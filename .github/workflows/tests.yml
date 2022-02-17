@@ -25,6 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
+        with:
+          node-version: '16'
       - name: Install Modules
         run: npm i
       - name: Run Tests
