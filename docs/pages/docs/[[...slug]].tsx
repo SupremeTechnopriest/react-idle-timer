@@ -9,7 +9,7 @@ import { Header } from '@components/Header'
 import { useTranslation } from 'next-i18next'
 import { translationProps } from '@utils/i18n'
 
-import { allDocs, Doc } from 'contentlayer/generated'
+import { allDocs, Doc } from '@contentlayer/generated'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const docs = allDocs

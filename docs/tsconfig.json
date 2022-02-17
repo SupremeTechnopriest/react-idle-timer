@@ -24,7 +24,7 @@
       "@hooks/*": ["src/hooks/*"],
       "@components/*": ["src/components/*"],
       "@utils/*": ["src/utils/*"],
-      "contentlayer/generated": [
+      "@contentlayer/generated": [
         ".contentlayer/generated"
       ]
     }
