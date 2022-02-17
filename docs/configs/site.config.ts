@@ -26,30 +26,27 @@ export default {
   seo: {
     title: 'IdleTimer',
     titleTemplate: 'IdleTimer - %s',
-    description:
-      'Simple and Robust Activity Detection for your React Applications.',
+    description: 'Robust activity detection for your React applications.',
     siteUrl: 'https://idletimer.dev',
     openGraph: {
       type: 'website',
       locale: 'en_US',
       url: 'https://idletimer.dev',
       title: 'IdleTimer',
-      description:
-        'Simple and Robust Activity Detection for your React Applications.',
-      site_name:
-        'IdleTimer: Simple and Robust Activity Detection for your React Applications.',
+      description: 'Robust activity detection for your React applications.',
+      site_name: 'https://idletimer.dev',
       images: [
         {
           url: 'https://idletimer.dev/og-image.png',
           width: 1240,
           height: 480,
-          alt: 'IdleTimer: Simple and Robust Activity Detection for your React Applications.'
+          alt: 'IdleTimer Logo'
         },
         {
           url: 'https://idletimer.dev/twitter-og-image.png',
           width: 1012,
           height: 506,
-          alt: 'IdleTimer: Simple and Robust Activity Detection for your React Applications.'
+          alt: 'IdleTimer Logo'
         }
       ]
     }
