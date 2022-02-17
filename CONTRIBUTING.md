@@ -92,7 +92,7 @@ Commit the changes once you are happy with them. The following commit message gu
 - Reference issues and pull requests liberally after the first line
 - Start the commit message with an applicable emoji:
   - :art: `:art:` When improving the format/structure of the code.
-  - :stopwatch: `:stopwatch:` When improving performance..
+  - :stopwatch: `:stopwatch:` When improving performance.
   - :memo: `:memo:` When writing docs.
   - :zap: `:zap:` When adding a new feature.
   - :sparkles: `:sparkles:` When enhancing an existing feature.
