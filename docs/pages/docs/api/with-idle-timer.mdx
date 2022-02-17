@@ -1,0 +1,271 @@
+---
+title: withIdleTimer
+description: Higher order component for class based React applications
+---
+
+Higher order component for class based React applications. The `withIdleTimer` 
+HOC takes [IIdleTimerProps](/docs/api/props) as configuration options and exposes
+[IIdleTimer](/docs/api/methods) as props to the wrapped component.
+
+## Import
+
+```js
+import { withIdleTimer } from 'react-idle-timer'
+```
+
+## Usage
+
+There are a few ways to use the higher order component, but at its core, component
+passed into `withIdleTimer` is enhanced and enriched with the [IIdleTimer](/docs/api/methods) interface.  
+The most common use cases are outlined below.
+
+### IdleTimer Component
+
+The first way is to create your own IdleTimer component and use it just like the 
+v4 component.
+
+Create the `IdleTimer` component.
+
+```js
+  import { Component } from 'react'
+  import { withIdleTimer } from 'react-idle-timer'
+
+  class IdleTimerComponent extends Component {
+    render () {
+      return this.props.children
+    }
+  }
+
+  export const IdleTimer = withIdleTimer(IdleTimerComponent)
+```
+
+Use the `IdleTimer` component.
+
+```js
+import { Component } from 'react'
+import { IdleTimer } from './IdleTimer'
+
+export class App {
+
+  constructor (props) {
+    super(props)
+    this.idleTimer = null
+    this.onPrompt = this.onPrompt.bind(this)
+    this.onIdle = this.onIdle.bind(this)
+    this.onAction = this.onAction.bind(this)
+    this.onActive = this.onActive.bind(this)
+  }
+
+  onPrompt () {
+    // Fire a Modal Prompt
+  }
+
+  onIdle () {
+    // Close Modal Prompt
+    // Do some idle action like log out your user
+  }
+
+  onActive (event) {
+    // Close Modal Prompt
+    // Do some active action
+  }
+
+  onAction (event) {
+    // Do something when a user triggers a watched event
+  }
+
+  componentDidMount () {
+    // IIdleTimer interface available on the reference to
+    // the IdleTimer component instance
+    this.idleTimer.start()
+  }
+
+  render () {
+    return (
+      <>
+        <IdleTimer
+          ref={ref => { this.idleTimer = ref }}
+          timeout={1000 * 60 * 15}
+          promptTimeout={1000 * 30}
+          onPrompt={this.onPrompt}
+          onIdle={this.onIdle}
+          onAction={this.onAction}
+          onActive={this.onActive}
+          startManually
+        />
+        <HomePage />
+      </>
+    )
+  }
+}
+```
+
+### IdleTimer Injector
+
+A better way would be to use the higher order component to inject `IdleTimer` in
+to your component. The event callbacks can be defined in your component scope and
+all the rest of the properties can be passed to your component.  If a callback
+prop is passed to the component it will take precedence over the locally defined
+callback method.
+
+Create the `IdleTimer` wrapped component.
+
+```js
+import { Component } from 'react'
+import { withIdleTimer } from 'react-idle-timer'
+
+class AppComponent extends Component {
+  
+  onPrompt () {
+    // Fire a Modal Prompt
+  }
+
+  onIdle () {
+    // Close Modal Prompt
+    // Do some idle action like log out your user
+  }
+
+  onActive (event) {
+    // Close Modal Prompt
+    // Do some active action
+  }
+
+  onAction (event) {
+    // Do something when a user triggers a watched event
+  }
+
+  componentDidMount () {
+    // The IIdleTimer interface is supplied via props to your component
+    this.props.start()
+  }
+
+  render () {
+    return <HomePage />
+  }
+}
+
+export const App = withIdleTimer(AppComponent)
+```
+
+Use the wrapped `IdleTimer` component.
+
+```js
+import { render } from 'react-dom'
+import { App } from './App'
+
+const element = document.getElementById('root')
+render((
+  <App 
+    timeout={1000 * 60 * 15}
+    promptTimeout={1000 * 30}
+    startManually
+  />
+), element)
+```
+
+The wrapped component can also be instantiated deeper in the project hierarchy.
+This would allow you to dynamically supply and update the [IIdleTimerProps](/docs/api/props)
+interface to the `IdleTimer` instance.
+
+```js
+import { Component } from 'react'
+import { App } from './App'
+
+export class Root extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      timeout: 1000 * 60 * 15,
+      promptTimeout: 1000 * 30
+    }
+  }
+
+  render () {
+    return (
+      <App 
+        timeout={this.state.timeout}
+        promptTimeout={this.state.promptTimeout}
+        startManually
+      />
+    )
+  }
+}
+
+```
+
+## Typescript
+
+You can preserve your typescript types by utilizing `withIdleTimer`'s generics.
+Just make sure your props interface extends [IIdleTimer](/docs/api/types#IIdleTimer).
+
+```tsx
+import { Component, ReactNode } from 'react'
+import { withIdleTimer, IIdleTimer } from 'react-idle-timer'
+
+interface IAppProps extends IIdleTimer {
+  foo: string
+}
+
+interface IAppState {
+  bar: string
+}
+
+class AppComponent extends Component<IAppProps, IAppState> {
+  
+  onPrompt (): void {
+    // Fire a Modal Prompt
+  }
+
+  onIdle (): void {
+    // Close Modal Prompt
+    // Do some idle action like log out your user
+  }
+
+  onActive (event: Event): void {
+    // Close Modal Prompt
+    // Do some active action
+  }
+
+  onAction (event: Event): void {
+    // Do something when a user triggers a watched event
+  }
+
+  componentDidMount (): void {
+    // The IIdleTimer interface is supplied via props to your component
+    this.props.start()
+  }
+
+  render (): ReactNode {
+    return (
+      <h1>{this.props.foo}</h1>
+    )
+  }
+}
+
+export const IdleTimer = withIdleTimer<IAppProps>(AppComponent)
+```
+
+Else where in your app, render the typescript component. Your custom props will
+be merged with the [IIdleTimer](/docs/api/methods) interface.
+
+```tsx
+import { Component, ReactNode } from 'react'
+import { render } from 'react-dom'
+import { App } from './App'
+
+class Root extends Component<{}, {}> {
+  render (): ReactNode {
+    <App
+      foo='bar'
+      timeout={1000 * 60 * 15}
+      promptTimeout={1000 * 30}
+    />
+  }
+}
+
+const element = document.getElementById('root')
+render(<Root />, element)
+```
+
+For more examples, see the [Features](/docs/features) section.

@@ -1,0 +1,265 @@
+---
+title: What's New in v5
+description: What's new in the latest IdleTimer release
+---
+
+> Version 5 is a from scratch rewrite.  A lot of effort went
+> into this release.  If you find this package useful and have the means, please 
+> consider a small [donation]('https://github.com/sponsors/supremetechnopriest') 🙂
+
+The entire project has been rewritten in typescript for a more robust typescript
+experience.  New issue and pull request templates have been added along
+with a [contributing](/docs/about/contributing) guide for anyone who would like 
+to contribute to the project.  Lastly this documentation site has been created 
+to serve as a knowledge base for all things related to the IdleTimer project.
+If you have any ideas for sections, demos or tutorials to add feel free to start a 
+[discussion](https://github.com/supremetechnopriest/react-idle-timer/discussions) 
+or open an [issue](https://github.com/supremetechnopriest/react-idle-timer/issues/new/choose).
+
+If you are upgrading from v4 there are a few breaking changes that you should
+take into account.  The rest of the API has not changed. Only new features
+and improvements to existing ones.
+
+## Breaking Changes
+
+#### Removal of `<IdleTimer />` Component
+
+The major change in v5 is the removal of the `IdleTimer` component.  It has been
+replaced with the [withIdleTimer](/docs/api/withIdleTimer) higher order component.
+You can use the higher order component to create the `IdleTimer` component if you
+wish and it would be a drop in replacement for the v4 component.  A guide on how
+to do that can be found [here](/docs/api/with-idle-timer#idletimer-component).
+
+#### Simplified Cross Tab API
+
+The Cross Tab feature has been rewritten from the ground up. It is now much smaller
+and more specialized for this particular use case.  All the edge cases have been
+solved and the API surface has been reduced to the essentials. 
+
+In v4, the `crossTab` prop used to take a `boolean` or an `object` of configuration
+options.  Now in v5, the `crossTab` prop only takes a `boolean`. This is how you
+enable or disable the Cross Tab Reconciliation feature.  It is disabled by default.
+
+The only configuration option that has been included in v5 is `emitOnAllTabs` and
+it is now its own property and is of type `boolean`. It does the same thing as it
+did in v4 and defaults to false. All of the rest of the options from v4 have been 
+set to sane defaults. This results in a more simple API surface and less type ambiguity.
+
+In v4 the following code...
+```jsx
+// Hook
+const idleTimer = useIdleTimer({
+  crossTab: {
+    emitOnIdle: true
+  }
+})
+
+// Component
+<IdleTimer crossTab={{ emitOnIdle: true }} />
+```
+
+Becomes this in v5...
+
+```jsx
+// Hook
+const idleTimer = useIdleTimer({
+  crossTab: true,
+  emitOnIdle: true
+})
+
+// Higher Order Component Wrapped 
+<IdleTimer crossTab emitOnIdle />
+```
+
+#### Last Active and Idle Times
+The `getLastActiveTime()` and `getLastIdleTime()` methods now return 
+[Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) 
+objects instead of a timestamp.  This will eliminate the need to cast to a Date 
+before formatting.  If you want to get the old timestamp you can just call 
+`getLastActiveTime().getTime()` and `getLastIdleTime().getTime()`.
+
+## Non Breaking Changes
+
+#### Removal of `passive` and `capture` Props
+
+The `passive` and `capture` props have been removed and are automatically set to
+true. There is no good reason a user would want to set either of them to `false`
+and as such, they have been removed to reduce complexity and API surface. If you 
+were to leave these props set in your `useIdleTimer` hook or `withIdleTimer` 
+higher order component, they wouldn't do anything. This is not necessarily a 
+breaking change but something that is good to be aware of while migrating.
+
+## New Features
+
+### Integrated Prompting
+
+A common use case for IdleTimer is to detect when your user is idle and then 
+open a modal to ask the user if they are still there. There have been a lot of 
+questions about how to do this, so in v5, the IdleTimer will handle it for you.
+
+The new `promptTimeout` configuration option along with the `onPrompt` callback
+and `isPrompted()` state getter is all you need to prompt your user before going 
+idle. 
+
+Here is a minimal example. More complete examples can be found in the 
+[features](/docs/features/confirm-prompt) section.
+
+```jsx
+export function App () {
+  // Set timeout values
+  const timeout = 1000 * 60 * 30
+  const promptTimeout = 1000 * 30
+
+  // Modal open state
+  const [open, setOpen] = useState(false)
+
+  // Time before idle
+  const [remaining, setRemaining] = useState(0)
+
+  const onPrompt = () => {
+    // onPrompt will be called after the timeout value is reached
+    // In this case 30 minutes. Here you can open your prompt. 
+    // All events are disabled while the prompt is active. 
+    // If the user wishes to stay active, call the `reset()` method.
+    // You can get the remaining prompt time with the `getRemainingTime()` method,
+    setOpen(true)
+    setRemaining(promptTimeout)
+  }
+  
+  const onIdle = () => {
+    // onIdle will be called after the promptTimeout is reached.
+    // In this case 30 seconds. Here you can close your prompt and 
+    // perform what ever idle action you want such as log out your user.
+    // Events will be rebound as long as `stopOnMount` is not set.
+    setOpen(false)
+    setRemaining(0)
+  }
+  
+  const onActive = () => {
+    // onActive will only be called if `reset()` is called while `isPrompted()` 
+    // is true.  Here you will also want to close your modal and perform
+    // any active actions. 
+    setOpen(false)
+    setRemaining(0)
+  }
+
+  const { getRemainingTime, isPrompted, reset } = useIdleTimer({
+    timeout,
+    promptTimeout,
+    onPrompt,
+    onIdle,
+    onActive
+  })
+
+  const handleStillHere = () => {
+    setOpen(false)
+    reset()
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isPrompted()) {
+        setRemaining(Math.ceil(getRemainingTime() / 1000))
+      }
+    }, 1000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+
+  return (
+    <div className='modal' style={{ display: open ? 'block' : 'none' }}>
+      <p>Logging you out in {remaining} seconds<p>
+      <button onClick={handleStillHere}>Im Still Here</button>
+    <div/>
+  )
+}
+```
+
+### Cross Tab Messaging
+
+IdleTimer now exposes its cross tab messaging layer so you can easily broadcast
+arbitrary messages to all instances of your page running in all tabs.  This is 
+exposed by two new APIs...
+
+a message callback:
+```ts
+onMessage?: (data: string | number | object) => void
+```
+
+and a message emitter:
+```ts
+message (data: string | number | object, emitOnSelf?: boolean): void
+```
+
+Using these mechanisms, you can use IdleTimer to send messages to all instances
+of your application. Here is a basic example with redux.
+
+```jsx
+import { useIdleTimer } from 'react-idle-timer'
+import { useDispatch } from 'react-redux'
+import { logAction } from './Actions'
+
+export function App () {
+  // Action dispatcher (redux)
+  const dispatch = useDispatch()
+
+  // Message handler 
+  const onMessage = data => {
+    switch (data.action) {
+      case 'LOGOUT_USER':
+        dispatch(logoutAction())
+        break
+      // More actions
+      default:
+        // no op
+    }
+  }
+
+  // IdleTimer instance
+  const { message } = useIdleTimer({ onMessage })
+
+  // Logout button click
+  const onLogoutClick = () => {
+    // Tell all tabs to log the user out. 
+    // Passing true as a second parameter will
+    // also emit the event in this tab.
+    message({ action: 'LOGOUT_USER' }, true)
+  }
+
+  return (
+    <button onClick={onLogoutClick}>Logout</button>
+  )
+}
+```
+
+More complete examples can be found in the [features]('/docs/features/cross-tab')
+section.
+
+### Immediate Events
+
+A new configuration option called `immediateEvents` has been added. 
+
+```ts
+immediateEvents?: IEventsType[]
+```
+
+Any events added to `immediateEvents` will immediately switch the user into an 
+idle or prompted state, calling `onIdle` or `onPrompt` respectively. This is
+useful for events such as `pagehide`, where you want to bypass the timeout and
+go directly to an idle state.  
+
+If an event is set in both `events` and `immediateEvents`, the immediate event
+will take precedence allowing you to override the default events if you like.
+
+### Higher Order Component
+
+With the removal of the `IdleTimer` component, the `withIdleTimer` higher order 
+component is now the default way to add IdleTimer to class components. More about
+the higher order component [here](/docs/api/with-idle-timer).
+
+### Provider
+
+If you need to access the IdleTimer API in nested children, you can opt to use 
+the `IdleTimerProvider` rather than drilling props through your App's hierarchy.
+More about the Provider and related exports [here](/docs/api/idle-timer-provider).

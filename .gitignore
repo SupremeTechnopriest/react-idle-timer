@@ -1,0 +1,24 @@
+# OSX
+#
+.DS_Store
+
+# Node
+#
+node_modules
+npm-debug.log*
+
+# Next
+#
+.next
+.contentlayer
+
+# Application
+#
+dist
+out
+worker
+coverage
+
+# Environments
+#
+.env.local

@@ -1,0 +1,29 @@
+# OSX
+#
+.DS_Store
+
+# node.js
+#
+node_modules/
+npm-debug.log
+npm-debug.log.*
+
+# Config
+#
+.github
+.vscode
+.eslintrc.json
+.gitignore
+package-scripts.js
+jest.config.js
+tsconfig.json
+
+# Application
+#
+scripts
+docs
+src
+tests
+coverage
+CONTRIBUTIONS.md
+CHANGELOG.md

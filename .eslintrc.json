@@ -1,0 +1,43 @@
+{
+	"env": {
+		"browser": true,
+		"es2021": true,
+		"jest/globals": true
+	},
+	"extends": [
+		"plugin:react/recommended",
+		"standard"
+	],
+	"settings": {
+		"react": {
+			"version": "latest"
+		}
+	},
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"plugins": [
+		"jest",
+		"react",
+		"@typescript-eslint"
+	],
+	"rules": {
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": "error",
+		"react/react-in-jsx-scope": "off",
+		"jest/no-disabled-tests": "warn",
+		"jest/no-focused-tests": "warn",
+		"jest/no-identical-title": "error",
+		"jest/prefer-to-have-length": "warn",
+		"jest/valid-expect": "error"
+	},
+	"ignorePatterns": [
+		"**/dist/**",
+		"**/out/**"
+	]
+}

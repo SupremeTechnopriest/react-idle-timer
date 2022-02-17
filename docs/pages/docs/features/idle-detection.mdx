@@ -1,0 +1,48 @@
+---
+title: Idle Detection
+description: Idle Detection feature explanation and example
+---
+
+As its namesake suggests, idle detection is the flagship feature of IdleTimer.
+The idle detection feature set is responsible for tracking your users activity
+based on the events you want to listen to and let you know when the user has 
+not triggered those events in a given time period.
+
+### Properties
+
+The properties associated with idle detection are:
+
+{/* cspell:disable */}
+- [timeout](/docs/props#timeout): The time before a user is considered idle.
+- [element](/docs/props#element): The DOM element to bind event listeners to.
+- [events](/docs/props#events): The events to listen for activity on.
+- [immediateEvents](/docs/props#immediateevents): The events that will immediately trigger an idle event (bypassing timeout).
+- [onIdle](/docs/props#onidle): Function called when a user becomes idle from an active state.
+- [onActive](/docs/props#onactive): Function called when a user becomes active from an idle state.
+- [eventsThrottle](/docs/props#eventsthrottle): Throttle for the events bound. Saves on CPU if you are using repeated events.
+- [startOnMount](/docs/props#startonmount): Starts the timer when the host component mounts.
+- [startManually](/docs/props#startmanually): Require a call to `start()` in order to start the timer.
+- [stopOnIdle](/docs/props#stoponidle): Require the timer to be manually reset after going idle by calling `start()` or `reset()`.
+{/* cspell:enable */}
+
+### Methods
+
+The methods associated with the confirm prompt feature are:
+
+{/* cspell:disable */}
+- [start](/docs/methods#start): Starts the timer.
+- [reset](/docs/methods#reset): Resets the timer and calls `onActive`.
+- [pause](/docs/methods#pause): Pauses a running timer.
+- [resume](/docs/methods#resume): Resumes a running timer.
+- [getElapsedTime](/docs/methods#getelapsedtime): Returns the time in milliseconds since the host component was mounted.
+- [getRemainingTime](/docs/methods#getremainingtime): Returns the time remaining in milliseconds until idle.
+- [getLastActiveTime](/docs/methods#getlastactivetime): Returns a Date of the last time the user was active.
+- [getTotalActiveTime](/docs/methods#gettotalactivetime): Returns time in milliseconds the user was active.
+- [getLastIdleTime](/docs/methods#getlastidletime): Returns a Date of the last time the user was idle.
+- [getTotalIdleTime](/docs/methods#gettotalidletime): Returns time in milliseconds the user was idle.
+{/* cspell:enable */}
+
+### Examples
+
+> Examples will be added once v5 is out of beta. For now you can check out the
+> simple examples in the [API](/docs/api/use-idle-timer) section.

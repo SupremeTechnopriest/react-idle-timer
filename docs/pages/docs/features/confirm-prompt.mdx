@@ -1,0 +1,32 @@
+---
+title: 'Confirm Prompt'
+description: Confirm Prompt feature explanation and example
+---
+
+A common use case for IdleTimer is to detect when you user has gone idle and then
+prompt them to see if they are still there. Handling of this common use case is 
+now built in to IdleTimer.
+
+### Properties
+
+The properties associated with the confirm prompt feature are:
+
+{/* cspell:disable */}
+- [timeout](/docs/props#timeout): The time before the `onPrompt` callback will be fired.
+- [promptTimeout](/docs/props#prompttimeout): How long the prompt should last before going idle in milliseconds.
+- [onPrompt](/docs/props#onprompt): Function called after the idle timeout is reached.
+{/* cspell:enable */}
+
+### Methods
+
+The methods associated with the confirm prompt feature are:
+
+{/* cspell:disable */}
+- [isPrompted()](/docs/methods#isprompted): Returns true if the prompt is displayed.
+- [getRemainingTime()](/docs/methods#getremainingtime): Will return the time until idle when active and the time until the prompt expires when prompted.
+{/* cspell:enable */}
+
+### Examples
+
+> Examples will be added once v5 is out of beta. For now you can check out the
+> simple examples in the [API](/docs/api/use-idle-timer) section.

@@ -1,0 +1,94 @@
+{
+  "routes": [
+    {
+      "title": "Getting Started",
+      "heading": true,
+      "routes": [
+        {
+          "title": "Installation",
+          "path": "/docs/getting-started/installation"
+        },
+        {
+          "title": "What's New",
+          "path": "/docs/getting-started/new"
+        },
+        {
+          "title": "Testing Considerations",
+          "path": "/docs/getting-started/testing"
+        }
+      ]
+    },
+    {
+      "title": "Features",
+      "heading": true,
+      "routes": [
+        {
+          "title": "Idle Detection",
+          "path": "/docs/features/idle-detection"
+        },
+        {
+          "title": "Activity Detection",
+          "path": "/docs/features/activity-detection"
+        },
+        {
+          "title": "Confirm Prompt",
+          "path": "/docs/features/confirm-prompt"
+        },
+        {
+          "title": "Cross Tab Support",
+          "path": "/docs/features/cross-tab"
+        }
+      ]
+    },
+    {
+      "title": "API",
+      "heading": true,
+      "sort": true,
+      "routes": [
+        {
+          "title": "Types",
+          "path": "/docs/api/types"
+        },
+        {
+          "title": "Props",
+          "path": "/docs/api/props"
+        },
+        {
+          "title": "Methods",
+          "path": "/docs/api/methods"
+        },
+        {
+          "title": "useIdleTimer",
+          "path": "/docs/api/use-idle-timer"
+        },
+        {
+          "title": "withIdleTimer",
+          "path": "/docs/api/with-idle-timer"
+        },
+        {
+          "title": "IdleTimerProvider",
+          "path": "/docs/api/idle-timer-provider"
+        }
+      ]
+    },
+    {
+      "title": "About",
+      "heading": true,
+      "sort": true,
+      "routes": [
+        {
+          "title": "Changelog",
+          "path": "/docs/about/changelog"
+        },
+        {
+          "title": "Contributing",
+          "path": "/docs/about/contributing"
+        },
+        {
+          "title": "License",
+          "path": "/docs/about/license"
+        }
+      ]
+    }
+  ]
+}

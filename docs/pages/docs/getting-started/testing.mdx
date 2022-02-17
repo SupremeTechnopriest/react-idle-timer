@@ -1,0 +1,55 @@
+---
+title: Testing Considerations
+description: Testing considerations for IdleTimer
+---
+
+In order to write tests that include IdleTimer, a few things will need to be mocked.
+Examples will be provided for the [jest]() testing framework, but the principles
+can be applied to any framework.
+
+For jest, you will need to create a startup script and add it to the `setupFiles`
+section of your `jest.config.js` or `package.json`.  We will assume the setup file 
+is called `test.setup.js` for the following.
+
+### Mock Worker Timers
+IdleTimer uses the library [worker-timers](https://www.npmjs.com/package/worker-timers)
+to implement hoisted timers. This prevents background throttling from producing
+unexpected and inaccurate behavior. Since there are no Web Workers in a testing
+context, we will need to mock this library. 
+
+In your `test.setup.js`, add the following:
+
+```ts
+jest.mock('worker-timers', () => ({
+  setTimeout: setTimeout,
+  clearTimeout: clearTimeout,
+  setInterval: setInterval,
+  clearInterval: clearInterval
+}))
+```
+
+This will have jest or your test runner of choice use the browser native methods
+for testing.
+
+### Mock Message Channel
+IdleTimer uses [MessageChannel](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)
+for the cross tab messaging layer internally.  This is not mocked by default
+in js-dom. To mock it for testing, add the following to your `test.setup.js`.
+
+```ts
+import { MessageChannel } from 'worker_threads'
+
+// @ts-ignore
+global.MessageChannel = MessageChannel
+```
+
+If you are using Typescript you will have to either ignore the global assignment
+or extend the global name space for your test runner.  Since you are unlikely to 
+need types for the MessageChannel, `// @ts-ignore` will suffice.
+
+<Divider mt={6} />
+
+With these two components mocked, you will be able to fully test your application
+with IdleTimer. If you need more examples, you can check out the 
+[test suite](https://github.com/supremetechnopriest/react-idle-timer/tree/master/tests) 
+for IdleTimer itself. 

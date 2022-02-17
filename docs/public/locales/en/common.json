@@ -1,0 +1,141 @@
+{
+  "announcement": {
+    "message": "⚡️ Version 5 is now in Beta.",
+    "link": {
+      "href": "/docs/getting-started/new",
+      "title": "Find out whats new"
+    }
+  },
+  "notFound": {
+    "title": "404: Not found",
+    "description": "Page not found",
+    "heading": "404 | Page Not Found 💫",
+    "message": "You have traveled beyond the event horizon.",
+    "back-to-home": "Warp Home"
+  },
+  "homepage": {
+    "title": {
+      "main": "Handle Idle Users with",
+      "highlighted": "Confidence"
+    },
+    "seo": {
+      "title": "Home",
+      "description": "Robust activity and idle detection for React."
+    },
+    "message": "Detect and respond to your user's activity or lack there of.",
+    "getStarted": "Get Started",
+    "features": {
+      "title": "Features",
+      "description": "Robust feature set for all your activity detection needs.",
+      "idleDetection": {
+        "title": "Idle Detection",
+        "description": "Callbacks for when your user goes idle and becomes active again after being idle.  Timers are offloaded to a WebWorker to avoid background throttling."
+      },
+      "activityDetection": {
+        "title": "Activity Detection",
+        "description": "Callback when your user performs the specified events.  This call back can be debounced or throttled to preserve performance."
+      },
+      "confirmPrompt": {
+        "title": "Confirm Prompt",  
+        "description": "Callback to open a confirm prompt with a countdown timer before the idle event is fired.  Give your users a chance to let you know they are still there."
+      },
+      "crossTabSupport": {
+        "title": "Cross Tab Support",
+        "description": "Support for multiple tabs and windows through a BroadcastChannel with localStorage fallback for older browsers."
+      }
+    },
+    "stats": {
+      "title": "Statistics",
+      "description": "Current engagement and quality statistics for the latest build of IdleTimer.",
+      "monthlyDownloads": "Monthly Downloads",
+      "totalDownloads": "Total Downloads",
+      "githubStars": "Github Stars",
+      "testCoverage": "Test Coverage",
+      "codeQuality": "Code Quality",
+      "discordMembers": "Discord Members"
+    },
+    "demo": {
+      "title": "Demo",
+      "description": "See IdleTimer in action. Go ahead and play around!"
+    },
+    "sponsor": {
+      "title": "Support IdleTimer",
+      "description": "A lot of time and effort goes into maintaining and improving this project. Your donations help ensure that IdleTimer is the best it can be.  You can support by subscribing or a one time donation. All donations have an associated reward.",
+      "sponsorTheProject": "Sponsor the project securely with Github",
+      "organizationSponsors": "Organization Sponsors",
+      "individualSponsors": "Individual Sponsors"
+    },
+    "usedBy": {
+      "title": "Trusted By Many",
+      "description": "IdleTimer is trusted by organizations world wide. If your company uses IdleTimer and you would like to have your logo and link included here, open an issue!"
+    }
+  },
+  "tableOfContents": {
+    "onThisPage": "On This Page"
+  },
+  "editPageButton": {
+    "editThisPage": "Edit This Page"
+  },
+  "mobileNav": {
+    "docs": "Docs",
+    "guides": "Guides",
+    "faq": "FAQ",
+    "sponsors": "Sponsors"
+  },
+  "footer": {
+    "madeWith": "Made with"
+  },
+  "discordBar": {
+    "heading": "Connect with the community",
+    "description": "Feel free to ask questions, report issues, and meet new people.",
+    "join": "Join the Discord!"
+  },
+  "copyButton": {
+    "copy": "copy",
+    "copied": "copied"
+  },
+  "componentLinks": {
+    "viewSource": "View Source"
+  },
+  "propsTable": {
+    "required": "required",
+    "description": "description",
+    "type": "type",
+    "default": "default"
+  },
+  "props": {
+    "timeout": "Activity Timeout in milliseconds.",
+    "promptTimeout": "When the user becomes idle, the onPrompt function is called and after the prompt timeout in milliseconds is reached, the onIdle function is called.",
+    "events": "DOM events to watch for activity on.",
+    "immediateEvents": "DOM events that will immediately call onIdle",
+    "onPrompt": "When promptTimeout is set, this function is called after the user becomes idle. This is useful for displaying a confirm prompt.  If the prompt timeout is reached, onIdle is then called.",
+    "onIdle": "Function to call when user becomes idle.",
+    "onActive": "Function to call when user becomes active.",
+    "onAction": "Function to call on user activity.",
+    "debounce": "Debounce the onAction function by setting delay in milliseconds.",
+    "throttle": "Throttle the onAction function by setting delay in milliseconds.",
+    "eventsThrottle": "Throttle the activity events. Useful if you are listening to mouse events. Helps to cut down on cpu usage.",
+    "element": "Element reference to bind activity listeners to.",
+    "startOnMount": "Start the timer on mount.",
+    "startManually": "Require the timer to be started manually.",
+    "stopOnIdle": "Once the user goes idle the IdleTimer will not reset on user input instead, start() or reset() must be called manually to restart the timer.",
+    "crossTab": "Enable the cross tab feature.",
+    "emitOnAllTabs": "Emit events and methods on all tabs when crossTab is enabled."
+  },
+  "methods": {
+    "start": "Restore initial state and start timer.",
+    "reset": "Restore initial state and restart timer.",
+    "pause": "Store remaining time and stop timer.",
+    "resume": "Resumes a paused timer.",
+    "isIdle": "Returns wether or not the user is idle.",
+    "isLeader": "Returns wether or not this is the leader tab.",
+    "getRemainingTime": "Time remaining before idle in milliseconds.",
+    "getElapsedTime": "How much time has elapsed in milliseconds.",
+    "getLastIdleTime": "Last time the user was idle.",
+    "getLastActiveTime": "Last time the user was active.",
+    "getTotalIdleTime": "Total time the user has been idle in milliseconds.",
+    "getTotalActiveTime": "Total time the user has been active in milliseconds.",
+    "message": "Broadcast a message to all tabs.",
+    "emitOnSelf": "Emits the onMessage callback on the instance sending the message."
+  }
+}

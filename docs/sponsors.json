@@ -1,0 +1,21 @@
+{
+  "individuals": [
+    {
+      "name": "Allison Zhao",
+      "image": "https://avatars.githubusercontent.com/u/15381728?v=4&s=160",
+      "website": "https://github.com/allison-zhao"
+    },
+    {
+      "name": "mschiano",
+      "image": "https://avatars.githubusercontent.com/u/6758835?v=4&s=160",
+      "website": "https://github.com/mschiano"
+    }
+  ],
+  "organizations": [
+    {
+      "name": "Edgemesh",
+      "image": "https://avatars.githubusercontent.com/u/20493267?v=4&s=160",
+      "website": "https://edgemesh.com"
+    }
+  ]
+}

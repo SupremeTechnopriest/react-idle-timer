@@ -1,0 +1,117 @@
+---
+title: useIdleTimer
+description: React hook for functional React applications
+---
+
+The `useIdleTimer` hook can be used with functional React components. It takes 
+[IIdleTimerProps](/docs/api/props) as configuration options and returns 
+[IIdleTimer](/docs/api/methods).
+
+## Import
+```js
+import { useIdleTimer } from 'react-idle-timer'
+```
+
+## Usage
+
+A minimal example with the bare essential configuration.
+
+```js
+import { useIdleTimer } from 'react-idle-timer'
+
+export const App = () => {
+  const onIdle = () => {
+    // Close Modal Prompt
+    // Do some idle action like log out your user
+  }
+
+  const onActive = (event) => {
+    // Close Modal Prompt
+    // Do some active action
+  }
+
+  const idleTimer = useIdleTimer({ onIdle, onActive })
+
+  return (
+    <HomePage />
+  )
+}
+```
+
+A full example with all available props and methods. Props are set to their
+default value.
+
+```js
+import { useIdleTimer } from 'react-idle-timer' 
+
+export const App = () => {
+  const onPrompt = () => {
+    // Fire a Modal Prompt
+  }
+
+  const onIdle = () => {
+    // Close Modal Prompt
+    // Do some idle action like log out your user
+  }
+
+  const onActive = (event) => {
+    // Close Modal Prompt
+    // Do some active action
+  }
+
+  const onAction = (event) => {
+    // Do something when a user triggers a watched event
+  }
+
+  const {
+    start,
+    reset,
+    pause,
+    resume,
+    isIdle,
+    isPrompted,
+    isLeader,
+    getRemainingTime,
+    getElapsedTime,
+    getLastIdleTime,
+    getLastActiveTime,
+    getTotalIdleTime,
+    getTotalActiveTime
+  } = useIdleTimer({
+    onPrompt,
+    onIdle,
+    onActive,
+    onAction,
+    timeout: 1000 * 60 * 20,
+    promptTimeout: 0,
+    events: [
+      'mousemove',
+      'keydown',
+      'wheel',
+      'DOMMouseScroll',
+      'mousewheel',
+      'mousedown',
+      'touchstart',
+      'touchmove',
+      'MSPointerDown',
+      'MSPointerMove',
+      'visibilitychange'
+    ],
+    immediateEvents: [],
+    debounce: 0,
+    throttle: 0,
+    eventsThrottle: 200,
+    element: document,
+    startOnMount: true,
+    startManually: false,
+    stopOnIdle: false,
+    crossTab: false,
+    emitOnAllTabs: false
+  })
+  return (
+    <HomePage />
+  )
+}
+```
+
+For more examples, see the [Features](/docs/features) section.

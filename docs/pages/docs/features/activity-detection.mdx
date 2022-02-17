@@ -1,0 +1,38 @@
+---
+title: Activity Detection
+description: Activity Detection feature explanation and example
+---
+
+The activity detection feature is responsible for notifying you when any of your
+watched events has been triggered, regardless of wether or not it will result in
+a change of idle state.
+
+### Properties
+
+The properties associated with activity detection are:
+
+{/* cspell:disable */}
+- [events](/docs/props#events): The events to listen for activity on.
+- [element](/docs/props#element): The DOM element to bind event listeners to.
+- [onAction](/docs/props#onaction): Function called each time an event is triggered.
+- [throttle](/docs/props#throttle): Throttle the `onAction` callback in milliseconds.
+- [debounce](/docs/props#debounce): Debounce the `onAction` callback in milliseconds.
+- [startOnMount](/docs/props#startonmount): Bind the events when the host component mounts. Defaults to `true`.
+- [startManually](/docs/props#startmanually): Require a call to `start()` in order to bind the events initally.
+{/* cspell:enable */}
+
+### Methods
+
+The methods associated with the confirm prompt feature are:
+
+{/* cspell:disable */}
+- [start](/docs/methods#start): Binds the events.
+- [pause](/docs/methods#pause): Unbinds events.
+- [resume](/docs/methods#resume): Rebinds events.
+- [getElapsedTime](/docs/methods#getelapsedtime): Returns the amount of milliseconds since the host component was mounted.
+{/* cspell:enable */}
+
+### Examples
+
+> Examples will be added once v5 is out of beta. For now you can check out the
+> simple examples in the [API](/docs/api/use-idle-timer) section.

@@ -1,0 +1,33 @@
+---
+title: Cross Tab
+description: Cross Tab Feature explanation and example
+---
+
+The cross tab feature enables reconciliation of events and state across multiple
+tabs running your application. It also exposes the underlying messaging layer for
+your own use.  You can broadcast arbitrary messages to all tabs, regardless of
+their idle state.
+
+### Properties
+
+The properties associated with the confirm prompt feature are:
+
+{/* cspell:disable */}
+- [crossTab](/docs/props#crosstab): Enables the cross tab feature.
+- [emitOnAllTabs](/docs/props#emitonalltabs): Emit events on all tabs. By default only the leader tab emits callbacks.
+- [onMessage](/docs/props#onprompt): Function called when a message is received.
+{/* cspell:enable */}
+
+### Methods
+
+The methods associated with the confirm prompt feature are:
+
+{/* cspell:disable */}
+- [isLeader()](/docs/methods#isleader): Returns true if this is the leader tab.
+- [message()](/docs/methods#message): Broadcast a message to all tabs.
+{/* cspell:enable */}
+
+### Examples
+
+> Examples will be added once v5 is out of beta. For now you can check out the
+> simple examples in the [API](/docs/api/use-idle-timer) section.

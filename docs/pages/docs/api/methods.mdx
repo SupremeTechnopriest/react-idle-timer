@@ -1,0 +1,93 @@
+---
+title: Methods
+description: IdleTimer methods
+---
+
+Methods are the API that is returned by IdleTimer. You can interface 
+with your IdleTimer instance by using the following functions. Examples of 
+how to use them can be found in the [hook](/docs/api/useIdleTimer) 
+and [higher order component](/docs/api/withIdleTimer) docs.
+
+### start
+<Property 
+  description='Restore initial state and restart timer. Does not call `onActive`.'
+  type='() => void'
+/>
+
+### reset
+<Property 
+  description='Restore initial state and restart timer. Calls `onActive`.'
+  type='() => void'
+/>
+
+### pause
+<Property 
+  description='Pauses the IdleTimer instance.  When paused all events are unbound.'
+  type='() => void'
+/>
+
+### resume
+<Property 
+  description='Resumes an IdleTimer instance from the time it was paused. When resumed, all events will be bound.'
+  type='() => void'
+/>
+
+### message
+<Property 
+  description='Broadcast an arbitrary message to all instances of IdleTimer. If crossTab is enabled, all tabs will receive the message and their `onMessage` callback will be emitted. If `emitOnSelf` is set to true, the callee instance will also emit its `onMessage` callback.'
+  type='(data: MessageType, emitOnSelf?: boolean) => void'
+/>
+
+### isIdle
+<Property 
+  description='Returns wether or not the user is idle.'
+  type='() => boolean'
+/>
+
+### isPrompted
+<Property 
+  description='Returns wether or not the prompt is active.'
+  type='() => boolean'
+/>
+
+### isLeader
+<Property 
+  description='Returns wether or not this is the leader tab.'
+  type='() => boolean'
+/>
+
+### getRemainingTime
+<Property 
+  description='Returns the number of milliseconds until idle or prompt.'
+  type='() => number'
+/>
+
+### getElapsedTime
+<Property 
+  description='Returns the number of milliseconds since the hook was mounted.'
+  type='() => number'
+/>
+
+### getLastIdleTime
+<Property 
+  description='Returns the last time the user was idle. Returns a Date instance that can be formatted.'
+  type='() => Date | null'
+/>
+
+### getLastActiveTime
+<Property 
+  description='Returns the last time the user was active. Returns a Date instance that can be formatted.'
+  type='() => Date | null'
+/>
+
+### getTotalIdleTime
+<Property 
+  description='Returns the total time in milliseconds user has been idle.'
+  type='() => number'
+/>
+
+### getTotalActiveTime
+<Property 
+  description='Returns the total time in milliseconds user has been active.'
+  type='() => number'
+/>

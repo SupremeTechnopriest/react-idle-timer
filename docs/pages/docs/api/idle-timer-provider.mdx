@@ -1,0 +1,208 @@
+---
+title: Context Provider
+description: Context Provider to populate child components
+---
+
+If you need to use the IdleTimer API in child components, you may want to
+consider using the Context Provider.  Rather than prop drilling through your 
+App's hierarchy, you can use the `IdleTimerProvider` to add the API as context 
+to child components.
+
+## Import
+
+```ts
+import { 
+  IdleTimerProvider, 
+  IdleTimerConsumer, 
+  IIdleTimerContext, 
+  IdleTimerContext,
+  useIdleTimerContext
+} from 'react-idle-timer'
+```
+
+## Usage
+
+### Functional Components
+
+For functional components, you will be using the `IdleTimerProvider` component
+and the `useIdleTimerContext` hook.  
+
+```jsx
+import { IdleTimerProvider, useIdleTimerContext } from 'react-idle-timer'
+
+export function Child (props) => {
+  const idleTimer = useIdleTimerContext()
+  return (
+    <h1>{idletimer.isIdle()}</h1>
+  )
+}
+
+export function App () {
+  const onPrompt = () => {
+    // Fire a Modal Prompt
+  }
+
+  const onIdle = () => {
+    // Close Modal Prompt
+    // Do some idle action like log out your user
+  }
+
+  const onActive = (event) => {
+    // Close Modal Prompt
+    // Do some active action
+  }
+
+  const onAction = (event) => {
+    // Do something when a user triggers a watched event
+  }
+
+  return (
+    <IdleTimerProvider
+      timeout={1000 * 60}
+      onPrompt={onPrompt}
+      onIdle={onIdle} 
+      onActive={onActive}
+      onAction={onAction}
+    >
+      <Child />
+    </IdleTimerProvider>
+  )
+}
+```
+
+### Class Components
+
+For class components, you have a few options depending on where you are using the
+API.  If you only need to use the API within your `render` method, you can use 
+the `IdleTimerConsumer`.
+
+```jsx
+import { Component } from 'react'
+import { IdleTimerProvider, IdleTimerConsumer } from 'react-idle-timer'
+
+export class Child extends Component {
+  render () {
+    return (
+      <IdleTimerConsumer>
+        {idleTimer => (
+          <h1>{idleTimer.isIdle()}</h1>
+        )}
+      </IdleTimerConsumer>
+    )
+  }
+}
+
+export class App extends Component {
+  onPrompt () {
+    // Fire a Modal Prompt
+  }
+
+  onIdle () {
+    // Close Modal Prompt
+    // Do some idle action like log out your user
+  }
+
+  onActive (event) {
+    // Close Modal Prompt
+    // Do some active action
+  }
+
+  onAction (event) {
+    // Do something when a user triggers a watched event
+  }
+
+  render () {
+    return (
+      <IdleTimerProvider
+        timeout={1000 * 60}
+        onPrompt={this.onPrompt}
+        onIdle={this.onIdle} 
+        onActive={this.onActive}
+        onAction={this.onAction}
+      >
+      <Child />
+    </IdleTimerProvider>
+    )
+  }
+}
+```
+
+If you need to consume the IdleTimer API outside of jsx, you can set the
+`contextType` on the consuming class. 
+
+```jsx
+import { Component } from 'react'
+import {
+  IdleTimerContext,
+  IdleTimerProvider
+} from 'react-idle-timer'
+
+export class Child extends Component {
+  // Set the context type to the IdleTimerContext
+  // The IIdleTimer interface will be available on this.context
+  static contextType = IdleTimerContext
+  
+  render () {
+    return (
+      <h1>{this.context.isIdle()}</h1>
+    )
+  }
+}
+
+export class App extends Component {
+  onPrompt () {
+    // Fire a Modal Prompt
+  }
+
+  onIdle () {
+    // Close Modal Prompt
+    // Do some idle action like log out your user
+  }
+
+  onActive (event) {
+    // Close Modal Prompt
+    // Do some active action
+  }
+
+  onAction (event) {
+    // Do something when a user triggers a watched event
+  }
+
+  render () {
+    return (
+      <IdleTimerProvider
+        timeout={1000 * 60 * 30}
+        onPrompt={this.onPrompt}
+        onIdle={this.onIdle} 
+        onActive={this.onActive}
+        onAction={this.onAction}
+      >
+        <Child />
+      </IdleTimerProvider>
+    )
+  }
+}
+```
+
+To preserve types for your component's context, declare the type for the 
+component's context property.
+
+```tsx
+import { Component, ContextTypes } from 'react'
+import { IIdleTimerContext, IdleTimerContext } from 'react-idle-timer'
+
+export class Child extends Component<{}, {}> {
+  // Set the context type to the IdleTimerContext
+  // The IIdleTimer interface will be available on this.context
+  static contextType = IdleTimerContext
+
+  // Declare a type for context to preserve typescript types
+  declare context: ContextType<IIdleTimerContext>
+  
+  render () {
+    return (
+      <h1>{this.context.isIdle()}</h1>
+    )
+  }
+}
+```

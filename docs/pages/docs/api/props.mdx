@@ -1,0 +1,150 @@
+---
+title: Props
+description: IdleTimer properties
+---
+
+Props are the configuration options that can be passed to `useIdleTimer` or
+`withIdleTimer`. All props are optional and have sensible defaults. If a prop
+is updated dynamically, IdleTimer will be automatically restarted with the new
+set of properties. Examples of how they are used can be found in the 
+[hook](/docs/api/useIdleTimer) and 
+[higher order component](/docs/api/withIdleTimer) docs.
+
+### timeout
+<Property 
+  description='Activity Timeout in milliseconds.'
+  type='number'
+  defaultValue='1200000'
+/>
+
+### promptTimeout
+<Property 
+  description='When the user becomes idle, the `onPrompt` function is called and after the prompt timeout in milliseconds is reached, the onIdle function is called.'
+  type='number'
+  defaultValue='0'
+/>
+
+### events
+<Property 
+  description='DOM events to watch for activity on.'
+  type='EventsType[]'
+  defaultValue={`[
+  'mousemove', 
+  'keydown', 
+  'wheel', 
+  'DOMMouseScroll', 
+  'mousewheel', 
+  'mousedown', 
+  'touchstart', 
+  'touchmove', 
+  'MSPointerDown', 
+  'MSPointerMove', 
+  'visibilitychange'
+]`}
+/>
+
+### immediateEvents
+<Property 
+  description='DOM events that will bypass the timeout and immediately call onPrompt/onIdle. The events in this array take precedence over the events array.'
+  type='EventsType[]'
+  defaultValue='[]'
+/>
+
+### onPrompt
+<Property 
+  description='When `promptTimeout` is set, this function is called after the user becomes idle. This is useful for displaying a confirm prompt.  If the prompt timeout is reached, `onIdle` is then called.'
+  type='() => void'
+  defaultValue='() => {}'
+/>
+
+### onIdle
+<Property 
+  description='Function to call when user is idle.'
+  type='() => void'
+  defaultValue='() => {}'
+/>
+
+### onActive
+<Property 
+  description='Function to call when user becomes active.'
+  type='(event: Event) => void'
+  defaultValue='() => {}'
+/>
+
+### onMessage
+<Property 
+  description='Function to call when a `message` event is received.'
+  type='(data: string | number | object) => void'
+  defaultValue='() => {}'
+/>
+
+### onAction
+<Property 
+  description='Function to call on user activity.'
+  type='(event: Event) => void'
+  defaultValue='() => {}'
+/>
+
+### debounce
+<Property 
+  description='Debounce the onAction function by setting delay in milliseconds.'
+  type='number'
+  defaultValue='0'
+/>
+
+### throttle
+<Property 
+  description='Throttle the onAction function by setting delay in milliseconds.'
+  type='number'
+  defaultValue='0'
+/>
+
+### eventsThrottle
+<Property 
+  description='Throttle the activity events. Useful if you are listening to mouse events. Helps to cut down on cpu usage.'
+  type='number'
+  defaultValue='200'
+/>
+
+### element
+<Property 
+  description='Element to bind activity listeners to.'
+  type='Node'
+  defaultValue='document'
+/>
+
+### startOnMount
+<Property 
+  description='Start the timer when the hook mounts.'
+  type='boolean'
+  defaultValue='true'
+/>
+
+### startManually
+<Property 
+  description='Require the timer to be started manually.'
+  type='boolean'
+  defaultValue='false'
+/>
+
+### stopOnIdle
+<Property 
+  description='Once the user goes idle the IdleTimer will not reset on user input. Instead, `start()` or `reset()` must be called manually to restart the timer.'
+  type='boolean'
+  defaultValue='false'
+/>
+
+### crossTab
+<Property 
+  description='Enable cross tab event replication.'
+  type='boolean'
+  defaultValue='false'
+  required
+/>
+
+### emitOnAllTabs
+<Property 
+  description='By default, events are only emitted on the leader tab when crossTab is enabled. Enabling this option will emit events on all tabs.'
+  type='boolean'
+  defaultValue='false'
+/>

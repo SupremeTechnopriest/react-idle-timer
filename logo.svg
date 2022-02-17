@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600px" height="600px" viewBox="0 0 600 600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>rounded-square-logo</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FF8127" offset="0%"></stop>
+            <stop stop-color="#FF117D" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="75.7684497%" y1="21.7295259%" x2="24.1162556%" y2="73.1245675%" id="linearGradient-2">
+            <stop stop-color="#000000" stop-opacity="0.1" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="23.7033177%" y1="77.2074557%" x2="76.315094%" y2="27.8209261%" id="linearGradient-3">
+            <stop stop-color="#000000" stop-opacity="0.1" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="rounded-square-logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="url(#linearGradient-1)" x="0" y="0" width="600" height="600" rx="120"></rect>
+        <g id="Glyph" transform="translate(166.000000, 141.000000)">
+            <path d="M0,22.554617 C31.2472014,7.51820566 75.2940578,0 132.140569,0 C188.98708,0 234.090513,7.51820566 267.450867,22.554617 L133.725434,154.459559 L0,291.37355 C21.7063997,309.124517 65.753256,318 132.140569,318 C198.527882,318 243.631315,309.124517 267.450867,291.37355 L0,22.554617 Z" id="Shape" stroke="#FFFFFF" stroke-width="45" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M0,22.554617 C31.2472014,7.51820566 75.2940578,-5.68434189e-14 132.140569,-5.68434189e-14 C188.98708,-5.68434189e-14 234.090513,7.51820566 267.450867,22.554617 L133.725434,154.459559 L0,291.37355 C21.7063997,309.124517 65.753256,318 132.140569,318 C198.527882,318 243.631315,309.124517 267.450867,291.37355 L0,22.554617 Z" id="Shape" stroke="#FFFFFF" stroke-width="45" stroke-linecap="round" stroke-linejoin="round"></path>
+            <polygon id="Shadow" fill="url(#linearGradient-2)" points="100.897541 155.866388 132.639432 187.776384 105.336038 215.731427 72.2940679 185.147884"></polygon>
+            <polygon id="Shadow" fill="url(#linearGradient-3)" points="164.357574 155.849872 132.620973 123.948157 161.024188 95.9333737 193.726368 126.882466"></polygon>
+        </g>
+    </g>
+</svg>
