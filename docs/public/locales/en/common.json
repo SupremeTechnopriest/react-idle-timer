@@ -20,7 +20,7 @@
     },
     "seo": {
       "title": "IdleTimer",
-      "description": "Robust activity and idle detection for React."
+      "description": "Robust activity and idle detection for your React applications."
     },
     "message": "Detect and respond to your user's activity or lack there of.",
     "getStarted": "Get Started",
