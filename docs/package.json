@@ -15,7 +15,7 @@
     "github-slugger": "^1.4.0",
     "graphql": "^16.3.0",
     "mdx-bundler": "^8.0.1",
-    "next": "^12.0.10",
+    "next": "^12.0.9",
     "next-contentlayer": "^0.1.1",
     "next-i18next": "^10.3.0",
     "next-seo": "^5.1.0",
