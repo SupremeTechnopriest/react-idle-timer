@@ -15,7 +15,7 @@ npm-debug.log.*
 .eslintrc.json
 .gitignore
 package-scripts.js
-jest.config.js
+jest.config.mjs
 tsconfig.json
 
 # Application
@@ -25,5 +25,6 @@ docs
 src
 tests
 coverage
-CONTRIBUTIONS.md
+CONTRIBUTTING.md
 CHANGELOG.md
+logo.svg

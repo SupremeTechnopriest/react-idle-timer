@@ -1,5 +1,3 @@
-const { series } = require('nps-utils')
-
 module.exports = {
   scripts: {
     build: 'scripts/build.js',
@@ -9,8 +7,7 @@ module.exports = {
     test: 'jest',
     docs: {
       dev: 'cd docs && ./node_modules/.bin/next dev',
-      build: 'cd docs && ./node_modules/.bin/next build',
-      deploy: series.nps('docs.build')
+      build: 'cd docs && ./node_modules/.bin/next build'
     }
   }
 }

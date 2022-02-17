@@ -3,21 +3,33 @@ const fs = require('fs-extra')
 const { build, ts, dirname, glob, log } = require('estrella')
 
 const entry = './src/index.ts'
-const outfile = './dist/index.js'
+const outCJS = './dist/index.js'
+const outESM = './dist/index.mjs'
 
 // Clear destination folder
 fs.emptyDirSync('./dist')
 
-// Build source
-build({
+const common = {
   entry,
-  outfile,
   bundle: true,
   sourcemap: true,
   minify: true,
-  format: 'esm',
   platform: 'browser',
-  external: ['react', 'react-dom'],
+  external: ['react', 'react-dom']
+}
+
+// Build cjs source
+build({
+  ...common,
+  outfile: outCJS,
+  format: 'cjs'
+})
+
+// Build esm source and type definitions
+build({
+  ...common,
+  outfile: outESM,
+  format: 'esm',
   onEnd (config) {
     const dtsFilesOutDir = dirname(config.outfile)
     const tsconfig = fs.readJsonSync('./tsconfig.json')
