@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import Head from 'next/head'
+import Script from 'next/script'
 import { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import { DefaultSeo } from 'next-seo'
@@ -40,25 +41,21 @@ function App ({ Component, pageProps }: AppProps) {
         <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link rel='preconnect' href='https://avatars.githubusercontent.com' />
         <link rel='preconnect' href='https://logo.clearbit.com' />
-        <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_ANALYTICS}`}
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-            window.dataLayer = window.dataLayer || []
-            function gtag (){ dataLayer.push(arguments) }
-            gtag('js', new Date())
-            gtag('config', '${process.env.GOOGLE_ANALYTICS}', {
-              page_path: window.location.pathname
-            })
-          `
-          }}
-        />
         <meta name='theme-color' content='#D76565' />
         <FontFace />
       </Head>
+      <Script
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_ANALYTICS}`}
+      />
+      <Script id='google-analytics'>
+        {`window.dataLayer = window.dataLayer || []
+        function gtag (){ dataLayer.push(arguments) }
+        gtag('js', new Date())
+        gtag('config', '${process.env.GOOGLE_ANALYTICS}', {
+          page_path: window.location.pathname
+        })`}
+      </Script>
       <DefaultSeo {...seo} />
       <ChakraProvider theme={theme}>
         <Component {...pageProps} />
