@@ -1,3 +1,4 @@
+import { GetStaticProps } from 'next'
 import { useTranslation } from 'next-i18next'
 import { Box, Divider } from '@chakra-ui/react'
 
@@ -25,10 +26,6 @@ import { ISponsor, Sponsors } from '@components/Sponsors'
 import { UsedBy } from '@components/UsedBy'
 import { Footer } from '@components/Footer'
 
-interface IProps<T> {
-  props: T
-}
-
 interface IHomeProps {
   githubStars: string
   totalDownloads: string
@@ -45,7 +42,7 @@ interface IHomeProps {
   }
 }
 
-export async function getStaticProps ({ locale }): Promise<IProps<IHomeProps>> {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const [
     { prettyCount: githubStars },
     { prettyCount: totalDownloads },
@@ -76,7 +73,8 @@ export async function getStaticProps ({ locale }): Promise<IProps<IHomeProps>> {
       codeQuality,
       usedBy,
       sponsors
-    }
+    },
+    revalidate: 60 * 5
   }
 }
 
