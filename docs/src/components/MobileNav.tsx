@@ -19,6 +19,7 @@ import { RemoveScroll } from 'react-remove-scroll'
 import { LogoIcon } from '@components/Logo'
 import { SidebarContent } from '@components/Sidebar'
 import { SponsorButton } from '@components/SponsorButton'
+import { HeaderIconButtons } from '@components/HeaderIconButtons'
 
 interface MobileNavContentProps {
   isOpen?: boolean
@@ -101,6 +102,14 @@ export function MobileNavContent (props: MobileNavContentProps) {
               </Box>
 
               <ScrollView>
+                <Flex
+                  justify='flex-start'
+                  w='100%'
+                  align='center'
+                  color='gray.400'
+                >
+                  <HeaderIconButtons alwaysShow />
+                </Flex>
                 <SidebarContent
                   pathname={pathname}
                   routes={getRoutes(pathname)}

@@ -4,32 +4,20 @@ import {
   Box,
   chakra,
   Flex,
-  HStack,
   HTMLChakraProps,
-  Icon,
-  IconButton,
-  Link,
-  useColorMode,
   useDisclosure,
   useUpdateEffect,
   useColorModeValue
 } from '@chakra-ui/react'
 import { useViewportScroll } from 'framer-motion'
-import { FaMoon, FaSun } from 'react-icons/fa'
-import { SiDiscord, SiGithub } from 'react-icons/si'
-import { CgNpm } from 'react-icons/cg'
 
-import config from '@configs/site.config'
 import { Logo, LogoIcon } from '@components/Logo'
 import { SponsorButton } from '@components/SponsorButton'
 import { MobileNavButton, MobileNavContent } from '@components/MobileNav'
+import { HeaderIconButtons } from '@components/HeaderIconButtons'
 
 function HeaderContent () {
   const mobileNav = useDisclosure()
-  const { toggleColorMode: toggleMode } = useColorMode()
-
-  const text = useColorModeValue('dark', 'light')
-  const SwitchIcon = useColorModeValue(FaMoon, FaSun)
   const mobileNavBtnRef = useRef<HTMLButtonElement>()
 
   useUpdateEffect(() => {
@@ -57,56 +45,7 @@ function HeaderContent () {
           color='gray.400'
           maxW='1100px'
         >
-          <HStack spacing='5' display='flex' align='center'>
-            <Link
-              isExternal
-              aria-label='NPM'
-              href={config.package.url}
-            >
-              <Icon
-                as={CgNpm}
-                display='block'
-                transition='color 0.2s'
-                w='5'
-                h='5'
-                _hover={{ color: 'gray.600' }}
-              />
-            </Link>
-            <Link
-              isExternal
-              aria-label='GitHub'
-              href={config.repo.url}
-            >
-              <Icon
-                as={SiGithub}
-                display='block'
-                transition='color 0.2s'
-                w='5'
-                h='5'
-                _hover={{ color: 'gray.600' }}
-              />
-            </Link>
-            <Link aria-label='Discord' href={config.discord.url}>
-              <Icon
-                as={SiDiscord}
-                display='block'
-                transition='color 0.2s'
-                w='5'
-                h='5'
-                _hover={{ color: 'gray.600' }}
-              />
-            </Link>
-          </HStack>
-          <IconButton
-            size='md'
-            fontSize='lg'
-            aria-label={`Switch to ${text} mode`}
-            variant='ghost'
-            color='current'
-            ml={3}
-            onClick={toggleMode}
-            icon={<SwitchIcon />}
-          />
+          <HeaderIconButtons />
           <SponsorButton ml='5' />
           <MobileNavButton
             ref={mobileNavBtnRef}
