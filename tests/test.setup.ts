@@ -1,4 +1,5 @@
 import * as expect from 'expect'
+import { cleanup } from '@testing-library/react'
 import { MessageChannel } from 'worker_threads'
 
 expect.extend({
@@ -25,5 +26,9 @@ jest.mock('worker-timers', () => ({
   clearInterval: clearInterval
 }))
 
-// @ts-ignore
-global.MessageChannel = MessageChannel
+beforeAll(() => {
+  // @ts-ignore
+  global.MessageChannel = MessageChannel
+})
+
+afterAll(cleanup)

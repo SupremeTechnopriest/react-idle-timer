@@ -4,7 +4,7 @@ export default {
   testPathIgnorePatterns: [
     '/docs/'
   ],
-  setupFiles: [
+  setupFilesAfterEnv: [
     './tests/test.setup.ts'
   ],
   collectCoverage: true,
