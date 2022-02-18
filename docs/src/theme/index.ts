@@ -4,6 +4,9 @@ import { textStyles } from './textStyles'
 import { mdx } from './mdx'
 
 const scrollbar = {
+  'body::-webkit-scrollbar': {
+    borderRadius: 0
+  },
   '::-webkit-scrollbar': {
     borderRadius: 10,
     background: 'gray.900',
