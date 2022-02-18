@@ -20,7 +20,7 @@ export function Hero () {
 
   return (
     <Box as='section' pt='6rem' pb='5rem'>
-      <Container maxW='3xl'>
+      <Container maxW='xl'>
         <Box textAlign='center'>
           <chakra.h1
             maxW='16ch'
