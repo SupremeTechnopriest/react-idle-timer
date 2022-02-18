@@ -4,12 +4,13 @@ description: Testing considerations for IdleTimer
 ---
 
 In order to write tests that include IdleTimer, a few things will need to be mocked.
-Examples will be provided for the [jest]() testing framework, but the principles
-can be applied to any framework.
+Examples will be provided for the [jest](https://jestjs.io/) framework
+and the [testing-library](https://testing-library.com/docs/react-testing-library/intro) 
+utilities,  but the principles can be applied to any framework.
 
-For jest, you will need to create a startup script and add it to the `setupFiles`
-section of your `jest.config.js` or `package.json`.  We will assume the setup file 
-is called `test.setup.js` for the following.
+To keep your tests clean and modular, you will need to create a startup script 
+and add it to the `setupFilesAfterEnv` section of your `jest.config.js` or `package.json`.  
+We will assume the setup file is called `test.setup.js` for the following.
 
 ### Mock Worker Timers
 IdleTimer uses the library [worker-timers](https://www.npmjs.com/package/worker-timers)
@@ -19,7 +20,7 @@ context, we will need to mock this library.
 
 In your `test.setup.js`, add the following:
 
-```ts
+```js
 jest.mock('worker-timers', () => ({
   setTimeout: setTimeout,
   clearTimeout: clearTimeout,
@@ -36,16 +37,63 @@ IdleTimer uses [MessageChannel](https://developer.mozilla.org/en-US/docs/Web/API
 for the cross tab messaging layer internally.  This is not mocked by default
 in js-dom. To mock it for testing, add the following to your `test.setup.js`.
 
-```ts
+```js
 import { MessageChannel } from 'worker_threads'
+import { cleanup } from '@testing-library/react'
 
-// @ts-ignore
-global.MessageChannel = MessageChannel
+beforeAll(() => {
+  // @ts-ignore
+  global.MessageChannel = MessageChannel
+})
+
+afterAll(cleanup)
 ```
 
 If you are using Typescript you will have to either ignore the global assignment
 or extend the global name space for your test runner.  Since you are unlikely to 
-need types for the MessageChannel, `// @ts-ignore` will suffice.
+need types for MessageChannel, `// @ts-ignore` will suffice.
+
+### Full Mock
+
+Here is the full mock requirements to test with IdleTimer.
+
+```js
+//
+// jest.config.js
+//
+
+export default {
+  ...otherOptions,
+  setupFilesAfterEnv: [
+    './test.setup.js'
+  ]
+}
+```
+
+```js
+//
+// test.setup.js
+//
+
+import { MessageChannel } from 'worker_threads'
+import { cleanup } from '@testing-library/react'
+
+// Mock worker-timers
+jest.mock('worker-timers', () => ({
+  setTimeout: setTimeout,
+  clearTimeout: clearTimeout,
+  setInterval: setInterval,
+  clearInterval: clearInterval
+}))
+
+// Mock MessageChannel
+beforeAll(() => {
+  global.MessageChannel = MessageChannel
+})
+
+// Clean up globals to close open handles
+afterAll(cleanup)
+```
 
 <Divider mt={6} />
 
