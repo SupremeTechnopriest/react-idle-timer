@@ -1,6 +1,6 @@
 ---
 name: ⚡️ New Feature
-label: triage
+labels: triage, enhancement
 about: Implement a New Feature.
 ---
 

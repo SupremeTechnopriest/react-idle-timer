@@ -1,6 +1,6 @@
 ---
 name: ❓ Question
-label: question
+labels: triage, question
 about: Generic question or request.
 ---
 

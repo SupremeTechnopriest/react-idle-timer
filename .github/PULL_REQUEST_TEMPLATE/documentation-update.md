@@ -1,6 +1,6 @@
 ---
 name: 📝 Documentation Update
-label: triage
+labels: triage, docs
 about: Update to Documentation or Examples.
 ---
 

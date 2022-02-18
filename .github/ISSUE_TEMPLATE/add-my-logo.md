@@ -1,6 +1,6 @@
 ---
 name: 🎨 Add My Logo
-label: triage
+labels: triage, docs
 about: Have your logo and link added to the IdleTimer website.
 ---
 

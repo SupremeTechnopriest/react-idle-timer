@@ -1,6 +1,6 @@
 ---
 name: ⚡️ Feature Request
-label: triage
+labels: triage, enhancement
 about: Suggest a feature you would like to see supported in IdleTimer.
 ---
 

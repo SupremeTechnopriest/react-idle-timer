@@ -1,6 +1,6 @@
 ---
 name: 🐞 Bug Fix
-label: triage
+labels: triage, bug
 about: Fix a bug in the IdleTimer Source or Documentation.
 ---
 
