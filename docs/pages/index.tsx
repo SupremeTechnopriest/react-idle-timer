@@ -74,7 +74,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
       usedBy,
       sponsors
     },
-    revalidate: 60 * 5
+    revalidate: 60
   }
 }
 
