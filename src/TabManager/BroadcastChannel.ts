@@ -3,7 +3,7 @@ import * as workerTimers from 'worker-timers'
 /**
  * Collection of channels
  */
-const channels = []
+const channels = {}
 
 /**
  * Polyfill for BroadcastChannel.
