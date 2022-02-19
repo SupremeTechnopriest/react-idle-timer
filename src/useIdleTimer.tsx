@@ -68,17 +68,9 @@ export function useIdleTimer ({
   const stopOnIdleRef = useRefEffect<boolean>(stopOnIdle)
   const immediateEventsRef = useRefEffect<EventsType[]>(immediateEvents)
 
-  // Update events dynamically
+  // Events and element references
   const eventsRef = useRef<EventsType[]>(events)
   const elementRef = useRef<Node>(element)
-  useEffect(() => {
-    if (!firstLoad.current) {
-      unbindEvents()
-      eventsRef.current = events
-      elementRef.current = element
-      bindEvents()
-    }
-  }, [events, element])
 
   // On Idle Emitter
   const emitOnIdle = useRefEffect<IEventHandler>(onIdle)
@@ -319,7 +311,7 @@ export function useIdleTimer ({
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeout, emitOnAllTabs])
+  }, [tId, idle, timeout, element, events, emitOnAllTabs])
 
   /**
   * Restore initial state and restart timer, calling onActive
@@ -356,7 +348,7 @@ export function useIdleTimer ({
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeout, emitOnAllTabs])
+  }, [tId, idle, timeout, element, events, emitOnAllTabs])
 
   /**
    * Pause a running timer.
@@ -384,7 +376,7 @@ export function useIdleTimer ({
       }
     }
     return true
-  }, [tId, emitOnAllTabs, manager])
+  }, [tId, element, events, emitOnAllTabs, manager])
 
   /**
    * Resumes a paused timer.
@@ -416,7 +408,7 @@ export function useIdleTimer ({
       }
     }
     return true
-  }, [tId, remaining, emitOnAllTabs, manager])
+  }, [tId, remaining, element, events, emitOnAllTabs, manager])
 
   /**
    * Sends a message to all tabs.
@@ -548,6 +540,21 @@ export function useIdleTimer ({
       if (manager.current) manager.current.close()
     }
   }, [])
+
+  // Dynamic events and element
+  useEffect(() => {
+    if (!firstLoad.current) {
+      unbindEvents()
+      eventsRef.current = events
+      elementRef.current = element
+      if (startManually) return
+      if (startOnMount) {
+        start()
+      } else {
+        bindEvents()
+      }
+    }
+  }, [events, element])
 
   // Dynamic Start
   useEffect(() => {
