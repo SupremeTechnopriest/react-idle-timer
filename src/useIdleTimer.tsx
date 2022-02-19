@@ -255,8 +255,9 @@ export function useIdleTimer ({
     // Otherwise we bind all the events
     // to the supplied element
     if (!eventsBound.current) {
+      console.log(elementRef.current)
       eventsRef.current.forEach(e => {
-        element.addEventListener(e, handleEvent.current, {
+        elementRef.current.addEventListener(e, handleEvent.current, {
           capture: true,
           passive: true
         })
@@ -277,7 +278,7 @@ export function useIdleTimer ({
     // Unbind all events
     if (eventsBound.current || force) {
       eventsRef.current.forEach(e => {
-        element.removeEventListener(e, handleEvent.current, {
+        elementRef.current.removeEventListener(e, handleEvent.current, {
           capture: true
         })
       })
@@ -544,6 +545,7 @@ export function useIdleTimer ({
   // Dynamic events and element
   useEffect(() => {
     if (!firstLoad.current) {
+      console.log(element)
       unbindEvents()
       eventsRef.current = events
       elementRef.current = element
