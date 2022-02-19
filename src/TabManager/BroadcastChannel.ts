@@ -40,8 +40,8 @@ class Polyfill {
 
   private onStorage (event: StorageEvent) {
     if (event.storageArea !== global.localStorage) return
+    if (event.key.substring(0, this.name.length) !== this.name) return
     if (event.newValue === null) return
-    if (event.key !== this.name) return
     const data = JSON.parse(event.newValue)
     this.mc.port2.postMessage(data)
   }
@@ -49,7 +49,7 @@ class Polyfill {
   public postMessage (message: any) {
     if (this.closed) throw new Error('InvalidStateError')
     const value = JSON.stringify(message)
-    const key = `this.name${String(Date.now())}String(Math.random())`
+    const key = `${this.name}:${String(Date.now())}${String(Math.random())}`
 
     // Broadcast to remote contexts via storage events
     global.localStorage.setItem(key, value)
@@ -118,7 +118,7 @@ class Polyfill {
  * istanbul ignore next
  *
  * This block can be ignored because we are not testing
- * the built in global BroadcastChannel, only this polyfill.
+ * the built in window BroadcastChannel, only this polyfill.
  */
 export const BroadcastChannel = typeof global.BroadcastChannel === 'function'
   ? global.BroadcastChannel
