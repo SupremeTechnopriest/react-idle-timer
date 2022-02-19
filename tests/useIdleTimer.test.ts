@@ -68,6 +68,7 @@ describe('useIdleTimer', () => {
           props.element = document
           props.onAction = jest.fn()
           props.eventsThrottle = 0
+          props.startOnMount = false
 
           const { rerender } = idleTimer()
           fireEvent.mouseDown(document)
@@ -77,6 +78,46 @@ describe('useIdleTimer', () => {
           rerender()
           fireEvent.mouseDown(window)
           expect(props.onAction).toBeCalledTimes(2)
+        })
+
+        it('Should should not start when startManually is set and updated dynamically', () => {
+          props.element = document
+          props.onAction = jest.fn()
+          props.startManually = true
+          props.eventsThrottle = 0
+
+          const { rerender, result } = idleTimer()
+          result.current.start()
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toBeCalledTimes(1)
+
+          props.element = window
+          rerender()
+          fireEvent.mouseDown(window)
+          expect(props.onAction).toBeCalledTimes(1)
+        })
+
+        it('Should should start immediately when startOnMount is set and updated dynamically', async () => {
+          props.element = document
+          props.timeout = 200
+          props.onAction = jest.fn()
+          props.onIdle = jest.fn()
+          props.startOnMount = true
+          props.eventsThrottle = 0
+
+          const { rerender, result } = idleTimer()
+          result.current.start()
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toBeCalledTimes(1)
+
+          props.element = window
+          rerender()
+
+          fireEvent.mouseDown(window)
+          expect(props.onAction).toBeCalledTimes(2)
+
+          await waitFor(() => result.current.isIdle())
+          expect(props.onIdle).toBeCalledTimes(1)
         })
       })
 
