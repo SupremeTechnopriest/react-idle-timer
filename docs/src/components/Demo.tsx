@@ -197,6 +197,10 @@ function MessageInput (props: IMessageInputProps) {
         <Button
           h='1.75rem'
           size='sm'
+          _hover={{
+            bg: 'red.400',
+            color: 'white'
+          }}
           onClick={onClick}
           onMouseOver={() => props.setDescription(props.description)}
           onMouseOut={() => props.setDescription(descriptionDefault)}
@@ -244,14 +248,15 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
         </TabPanel>
         <TabPanel>
           <VStack>
+            <ButtonWithEvent event='start' frames={[frameA]} setDescription={setDescription} description={t('methods.start')} />
             <HStack width='full'>
               <VStack width='40%'>
-                <ButtonWithEvent event='start' frames={[frameA]} setDescription={setDescription} description={t('methods.start')} />
                 <ButtonWithEvent event='reset' frames={[frameA]} setDescription={setDescription} description={t('methods.reset')} />
                 <ButtonWithEvent event='pause' frames={[frameA]} setDescription={setDescription} description={t('methods.pause')} />
                 <ButtonWithEvent event='resume' frames={[frameA]} setDescription={setDescription} description={t('methods.resume')} />
                 <ButtonWithEvent event='isIdle' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isIdle')} />
                 <ButtonWithEvent event='isLeader' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isLeader')} />
+                <ButtonWithEvent event='isPrompted' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isPrompted')} />
               </VStack>
               <VStack width='60%'>
                 <ButtonWithEvent event='getRemainingTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getRemainingTime')} />
@@ -293,7 +298,7 @@ export function Demo () {
           </chakra.p>
         </Box>
         <Grid
-          templateColumns={{ base: 'repeat(1, 1fr)', md: crossTab ? '320px 1fr 1fr' : '320px 1fr' }}
+          templateColumns={{ base: 'repeat(1, 1fr)', md: crossTab ? '350px 1fr 1fr' : '350px 1fr' }}
           gap={10}
           px={{ md: 12 }}
         >
@@ -304,9 +309,9 @@ export function Demo () {
             setCrossTab={setCrossTab}
             setDescription={setDescription}
           />
-          <Window ref={windowA} url='/demos/main' />
+          <Window ref={windowA} url='/demo?hideControls=true' />
           {crossTab && (
-            <Window ref={windowB} url='/demos/main' />
+            <Window ref={windowB} url='/demo?hideControls=true' />
           )}
         </Grid>
         <Flex
