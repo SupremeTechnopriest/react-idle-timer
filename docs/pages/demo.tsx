@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useIdleTimer, MessageType } from 'react-idle-timer'
 import { motion, useMotionValue } from 'framer-motion'
@@ -7,17 +8,18 @@ import {
   Heading,
   Flex,
   Center,
-  Button,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalFooter,
   ModalBody,
+  Button,
   useToast,
   useDisclosure
 } from '@chakra-ui/react'
 import { formatDistanceToNowStrict } from 'date-fns'
+import { ControlDrawer } from '@components/ControlDrawer'
 
 interface IMotionProps {
   isOpen: boolean
@@ -60,7 +62,9 @@ function Motion (props: IMotionProps) {
   )
 }
 
-export default function MainDemo () {
+export default function Demo () {
+  const { query } = useRouter()
+
   const [timeout, setTimeoutValue] = useState<number>(2000)
   const [promptTimeout, setPromptTimeoutValue] = useState<number>(0)
   const [startOnMount, setStartOnMount] = useState<boolean>(false)
@@ -75,6 +79,8 @@ export default function MainDemo () {
 
   const [lastEvent, setLastEvent] = useState<string>('INITIAL')
   const [lastKey, setLastKey] = useState<string>('')
+
+  const elementRef = useRef()
 
   // Prompt Modal
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -135,6 +141,7 @@ export default function MainDemo () {
     message,
     isIdle,
     isLeader,
+    isPrompted,
     getRemainingTime,
     getElapsedTime,
     getLastActiveTime,
@@ -142,6 +149,7 @@ export default function MainDemo () {
     getTotalActiveTime,
     getTotalIdleTime
   } = useIdleTimer({
+    element: elementRef.current,
     startOnMount,
     startManually,
     stopOnIdle,
@@ -178,134 +186,191 @@ export default function MainDemo () {
     setInterval(tick, 1000)
   }, [timeout, promptTimeout, isOpen])
 
-  useEffect(() => {
-    const handler = (e: MessageEvent) => {
-      const { event, data } = e.data
-      switch (event) {
-        case 'start':
-          start()
-          setLastEvent('START')
+  const handler = useCallback((event: string, data?: any): any => {
+    switch (event) {
+      case 'start':
+        setLastEvent('START')
+        setLastKey('')
+        return start()
+      case 'reset':
+        setLastEvent('RESET')
+        setLastKey('')
+        return reset()
+      case 'pause':
+        if (pause()) {
+          setLastEvent('PAUSE')
           setLastKey('')
-          break
-        case 'reset':
-          reset()
-          setLastEvent('RESET')
+          return true
+        }
+        return false
+      case 'resume':
+        if (resume()) {
+          setLastEvent('RESUME')
           setLastKey('')
-          break
-        case 'pause':
-          if (pause()) {
-            setLastEvent('PAUSE')
-            setLastKey('')
-          }
-          break
-        case 'resume':
-          if (resume()) {
-            setLastEvent('RESUME')
-            setLastKey('')
-          }
-          break
-        case 'isIdle': {
-          alert('isIdle', isIdle())
-          break
+          return true
         }
-        case 'isLeader': {
-          alert('isLeader', isLeader())
-          break
-        }
-        case 'getRemainingTime': {
-          alert('getRemainingTime', getRemainingTime())
-          break
-        }
-        case 'getElapsedTime': {
-          alert('getElapsedTime', getElapsedTime())
-          break
-        }
-        case 'getLastActiveTime': {
-          alert('getLastActiveTime', `${formatDistanceToNowStrict(getLastActiveTime())} ago`)
-          break
-        }
-        case 'getLastIdleTime': {
-          alert('getLastIdleTime', `${formatDistanceToNowStrict(getLastIdleTime())} ago`)
-          break
-        }
-        case 'getTotalActiveTime': {
-          alert('getTotalActiveTime', getTotalActiveTime())
-          break
-        }
-        case 'getTotalIdleTime': {
-          alert('getTotalIdleTime', getTotalIdleTime())
-          break
-        }
-        case 'timeout': {
-          setTimeoutValue(parseInt(data, 10))
-          break
-        }
-        case 'promptTimeout': {
-          const value = parseInt(data, 10)
-          setPromptTimeoutValue(value)
-          setRemaining(Math.ceil(value / 1000))
-          break
-        }
-        case 'startOnMount': {
-          setStartOnMount(data)
-          setLastEvent('INITIAL')
-          setLastKey('')
-          break
-        }
-        case 'startManually': {
-          setStartManually(data)
-          setLastEvent('INITIAL')
-          setLastKey('')
-          break
-        }
-        case 'stopOnIdle': {
-          setStopOnIdle(data)
-          break
-        }
-        case 'debounce': {
-          setDebounce(parseInt(data, 10))
-          break
-        }
-        case 'throttle': {
-          setThrottle(parseInt(data, 10))
-          break
-        }
-        case 'eventsThrottle': {
-          setEventsThrottle(parseInt(data, 10))
-          break
-        }
-        case 'crossTab': {
-          setCrossTab(data)
-          break
-        }
-        case 'emitOnAllTabs': {
-          setEmitOnAllTabs(data)
-          break
-        }
-        case 'message': {
-          message(data, emitOnSelf.current)
-          break
-        }
-        case 'emitOnSelf': {
-          emitOnSelf.current = data
-          break
-        }
-        default:
-          // No Op
+        return false
+      case 'isIdle': {
+        const result = isIdle()
+        alert('isIdle', result)
+        return result
       }
+      case 'isLeader': {
+        const result = isLeader()
+        alert('isLeader', result)
+        return result
+      }
+      case 'isPrompted': {
+        const result = isPrompted()
+        alert('isPrompted', result)
+        return result
+      }
+      case 'getRemainingTime': {
+        const result = getRemainingTime()
+        alert('getRemainingTime', result)
+        return result
+      }
+      case 'getElapsedTime': {
+        const result = getElapsedTime()
+        alert('getElapsedTime', result)
+        return result
+      }
+      case 'getLastActiveTime': {
+        const result = getLastActiveTime() || new Date()
+        alert('getLastActiveTime', `${formatDistanceToNowStrict(result)} ago`)
+        return result
+      }
+      case 'getLastIdleTime': {
+        const result = getLastIdleTime() || new Date()
+        alert('getLastIdleTime', `${formatDistanceToNowStrict(result)} ago`)
+        return result
+      }
+      case 'getTotalActiveTime': {
+        const result = getTotalActiveTime()
+        alert('getTotalActiveTime', result)
+        return result
+      }
+      case 'getTotalIdleTime': {
+        const result = getTotalIdleTime()
+        alert('getTotalIdleTime', result)
+        return result
+      }
+      case 'timeout': {
+        setTimeoutValue(parseInt(data, 10))
+        break
+      }
+      case 'promptTimeout': {
+        const value = parseInt(data, 10)
+        setPromptTimeoutValue(value)
+        setRemaining(Math.ceil(value / 1000))
+        break
+      }
+      case 'startOnMount': {
+        setStartOnMount(data)
+        setLastEvent('INITIAL')
+        setLastKey('')
+        break
+      }
+      case 'startManually': {
+        setStartManually(data)
+        setLastEvent('INITIAL')
+        setLastKey('')
+        break
+      }
+      case 'stopOnIdle': {
+        setStopOnIdle(data)
+        break
+      }
+      case 'debounce': {
+        setDebounce(parseInt(data, 10))
+        break
+      }
+      case 'throttle': {
+        setThrottle(parseInt(data, 10))
+        break
+      }
+      case 'eventsThrottle': {
+        setEventsThrottle(parseInt(data, 10))
+        break
+      }
+      case 'crossTab': {
+        setCrossTab(data)
+        break
+      }
+      case 'emitOnAllTabs': {
+        setEmitOnAllTabs(data)
+        break
+      }
+      case 'message': {
+        message(data, emitOnSelf.current)
+        break
+      }
+      case 'emitOnSelf': {
+        emitOnSelf.current = data
+        break
+      }
+      default:
+      // No Op
+    }
+  }, [])
+
+  useEffect(() => {
+    const messageHandler = (e: MessageEvent) => {
+      const { event, data } = e.data
+      handler(event, data)
     }
 
     setInterval(tick, 1000)
-    window.addEventListener('message', handler)
+    window.addEventListener('message', messageHandler)
     return () => {
       clearInterval(intervalId.current)
-      window.removeEventListener('message', handler)
+      window.removeEventListener('message', messageHandler)
     }
   }, [])
 
   return (
     <>
+      {!query.hideControls && (
+        <ControlDrawer
+          timeout={timeout}
+          setTimeout={data => handler('timeout', data)}
+          promptTimeout={promptTimeout}
+          setPromptTimeout={data => handler('promptTimeout', data)}
+          debounce={debounce}
+          setDebounce={data => handler('debounce', data)}
+          throttle={throttle}
+          setThrottle={data => handler('throttle', data)}
+          eventsThrottle={eventsThrottle}
+          setEventsThrottle={data => handler('eventsThrottle', data)}
+          startOnMount={startOnMount}
+          setStartOnMount={data => handler('startOnMount', data)}
+          startManually={startManually}
+          setStartManually={data => handler('startManually', data)}
+          stopOnIdle={stopOnIdle}
+          setStopOnIdle={data => handler('stopOnIdle', data)}
+          crossTab={crossTab}
+          setCrossTab={data => handler('crossTab', data)}
+          emitOnAllTabs={emitOnAllTabs}
+          setEmitOnAllTabs={data => handler('emitOnAllTabs', data)}
+          setEmitOnSelf={data => handler('emitOnSelf', data)}
+          start={() => handler('start')}
+          reset={() => handler('reset')}
+          pause={() => handler('pause')}
+          resume={() => handler('resume')}
+          message={data => handler('message', data)}
+          isIdle={() => handler('isIdle')}
+          isLeader={() => handler('isLeader')}
+          isPrompted={() => handler('isPrompted')}
+          getRemainingTime={() => handler('getRemainingTime')}
+          getElapsedTime={() => handler('getElapsedTime')}
+          getLastActiveTime={() => handler('getLastActiveTime')}
+          getLastIdleTime={() => handler('getLastIdleTime')}
+          getTotalActiveTime={() => handler('getTotalActiveTime')}
+          getTotalIdleTime={() => handler('getTotalIdleTime')}
+        />
+      )}
       <Box
+        ref={elementRef}
         bg='gray.700'
         h='100vh'
         p={4}
