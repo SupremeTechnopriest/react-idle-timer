@@ -121,7 +121,7 @@ class Polyfill {
  * the built in window BroadcastChannel, only this polyfill.
  */
 export const BroadcastChannel = typeof window === 'undefined'
-  ? null
+  ? undefined
   : typeof window.BroadcastChannel === 'function'
     ? window.BroadcastChannel
     : Polyfill
