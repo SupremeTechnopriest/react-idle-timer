@@ -248,7 +248,7 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
         </TabPanel>
         <TabPanel>
           <VStack>
-            <ButtonWithEvent event='start' frames={[frameA]} setDescription={setDescription} description={t('methods.start')} />
+            <ButtonWithEvent event='start' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.start')} />
             <HStack width='full'>
               <VStack width='40%'>
                 <ButtonWithEvent event='reset' frames={[frameA]} setDescription={setDescription} description={t('methods.reset')} />
