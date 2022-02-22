@@ -1210,7 +1210,7 @@ describe('useIdleTimer', () => {
           expect(result.current.getRemainingTime()).toBeAround(100, 10)
 
           await waitFor(() => result.current.isIdle())
-          expect(result.current.getRemainingTime()).toBe(0)
+          expect(result.current.getRemainingTime()).toBeAround(0, 5)
         })
 
         it('Should return correct value when paused and resumed while prompted', async () => {

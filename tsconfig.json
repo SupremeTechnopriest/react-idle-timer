@@ -3,6 +3,7 @@
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "Node",
+    "lib": ["DOM", "ESNext"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,

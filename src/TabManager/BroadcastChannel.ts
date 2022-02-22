@@ -35,11 +35,11 @@ class Polyfill {
 
     // Add event listeners
     this.onStorage = this.onStorage.bind(this)
-    global.addEventListener('storage', this.onStorage)
+    window.addEventListener('storage', this.onStorage)
   }
 
   private onStorage (event: StorageEvent) {
-    if (event.storageArea !== global.localStorage) return
+    if (event.storageArea !== window.localStorage) return
     if (event.key.substring(0, this.name.length) !== this.name) return
     if (event.newValue === null) return
     const data = JSON.parse(event.newValue)
@@ -52,9 +52,9 @@ class Polyfill {
     const key = `${this.name}:${String(Date.now())}${String(Math.random())}`
 
     // Broadcast to remote contexts via storage events
-    global.localStorage.setItem(key, value)
+    window.localStorage.setItem(key, value)
     workerTimers.setTimeout(() => {
-      global.localStorage.removeItem(key)
+      window.localStorage.removeItem(key)
     }, 500)
 
     // Broadcast to current context via ports
@@ -70,7 +70,7 @@ class Polyfill {
     this.mc.port1.close()
     this.mc.port2.close()
 
-    global.removeEventListener('storage', this.onStorage)
+    window.removeEventListener('storage', this.onStorage)
 
     const index = channels[this.name].indexOf(this)
     channels[this.name].splice(index, 1)
@@ -120,6 +120,8 @@ class Polyfill {
  * This block can be ignored because we are not testing
  * the built in window BroadcastChannel, only this polyfill.
  */
-export const BroadcastChannel = typeof global.BroadcastChannel === 'function'
-  ? global.BroadcastChannel
-  : Polyfill
+export const BroadcastChannel = typeof window === 'undefined'
+  ? null
+  : typeof window.BroadcastChannel === 'function'
+    ? window.BroadcastChannel
+    : Polyfill
