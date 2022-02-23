@@ -2,13 +2,13 @@
   "name": "react-idle-timer",
   "version": "5.0.0-rc.11",
   "description": "Activity detection for React.js",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs.js",
+      "import": "./dist/index.esm.js",
       "types": "./dist/index.d.ts"
     }
   },

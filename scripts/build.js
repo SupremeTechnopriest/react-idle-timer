@@ -3,8 +3,8 @@ const fs = require('fs-extra')
 const { build, ts, dirname, glob, log } = require('estrella')
 
 const entry = './src/index.ts'
-const outCJS = './dist/index.js'
-const outESM = './dist/index.mjs'
+const outCJS = './dist/index.cjs.js'
+const outESM = './dist/index.esm.js'
 
 // Clear destination folder
 fs.emptyDirSync('./dist')
