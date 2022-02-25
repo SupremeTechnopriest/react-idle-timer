@@ -1340,11 +1340,11 @@ describe('useIdleTimer', () => {
 
           // Test during active
           await sleep(100)
-          expect(result.current.getTotalActiveTime()).toBeAround(100, 10)
+          expect(result.current.getTotalActiveTime()).toBeAround(100, 20)
 
           // Test after idle
           await waitFor(() => result.current.isIdle())
-          expect(result.current.getTotalActiveTime()).toBeAround(300, 15)
+          expect(result.current.getTotalActiveTime()).toBeAround(300, 25)
 
           // Activate
           fireEvent.mouseDown(document)
