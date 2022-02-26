@@ -48,7 +48,7 @@ export class LeaderElector {
 
   public deferred: Promise<void>
 
-  constructor (channel: BroadcastChannel, options: ILeaderElectorOptions) {
+  constructor (channel: any, options: ILeaderElectorOptions) {
     this.channel = channel
     this.options = options
 

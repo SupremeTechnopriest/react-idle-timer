@@ -26,6 +26,13 @@ export interface IIdleTimerProps {
   promptTimeout?: number
 
   /**
+   * Element to bind activity listeners to.
+   *
+   * @default document
+   */
+  element?: Document | HTMLElement
+
+  /**
    * DOM events to watch for activity on.
    *
    * @default DefaultEvents
@@ -99,13 +106,6 @@ export interface IIdleTimerProps {
    * @default 200
    */
   eventsThrottle?: number
-
-  /**
-   * Element to bind activity listeners to.
-   *
-   * @default document
-   */
-  element?: Node
 
   /**
    * Start the timer when the hook mounts.
