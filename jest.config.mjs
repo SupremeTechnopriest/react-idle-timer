@@ -9,6 +9,8 @@ export default {
   ],
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.{ts|tsx}'
+    'src/TabManager/*.ts',
+    'src/utils/*.ts',
+    'src/*.{ts|tsx}'
   ]
 }
