@@ -6,7 +6,6 @@
     "lib": ["DOM", "ESNext"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
     "noImplicitAny": false,
     "noLib": false,
     "declaration": true,

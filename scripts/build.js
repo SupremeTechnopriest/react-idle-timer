@@ -38,26 +38,18 @@ build({
 })
 
 function generateTypeDefs (tsconfig, entryFiles, outDir) {
-  const filenames = Array.from(
-    new Set(
-      (Array.isArray(entryFiles)
-        ? entryFiles
-        : [entryFiles]
-      ).concat(tsconfig.include || [])
-    )
-  ).filter(v => v)
-
-  log.info('Generating type declaration files for', filenames.join(', '))
+  log.info('Generating type declaration files for', entryFiles.join(', '))
   const compilerOptions = {
     ...tsconfig.compilerOptions,
     moduleResolution: undefined,
     outDir
   }
-  const program = ts.ts.createProgram(filenames, compilerOptions)
+  const program = ts.ts.createProgram(entryFiles, compilerOptions)
   const targetSourceFile = undefined
   const writeFile = undefined
   const cancellationToken = undefined
   const emitOnlyDtsFiles = true
-  program.emit(targetSourceFile, writeFile, cancellationToken, emitOnlyDtsFiles)
-  log.info('Wrote', glob(outDir + '/*.d.ts').join(', '))
+  const result = program.emit(targetSourceFile, writeFile, cancellationToken, emitOnlyDtsFiles)
+  if (result.emitSkipped) console.log(result)
+  log.info('Wrote', glob(outDir + '/**/*.d.ts').join(', '))
 }
