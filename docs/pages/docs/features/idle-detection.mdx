@@ -13,16 +13,16 @@ not triggered those events in a given time period.
 The properties associated with idle detection are:
 
 {/* cspell:disable */}
-- [timeout](/docs/props#timeout): The time before a user is considered idle.
-- [element](/docs/props#element): The DOM element to bind event listeners to.
-- [events](/docs/props#events): The events to listen for activity on.
-- [immediateEvents](/docs/props#immediateevents): The events that will immediately trigger an idle event (bypassing timeout).
-- [onIdle](/docs/props#onidle): Function called when a user becomes idle from an active state.
-- [onActive](/docs/props#onactive): Function called when a user becomes active from an idle state.
-- [eventsThrottle](/docs/props#eventsthrottle): Throttle for the events bound. Saves on CPU if you are using repeated events.
-- [startOnMount](/docs/props#startonmount): Starts the timer when the host component mounts.
-- [startManually](/docs/props#startmanually): Require a call to `start()` in order to start the timer.
-- [stopOnIdle](/docs/props#stoponidle): Require the timer to be manually reset after going idle by calling `start()` or `reset()`.
+- [timeout](/docs/api/props#timeout): The time before a user is considered idle.
+- [element](/docs/api/props#element): The DOM element to bind event listeners to.
+- [events](/docs/api/props#events): The events to listen for activity on.
+- [immediateEvents](/docs/api/props#immediateevents): The events that will immediately trigger an idle event (bypassing timeout).
+- [onIdle](/docs/api/props#onidle): Function called when a user becomes idle from an active state.
+- [onActive](/docs/api/props#onactive): Function called when a user becomes active from an idle state.
+- [eventsThrottle](/docs/api/props#eventsthrottle): Throttle for the events bound. Saves on CPU if you are using repeated events.
+- [startOnMount](/docs/api/props#startonmount): Starts the timer when the host component mounts.
+- [startManually](/docs/api/props#startmanually): Require a call to `start()` in order to start the timer.
+- [stopOnIdle](/docs/api/props#stoponidle): Require the timer to be manually reset after going idle by calling `start()` or `reset()`.
 {/* cspell:enable */}
 
 ### Methods
@@ -30,16 +30,16 @@ The properties associated with idle detection are:
 The methods associated with the confirm prompt feature are:
 
 {/* cspell:disable */}
-- [start](/docs/methods#start): Starts the timer.
-- [reset](/docs/methods#reset): Resets the timer and calls `onActive`.
-- [pause](/docs/methods#pause): Pauses a running timer.
-- [resume](/docs/methods#resume): Resumes a running timer.
-- [getElapsedTime](/docs/methods#getelapsedtime): Returns the time in milliseconds since the host component was mounted.
-- [getRemainingTime](/docs/methods#getremainingtime): Returns the time remaining in milliseconds until idle.
-- [getLastActiveTime](/docs/methods#getlastactivetime): Returns a Date of the last time the user was active.
-- [getTotalActiveTime](/docs/methods#gettotalactivetime): Returns time in milliseconds the user was active.
-- [getLastIdleTime](/docs/methods#getlastidletime): Returns a Date of the last time the user was idle.
-- [getTotalIdleTime](/docs/methods#gettotalidletime): Returns time in milliseconds the user was idle.
+- [start](/docs/api/methods#start): Starts the timer.
+- [reset](/docs/api/methods#reset): Resets the timer and calls `onActive`.
+- [pause](/docs/api/methods#pause): Pauses a running timer.
+- [resume](/docs/api/methods#resume): Resumes a running timer.
+- [getElapsedTime](/docs/api/methods#getelapsedtime): Returns the time in milliseconds since the host component was mounted.
+- [getRemainingTime](/docs/api/methods#getremainingtime): Returns the time remaining in milliseconds until idle.
+- [getLastActiveTime](/docs/api/methods#getlastactivetime): Returns a Date of the last time the user was active.
+- [getTotalActiveTime](/docs/api/methods#gettotalactivetime): Returns time in milliseconds the user was active.
+- [getLastIdleTime](/docs/api/methods#getlastidletime): Returns a Date of the last time the user was idle.
+- [getTotalIdleTime](/docs/api/methods#gettotalidletime): Returns time in milliseconds the user was idle.
 {/* cspell:enable */}
 
 ### Examples

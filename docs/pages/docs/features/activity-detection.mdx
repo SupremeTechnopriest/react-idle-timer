@@ -12,13 +12,13 @@ a change of idle state.
 The properties associated with activity detection are:
 
 {/* cspell:disable */}
-- [events](/docs/props#events): The events to listen for activity on.
-- [element](/docs/props#element): The DOM element to bind event listeners to.
-- [onAction](/docs/props#onaction): Function called each time an event is triggered.
-- [throttle](/docs/props#throttle): Throttle the `onAction` callback in milliseconds.
-- [debounce](/docs/props#debounce): Debounce the `onAction` callback in milliseconds.
-- [startOnMount](/docs/props#startonmount): Bind the events when the host component mounts. Defaults to `true`.
-- [startManually](/docs/props#startmanually): Require a call to `start()` in order to bind the events initally.
+- [events](/docs/api/props#events): The events to listen for activity on.
+- [element](/docs/api/props#element): The DOM element to bind event listeners to.
+- [onAction](/docs/api/props#onaction): Function called each time an event is triggered.
+- [throttle](/docs/api/props#throttle): Throttle the `onAction` callback in milliseconds.
+- [debounce](/docs/api/props#debounce): Debounce the `onAction` callback in milliseconds.
+- [startOnMount](/docs/api/props#startonmount): Bind the events when the host component mounts. Defaults to `true`.
+- [startManually](/docs/api/props#startmanually): Require a call to `start()` in order to bind the events initally.
 {/* cspell:enable */}
 
 ### Methods
@@ -26,10 +26,10 @@ The properties associated with activity detection are:
 The methods associated with the confirm prompt feature are:
 
 {/* cspell:disable */}
-- [start](/docs/methods#start): Binds the events.
-- [pause](/docs/methods#pause): Unbinds events.
-- [resume](/docs/methods#resume): Rebinds events.
-- [getElapsedTime](/docs/methods#getelapsedtime): Returns the amount of milliseconds since the host component was mounted.
+- [start](/docs/api/methods#start): Binds the events.
+- [pause](/docs/api/methods#pause): Unbinds events.
+- [resume](/docs/api/methods#resume): Rebinds events.
+- [getElapsedTime](/docs/api/methods#getelapsedtime): Returns the amount of milliseconds since the host component was mounted.
 {/* cspell:enable */}
 
 ### Examples
