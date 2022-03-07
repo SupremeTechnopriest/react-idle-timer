@@ -800,7 +800,7 @@ describe('useIdleTimer', () => {
           expect(result.current.isIdle()).toBe(false)
 
           result.current.resume()
-          await sleep(100)
+          await sleep(101)
           expect(result.current.isIdle()).toBe(true)
         })
 
