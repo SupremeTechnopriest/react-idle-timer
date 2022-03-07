@@ -1124,6 +1124,17 @@ describe('useIdleTimer', () => {
           await sleep(200)
           expect(result.current.isPrompted()).toBe(true)
         })
+
+        it('Should emit onAction while prompt is active', async () => {
+          props.timeout = 200
+          props.promptTimeout = 400
+          props.onAction = jest.fn()
+          const { result } = idleTimer()
+          await sleep(200)
+          expect(result.current.isPrompted()).toBe(true)
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(1)
+        })
       })
 
       describe('.isLeader', () => {

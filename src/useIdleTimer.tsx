@@ -136,7 +136,6 @@ export function useIdleTimer ({
     if (nextIdle) {
       // Handle prompt
       if (promptTimeoutRef.current > 0 && !prompted.current) {
-        unbindEvents()
         remaining.current = 0
         promptTime.current = now()
         prompted.current = true
@@ -153,7 +152,6 @@ export function useIdleTimer ({
         destroyTimeout()
         unbindEvents()
       } else if (prompted.current) {
-        bindEvents()
         promptTime.current = 0
         prompted.current = false
       }
@@ -188,6 +186,9 @@ export function useIdleTimer ({
   const eventHandler = (event: EventType): void => {
     // Fire onAction event
     emitOnAction.current(event)
+
+    // If the prompt is open, only emit onAction
+    if (prompted.current) return
 
     // Clear any existing timeout
     destroyTimeout()
