@@ -14,7 +14,8 @@
   },
   "scripts": {
     "start": "nps",
-    "test": "jest"
+    "test": "jest",
+    "build": "scripts/build.js"
   },
   "keywords": [
     "react",

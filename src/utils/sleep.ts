@@ -1,4 +1,4 @@
-import * as workerTimers from 'worker-timers'
+import { timers } from './timers'
 
 /**
  * Sleeps for x amount of milliseconds.
@@ -8,5 +8,5 @@ import * as workerTimers from 'worker-timers'
  * @private
  */
 export function sleep (time: number = 0): Promise<number> {
-  return new Promise(resolve => workerTimers.setTimeout(resolve, time))
+  return new Promise(resolve => timers.setTimeout(resolve, time))
 }

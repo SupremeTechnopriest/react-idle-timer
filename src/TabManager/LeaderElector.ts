@@ -1,4 +1,4 @@
-import * as workerTimers from 'worker-timers'
+import { timers } from '../utils/timers'
 import { sleep } from '../utils/sleep'
 import { createToken } from '../utils/token'
 
@@ -119,7 +119,7 @@ export class LeaderElector {
          */
         if (resolved) return
         resolved = true
-        workerTimers.clearInterval(interval)
+        timers.clearInterval(interval)
         const index = this.intervals.indexOf(interval)
         this.intervals.splice(index, 1)
         this.channel.removeEventListener('message', onClose)
@@ -127,7 +127,7 @@ export class LeaderElector {
       }
 
       // Create leader polling
-      interval = workerTimers.setInterval(() => {
+      interval = timers.setInterval(() => {
         this.apply().then(() => {
           if (this.isLeader) finish()
         })
@@ -183,6 +183,6 @@ export class LeaderElector {
     this.sendAction(InternalAction.CLOSE)
 
     this.listeners.forEach(listener => this.channel.removeEventListener('message', listener))
-    this.intervals.forEach(interval => workerTimers.clearInterval(interval))
+    this.intervals.forEach(interval => timers.clearInterval(interval))
   }
 }

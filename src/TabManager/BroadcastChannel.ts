@@ -1,4 +1,4 @@
-import * as workerTimers from 'worker-timers'
+import { timers } from '../utils/timers'
 
 /**
  * Collection of channels
@@ -53,7 +53,7 @@ class Polyfill {
 
     // Broadcast to remote contexts via storage events
     window.localStorage.setItem(key, value)
-    workerTimers.setTimeout(() => {
+    timers.setTimeout(() => {
       window.localStorage.removeItem(key)
     }, 500)
 

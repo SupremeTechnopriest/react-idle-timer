@@ -29,6 +29,8 @@ jobs:
           node-version: '16'
       - name: Install Modules
         run: npm i
+      - name: Build Package
+        run: npm run build
       - name: Run Tests
         run: npm t
       - name: Upload Coverage

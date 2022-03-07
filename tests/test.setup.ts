@@ -1,6 +1,7 @@
 import * as expect from 'expect'
 import { cleanup } from '@testing-library/react'
 import { MessageChannel } from 'worker_threads'
+import { createMocks } from '../src'
 
 expect.extend({
   toBeAround (actual, expected, precision = 2) {
@@ -19,16 +20,10 @@ expect.extend({
   }
 })
 
-jest.mock('worker-timers', () => ({
-  setTimeout: setTimeout,
-  clearTimeout: clearTimeout,
-  setInterval: setInterval,
-  clearInterval: clearInterval
-}))
-
-beforeAll(() => {
+beforeAll(async () => {
   // @ts-ignore
   global.MessageChannel = MessageChannel
+  await createMocks()
 })
 
 afterAll(cleanup)

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useCallback } from 'react'
-import * as workerTimers from 'worker-timers'
 
 import { TabManager, MessageAction } from './TabManager'
 
@@ -8,6 +7,7 @@ import { IS_BROWSER } from './utils/isBrowser'
 import { useRefEffect } from './utils/useRefEffect'
 import { debounceFn } from './utils/debounce'
 import { throttleFn } from './utils/throttle'
+import { timers } from './utils/timers'
 import { now } from './utils/now'
 
 import { EventType } from './types/EventType'
@@ -109,7 +109,7 @@ export function useIdleTimer ({
    */
   const destroyTimeout = (): void => {
     if (tId.current !== null) {
-      workerTimers.clearTimeout(tId.current)
+      timers.clearTimeout(tId.current)
       tId.current = null
     }
   }
@@ -121,7 +121,7 @@ export function useIdleTimer ({
    */
   const createTimeout = (time?: number, setLastActive: boolean = true): void => {
     destroyTimeout()
-    tId.current = workerTimers.setTimeout(toggleIdleState, time || timeout)
+    tId.current = timers.setTimeout(toggleIdleState, time || timeout)
     if (setLastActive) lastActive.current = now()
   }
 
