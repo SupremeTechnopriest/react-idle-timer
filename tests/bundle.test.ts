@@ -3,9 +3,7 @@ import { useIdleTimer, createMocks } from '../dist/index.cjs.js'
 import { timers } from '../src/utils/timers'
 import { sleep, waitFor } from './test.utils'
 
-beforeAll(async () => {
-  await createMocks()
-})
+beforeAll(createMocks)
 
 describe('Bundle', () => {
   it('Should mock timers', async () => {

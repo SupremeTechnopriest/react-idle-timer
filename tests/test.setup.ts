@@ -20,10 +20,10 @@ expect.extend({
   }
 })
 
-beforeAll(async () => {
+beforeAll(() => {
   // @ts-ignore
   global.MessageChannel = MessageChannel
-  await createMocks()
+  createMocks()
 })
 
 afterAll(cleanup)

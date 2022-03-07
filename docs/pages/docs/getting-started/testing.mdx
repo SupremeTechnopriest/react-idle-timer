@@ -23,9 +23,7 @@ In your `test.setup.js`, add the following:
 
 ```js
 import { createMocks } from 'react-idle-timer'
-beforeAll(async () => { 
-  await createMocks()
-})
+beforeAll(createMocks)
 ```
 
 This will have jest or your test runner of choice use the browser native timers
@@ -79,8 +77,8 @@ import { createMocks } from 'react-idle-timer'
 import { MessageChannel } from 'worker_threads'
 import { cleanup } from '@testing-library/react'
 
-beforeAll(async () => {
-  await createMocks()
+beforeAll(() => {
+  createMocks()
   global.MessageChannel = MessageChannel
 })
 

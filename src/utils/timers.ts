@@ -7,7 +7,7 @@ export const timers = {
   clearInterval: workerTimers.clearInterval
 }
 
-export async function createMocks () {
+export function createMocks () {
   timers.setTimeout = setTimeout
   timers.clearTimeout = clearTimeout
   timers.setInterval = setInterval
