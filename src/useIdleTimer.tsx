@@ -70,8 +70,10 @@ export function useIdleTimer ({
   const immediateEventsRef = useRefEffect<EventsType[]>(immediateEvents)
 
   // Events and element references
-  const eventsRef = useRef<EventsType[]>(events)
   const elementRef = useRef<Node>(element)
+  const eventsRef = useRef<EventsType[]>(
+    [...new Set([...events, ...immediateEvents]).values()]
+  ) // ?
 
   // On Idle Emitter
   const emitOnIdle = useRefEffect<IEventHandler>(onIdle)
@@ -313,7 +315,7 @@ export function useIdleTimer ({
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeout, element, events, emitOnAllTabs])
+  }, [tId, idle, timeout, manager, emitOnAllTabs])
 
   /**
   * Restore initial state and restart timer, calling onActive
@@ -350,7 +352,7 @@ export function useIdleTimer ({
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeout, element, events, emitOnAllTabs])
+  }, [tId, idle, timeout, manager, emitOnAllTabs])
 
   /**
    * Pause a running timer.
@@ -378,7 +380,7 @@ export function useIdleTimer ({
       }
     }
     return true
-  }, [tId, element, events, emitOnAllTabs, manager])
+  }, [tId, manager, emitOnAllTabs])
 
   /**
    * Resumes a paused timer.
@@ -410,7 +412,7 @@ export function useIdleTimer ({
       }
     }
     return true
-  }, [tId, remaining, element, events, emitOnAllTabs, manager])
+  }, [tId, remaining, emitOnAllTabs, manager])
 
   /**
    * Sends a message to all tabs.
@@ -550,7 +552,7 @@ export function useIdleTimer ({
   useEffect(() => {
     if (!firstLoad.current) {
       unbindEvents()
-      eventsRef.current = events
+      eventsRef.current = [...new Set([...events, ...immediateEventsRef.current]).values()]
       elementRef.current = element
       if (startManually) return
       if (startOnMount) {
@@ -559,7 +561,7 @@ export function useIdleTimer ({
         bindEvents()
       }
     }
-  }, [events, element])
+  }, [element, events])
 
   // Dynamic Start
   useEffect(() => {

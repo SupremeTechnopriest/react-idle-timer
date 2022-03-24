@@ -148,7 +148,7 @@ describe('useIdleTimer', () => {
           expect(props.onAction).toBeCalledTimes(1)
 
           props.events = ['keypress']
-          rerender()
+          rerender(props)
 
           fireEvent.mouseDown(document)
           fireEvent.keyPress(document)
@@ -161,6 +161,18 @@ describe('useIdleTimer', () => {
         it('Should call idle immediately on immediate event', () => {
           props.immediateEvents = ['mousedown']
           const { result } = idleTimer()
+          fireEvent.mouseDown(document)
+          expect(result.current.isIdle()).toBe(true)
+        })
+
+        it('Should concat events', () => {
+          props.eventsThrottle = 0
+          props.events = ['mousemove']
+          props.immediateEvents = ['mousedown']
+          props.startOnMount = false
+          const { result } = idleTimer()
+          fireEvent.mouseMove(document)
+          expect(result.current.isIdle()).toBe(false)
           fireEvent.mouseDown(document)
           expect(result.current.isIdle()).toBe(true)
         })
@@ -1149,6 +1161,19 @@ describe('useIdleTimer', () => {
           expect(result.current.isPrompted()).toBe(true)
           fireEvent.mouseDown(document)
           expect(props.onAction).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should work with custom events', async () => {
+          props.events = ['mousedown', 'mousemove']
+          props.timeout = 200
+          props.promptTimeout = 4000
+          const { result, rerender } = idleTimer()
+          await waitFor(() => result.current.isPrompted())
+          for (let i = 0; i < 3800; i += 100) {
+            await sleep(100)
+            rerender(props)
+            expect(result.current.isPrompted()).toBe(true)
+          }
         })
       })
 
