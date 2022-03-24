@@ -1,5 +1,14 @@
+import { Component } from 'react'
 import { renderHook } from '@testing-library/react-hooks'
-import { useIdleTimer, createMocks } from '../dist/index.cjs.js'
+import { render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom'
+
+import {
+  IdleTimerProvider,
+  IdleTimerConsumer,
+  useIdleTimer,
+  createMocks
+} from '../dist/index.cjs.js'
 import { timers } from '../src/utils/timers'
 import { sleep, waitFor } from './test.utils'
 
@@ -40,5 +49,36 @@ describe('Bundle', () => {
     timer.result.current.message('foo', true)
     await sleep(100)
     expect(fn).toHaveBeenCalledTimes(2)
+  })
+
+  it('Should render Provider', () => {
+    class Child extends Component<{}, {}> {
+      render () {
+        return (
+          <IdleTimerConsumer>
+            {({ getRemainingTime, isIdle }) => (
+              <>
+                <div data-testid='remaining'>{String(getRemainingTime())}</div>
+                <div data-testid='isIdle'>{String(isIdle())}</div>
+              </>
+            )}
+          </IdleTimerConsumer>
+        )
+      }
+    }
+
+    class Root extends Component<{}, {}> {
+      render () {
+        return (
+          <IdleTimerProvider timeout={1000} startOnMount={false}>
+            <Child />
+          </IdleTimerProvider>
+        )
+      }
+    }
+
+    render(<Root />)
+    expect(screen.getByTestId('remaining')).toHaveTextContent('1000')
+    expect(screen.getByTestId('isIdle')).toHaveTextContent('true')
   })
 })
