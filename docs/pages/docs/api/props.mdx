@@ -134,6 +134,13 @@ set of properties. Examples of how they are used can be found in the
   defaultValue='false'
 />
 
+### nativeTimers
+<Property 
+  description='Use native timers instead of WebWorker timers. You might want to set this if you have strict csp rules and can tolerate background throttling of timers. The WebWorker for timers is provided via a blob url.'
+  type='boolean'
+  defaultValue='false'
+/>
+
 ### crossTab
 <Property 
   description='Enable cross tab event replication.'

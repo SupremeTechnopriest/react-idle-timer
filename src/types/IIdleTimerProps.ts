@@ -130,6 +130,14 @@ export interface IIdleTimerProps {
   stopOnIdle?: boolean
 
   /**
+   * Use native timers instead of web worker timers. You might want to set this
+   * if you have have strict csp rules. The worker is provided via a blob url.
+   *
+   * @default false
+   */
+  nativeTimers?: boolean
+
+  /**
    * Enable cross tab event replication.
    *
    * @default false

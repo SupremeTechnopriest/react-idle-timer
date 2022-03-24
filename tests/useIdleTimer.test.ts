@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react-hooks'
 import { sleep, waitFor } from './test.utils'
 
 import { useIdleTimer } from '../src'
+import * as timers from '../src/utils/timers'
 
 describe('useIdleTimer', () => {
   let props
@@ -31,6 +32,7 @@ describe('useIdleTimer', () => {
       stopOnIdle: undefined,
       capture: undefined,
       passive: undefined,
+      nativeTimers: undefined,
       crossTab: undefined,
       emitOnAllTabs: undefined
     }
@@ -757,6 +759,19 @@ describe('useIdleTimer', () => {
           await waitFor(() => result.current.isIdle())
           fireEvent.mouseDown(document)
           expect(props.onActive).toHaveBeenCalledTimes(4)
+        })
+      })
+
+      describe('.nativeTimers', () => {
+        it('Should use native timers', () => {
+          const spy = jest.spyOn(timers, 'createMocks').mockImplementation(jest.fn)
+          props.nativeTimers = true
+          idleTimer()
+          expect(timers.timers.setInterval).toEqual(setInterval)
+          expect(timers.timers.clearInterval).toEqual(clearInterval)
+          expect(timers.timers.setTimeout).toEqual(setTimeout)
+          expect(timers.timers.clearTimeout).toEqual(clearTimeout)
+          expect(spy).toHaveBeenCalled()
         })
       })
 

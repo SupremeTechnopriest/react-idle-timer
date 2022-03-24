@@ -7,7 +7,7 @@ import { IS_BROWSER } from './utils/isBrowser'
 import { useRefEffect } from './utils/useRefEffect'
 import { debounceFn } from './utils/debounce'
 import { throttleFn } from './utils/throttle'
-import { timers } from './utils/timers'
+import { createMocks, timers } from './utils/timers'
 import { now } from './utils/now'
 
 import { EventType } from './types/EventType'
@@ -40,6 +40,7 @@ export function useIdleTimer ({
   startOnMount = true,
   startManually = false,
   stopOnIdle = false,
+  nativeTimers = false,
   crossTab = false,
   emitOnAllTabs = false
 }: IIdleTimerProps = {}): IIdleTimer {
@@ -532,6 +533,9 @@ export function useIdleTimer ({
     if (debounce > 0 && throttle > 0) {
       throw new Error('❌ onAction can either be throttled or debounced, not both.')
     }
+
+    // Create mock timers if nativeTimers is set
+    if (nativeTimers) createMocks()
 
     // Clear and unbind on unmount
     return () => {
