@@ -9,7 +9,6 @@
     "noImplicitAny": false,
     "noLib": false,
     "declaration": true,
-    "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",
     "jsx": "react-jsx"

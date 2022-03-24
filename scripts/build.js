@@ -12,7 +12,6 @@ fs.emptyDirSync('./dist')
 const common = {
   entry,
   bundle: true,
-  sourcemap: true,
   minify: true,
   platform: 'browser',
   external: ['react', 'react-dom']
