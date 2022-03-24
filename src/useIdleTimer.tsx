@@ -91,7 +91,9 @@ export function useIdleTimer ({
   const emitOnAction = useRef<IEventHandler>()
   useEffect(() => {
     // Cancel any existing debounce timeouts
-    emitOnAction.current?.cancel && emitOnAction.current.cancel()
+    if (emitOnAction.current && emitOnAction.current.cancel) {
+      emitOnAction.current.cancel()
+    }
 
     // Create debounced action if applicable
     if (debounce > 0) {

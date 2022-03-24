@@ -663,6 +663,28 @@ describe('useIdleTimer', () => {
           expect(props.onAction).toHaveBeenCalledTimes(1)
         })
 
+        it('Should cancel existing debounced function', async () => {
+          const fn1 = jest.fn()
+          const fn2 = jest.fn()
+          props.onAction = fn1
+          props.debounce = 200
+          props.eventsThrottle = 0
+          const { rerender } = idleTimer()
+          fireEvent.mouseDown(document)
+          fireEvent.mouseDown(document)
+          fireEvent.mouseDown(document)
+          fireEvent.mouseDown(document)
+          props.onAction = fn2
+          rerender(props)
+          fireEvent.mouseDown(document)
+          fireEvent.mouseDown(document)
+          fireEvent.mouseDown(document)
+          fireEvent.mouseDown(document)
+          await sleep(200)
+          expect(fn1).toHaveBeenCalledTimes(0)
+          expect(fn2).toHaveBeenCalledTimes(1)
+        })
+
         it('Should dynamically update debounce', async () => {
           props.onAction = jest.fn()
           props.debounce = 400
