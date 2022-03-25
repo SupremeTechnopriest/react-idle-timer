@@ -121,6 +121,23 @@ describe('useIdleTimer', () => {
           await waitFor(() => result.current.isIdle())
           expect(props.onIdle).toBeCalledTimes(1)
         })
+
+        it('Should memoize element', () => {
+          props.element = window
+          props.timeout = 200
+          props.startOnMount = false
+          props.startManually = true
+          props.onAction = jest.fn()
+          props.eventsThrottle = 0
+          const { result, rerender } = idleTimer()
+          result.current.start()
+          fireEvent.mouseDown(window)
+          expect(props.onAction).toHaveBeenCalledTimes(1)
+          props.element = window
+          rerender(props)
+          fireEvent.mouseDown(window)
+          expect(props.onAction).toHaveBeenCalledTimes(2)
+        })
       })
 
       describe('.events', () => {
@@ -155,6 +172,23 @@ describe('useIdleTimer', () => {
           fireEvent.keyPress(document)
           expect(props.onAction).toBeCalledTimes(3)
         })
+
+        it('Should memoize events', async () => {
+          props.events = ['mousedown', 'mousemove']
+          props.timeout = 200
+          props.startOnMount = false
+          props.startManually = true
+          props.onAction = jest.fn()
+          props.eventsThrottle = 0
+          const { result, rerender } = idleTimer()
+          result.current.start()
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(1)
+          props.events = ['mousedown', 'mousemove']
+          rerender(props)
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(2)
+        })
       })
 
       describe('.immediateEvents', () => {
@@ -186,6 +220,24 @@ describe('useIdleTimer', () => {
           rerender()
           fireEvent.mouseDown(document)
           expect(result.current.isIdle()).toBe(true)
+        })
+
+        it('Should memoize element', () => {
+          props.events = ['keydown']
+          props.immediateEvents = ['mousedown']
+          props.timeout = 200
+          props.startOnMount = false
+          props.startManually = true
+          props.onAction = jest.fn()
+          props.eventsThrottle = 0
+          const { result, rerender } = idleTimer()
+          result.current.start()
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(1)
+          props.immediateEvents = ['mousedown']
+          rerender(props)
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(2)
         })
       })
 
@@ -1199,19 +1251,6 @@ describe('useIdleTimer', () => {
           expect(result.current.isPrompted()).toBe(true)
           fireEvent.mouseDown(document)
           expect(props.onAction).toHaveBeenCalledTimes(1)
-        })
-
-        it('Should work with custom events', async () => {
-          props.events = ['mousedown', 'mousemove']
-          props.timeout = 200
-          props.promptTimeout = 4000
-          const { result, rerender } = idleTimer()
-          await waitFor(() => result.current.isPrompted())
-          for (let i = 0; i < 3800; i += 100) {
-            await sleep(100)
-            rerender(props)
-            expect(result.current.isPrompted()).toBe(true)
-          }
         })
       })
 

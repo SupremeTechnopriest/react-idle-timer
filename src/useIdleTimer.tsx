@@ -68,9 +68,9 @@ export function useIdleTimer ({
   // Prop references
   const promptTimeoutRef = useRefEffect<number>(promptTimeout)
   const stopOnIdleRef = useRefEffect<boolean>(stopOnIdle)
-  const immediateEventsRef = useRefEffect<EventsType[]>(immediateEvents)
 
   // Events and element references
+  const immediateEventsRef = useRef<EventsType[]>(immediateEvents)
   const elementRef = useRef<Node>(element)
   const eventsRef = useRef<EventsType[]>(
     [...new Set([...events, ...immediateEvents]).values()]
@@ -565,9 +565,13 @@ export function useIdleTimer ({
   // Dynamic events and element
   useEffect(() => {
     if (!firstLoad.current) {
+      const newEvents = [
+        ...new Set([...events, ...immediateEvents]).values()
+      ]
       unbindEvents()
-      eventsRef.current = [...new Set([...events, ...immediateEventsRef.current]).values()]
+      eventsRef.current = newEvents
       elementRef.current = element
+      immediateEventsRef.current = immediateEvents
       if (startManually) return
       if (startOnMount) {
         start()
@@ -575,7 +579,7 @@ export function useIdleTimer ({
         bindEvents()
       }
     }
-  }, [element, events])
+  }, [element, JSON.stringify(events), JSON.stringify(immediateEvents)])
 
   // Dynamic Start
   useEffect(() => {
