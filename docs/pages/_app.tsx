@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { DefaultSeo } from 'next-seo'
 import { appWithTranslation } from 'next-i18next'
 
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 
 import { FontFace } from '@components/FontFace'
 
@@ -57,6 +57,7 @@ function App ({ Component, pageProps }: AppProps) {
         })`}
       </Script>
       <DefaultSeo {...seo} />
+      <ColorModeScript />
       <ChakraProvider theme={theme}>
         <Component {...pageProps} />
       </ChakraProvider>
