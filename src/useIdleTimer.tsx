@@ -589,8 +589,8 @@ export function useIdleTimer ({
     if (firstLoad.current) {
       firstLoad.current = false
     } else {
+      if (startManually) return
       if (idle.current) {
-        if (startManually) return
         reset()
       } else {
         start()
