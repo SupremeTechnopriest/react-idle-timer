@@ -91,6 +91,19 @@ breaking change but something that is good to be aware of while migrating.
 
 ## New Features
 
+### Web Worker Timers
+
+When a window is backgrounded, the browser will throttle timers in an attempt to 
+save on CPU cycles.  This can cause IdleTimer to produce delayed and inaccurate 
+results. To combat this, in v5 all timers have been moved to a WebWorker to keep 
+them alive during when a window is in the background. The worker is provided via 
+a blob URL and this can cause strict CSP rules to be violated. It is strongly 
+suggested that you update your rule to allow the worker to run so timers are 
+accurate, but if this is not an option for you, you can enable native timers by 
+setting the [nativeTimers](/docs/api/props#nativetimers) property. Also, take a 
+look at [Testing Considerations](/docs/getting-started/testing) for information 
+on how to mock these timers for your test suites.
+
 ### Integrated Prompting
 
 A common use case for IdleTimer is to detect when your user is idle and then 
