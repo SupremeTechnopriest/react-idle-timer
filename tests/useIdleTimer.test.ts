@@ -206,6 +206,22 @@ describe('useIdleTimer', () => {
           expect(props.onIdle).toHaveBeenCalledTimes(2)
         })
 
+        it('Should update when started manually', async () => {
+          props.timeout = 400
+          props.startOnMount = false
+          props.startManually = true
+          props.stopOnIdle = true
+          const { result, rerender } = idleTimer()
+          result.current.pause()
+          expect(result.current.isIdle()).toBe(true)
+          props.timeout = 200
+          rerender(props)
+          result.current.start()
+          expect(result.current.isIdle()).toBe(false)
+          await sleep(200)
+          expect(result.current.isIdle()).toBe(true)
+        })
+
         it('Should call onActive if timeout changes while idle', async () => {
           props.onIdle = jest.fn()
           props.onActive = jest.fn()
@@ -1307,6 +1323,21 @@ describe('useIdleTimer', () => {
           await waitFor(() => result.current.isIdle())
           expect(result.current.getRemainingTime()).toBe(0)
         })
+
+        it('Should reset when start or reset is called', async () => {
+          props.timeout = 200
+          const { result } = idleTimer()
+          await sleep(100)
+          expect(result.current.getRemainingTime()).toBeAround(100, 10)
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getRemainingTime()).toBe(0)
+          result.current.reset()
+          expect(result.current.getRemainingTime()).toBeAround(200, 10)
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getRemainingTime()).toBe(0)
+          result.current.start()
+          expect(result.current.getRemainingTime()).toBeAround(200, 10)
+        })
       })
 
       describe('.getElapsedTime()', () => {
@@ -1316,6 +1347,26 @@ describe('useIdleTimer', () => {
           expect(result.current.getElapsedTime()).toBeAround(200, 20)
           await sleep(200)
           expect(result.current.getElapsedTime()).toBeAround(400, 20)
+        })
+
+        it('Should reset when reset() is called', async () => {
+          const { result } = idleTimer()
+          await sleep(200)
+          expect(result.current.getElapsedTime()).toBeAround(200, 20)
+          await sleep(200)
+          expect(result.current.getElapsedTime()).toBeAround(400, 20)
+          result.current.reset()
+          expect(result.current.getElapsedTime()).toBeAround(0, 10)
+        })
+      })
+
+      describe('.getTotalElapsedTime()', () => {
+        it('Should get the elapsed time', async () => {
+          const { result } = idleTimer()
+          await sleep(200)
+          expect(result.current.getTotalElapsedTime()).toBeAround(200, 20)
+          await sleep(200)
+          expect(result.current.getTotalElapsedTime()).toBeAround(400, 20)
         })
       })
 

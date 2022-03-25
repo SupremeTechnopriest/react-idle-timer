@@ -144,6 +144,7 @@ export default function Demo () {
     isPrompted,
     getRemainingTime,
     getElapsedTime,
+    getTotalElapsedTime,
     getLastActiveTime,
     getLastIdleTime,
     getTotalActiveTime,
@@ -233,6 +234,11 @@ export default function Demo () {
       case 'getElapsedTime': {
         const result = getElapsedTime()
         alert('getElapsedTime', result)
+        return result
+      }
+      case 'getTotalElapsedTime': {
+        const result = getTotalElapsedTime()
+        alert('getTotalElapsedTime', result)
         return result
       }
       case 'getLastActiveTime': {
@@ -363,6 +369,7 @@ export default function Demo () {
           isPrompted={() => handler('isPrompted')}
           getRemainingTime={() => handler('getRemainingTime')}
           getElapsedTime={() => handler('getElapsedTime')}
+          getTotalElapsedTime={() => handler('getTotalElapsedTime')}
           getLastActiveTime={() => handler('getLastActiveTime')}
           getLastIdleTime={() => handler('getLastIdleTime')}
           getTotalActiveTime={() => handler('getTotalActiveTime')}

@@ -242,9 +242,9 @@ export function ControlDrawer (props: IControlDrawerProps) {
                 </TabPanel>
                 <TabPanel>
                   <VStack>
-                    <Button w='full' onClick={() => props.start()}>start</Button>
                     <HStack width='full'>
                       <VStack width='40%'>
+                        <ButtonWithLabel label='start' onClick={() => props.start()} />
                         <ButtonWithLabel label='reset' onClick={() => props.reset()} />
                         <ButtonWithLabel label='pause' onClick={() => props.pause()} />
                         <ButtonWithLabel label='resume' onClick={() => props.resume()} />
@@ -255,6 +255,7 @@ export function ControlDrawer (props: IControlDrawerProps) {
                       <VStack width='60%'>
                         <ButtonWithLabel label='getRemainingTime' onClick={() => props.getRemainingTime()} />
                         <ButtonWithLabel label='getElapsedTime' onClick={() => props.getElapsedTime()} />
+                        <ButtonWithLabel label='getTotalElapsedTime' onClick={() => props.getTotalElapsedTime()} />
                         <ButtonWithLabel label='getLastActiveTime' onClick={() => props.getLastActiveTime()} />
                         <ButtonWithLabel label='getLastIdleTime' onClick={() => props.getLastIdleTime()} />
                         <ButtonWithLabel label='getTotalActiveTime' onClick={() => props.getTotalActiveTime()} />

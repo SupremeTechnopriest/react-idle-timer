@@ -60,11 +60,18 @@ export interface IIdleTimer {
   getRemainingTime(): number
 
   /**
+   * Time elapsed since last reset.
+   *
+   * @returns Number of milliseconds since the hook was last reset.
+   */
+  getElapsedTime(): number
+
+  /**
    * Time elapsed since mounted.
    *
    * @returns Number of milliseconds since the hook was mounted.
    */
-  getElapsedTime(): number
+  getTotalElapsedTime(): number
 
   /**
    * Last time the user was idle.

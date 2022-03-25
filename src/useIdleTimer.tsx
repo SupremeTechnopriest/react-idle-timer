@@ -47,6 +47,7 @@ export function useIdleTimer ({
   // Time References
   const startTime = useRef<number>(now())
   const startDate = useRef<number>(Date.now())
+  const lastReset = useRef<number>(now())
   const lastIdle = useRef<number>(null)
   const lastActive = useRef<number>(null)
   const idleTime = useRef<number>(0)
@@ -73,7 +74,7 @@ export function useIdleTimer ({
   const elementRef = useRef<Node>(element)
   const eventsRef = useRef<EventsType[]>(
     [...new Set([...events, ...immediateEvents]).values()]
-  ) // ?
+  )
 
   // On Idle Emitter
   const emitOnIdle = useRefEffect<IEventHandler>(onIdle)
@@ -344,6 +345,7 @@ export function useIdleTimer ({
     paused.current = false
     remaining.current = 0
     promptTime.current = 0
+    lastReset.current = now()
 
     if (manager.current) {
       manager.current.allIdle = false
@@ -486,6 +488,16 @@ export function useIdleTimer ({
    * @return Milliseconds elapsed
    */
   const getElapsedTime = useCallback<() => number>((): number => {
+    return Math.round(now() - lastReset.current)
+  }, [lastReset])
+
+  /**
+   * Get the total time that has elapsed in milliseconds
+   * since the hook was mounted.
+   *
+   * @return Milliseconds elapsed
+   */
+  const getTotalElapsedTime = useCallback<() => number>((): number => {
     return Math.round(now() - startTime.current)
   }, [startTime])
 
@@ -527,7 +539,7 @@ export function useIdleTimer ({
    * @return Milliseconds active
    */
   const getTotalActiveTime = useCallback<() => number>((): number => {
-    const total = Math.round(getElapsedTime() - getTotalIdleTime())
+    const total = Math.round(getTotalElapsedTime() - getTotalIdleTime())
     return total >= 0 ? total : 0
   }, [startTime, lastIdle, idleTime])
 
@@ -637,6 +649,7 @@ export function useIdleTimer ({
     isLeader,
     getRemainingTime,
     getElapsedTime,
+    getTotalElapsedTime,
     getLastIdleTime,
     getLastActiveTime,
     getTotalIdleTime,

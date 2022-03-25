@@ -248,9 +248,9 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
         </TabPanel>
         <TabPanel>
           <VStack>
-            <ButtonWithEvent event='start' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.start')} />
             <HStack width='full'>
               <VStack width='40%'>
+                <ButtonWithEvent event='start' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.start')} />
                 <ButtonWithEvent event='reset' frames={[frameA]} setDescription={setDescription} description={t('methods.reset')} />
                 <ButtonWithEvent event='pause' frames={[frameA]} setDescription={setDescription} description={t('methods.pause')} />
                 <ButtonWithEvent event='resume' frames={[frameA]} setDescription={setDescription} description={t('methods.resume')} />
@@ -261,9 +261,10 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
               <VStack width='60%'>
                 <ButtonWithEvent event='getRemainingTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getRemainingTime')} />
                 <ButtonWithEvent event='getElapsedTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getElapsedTime')} />
+                <ButtonWithEvent event='getTotalElapsedTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTotalElapsedTime')} />
                 <ButtonWithEvent event='getLastActiveTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getLastActiveTime')} />
-                <ButtonWithEvent event='getLastIdleTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getLastIdleTime')} />
                 <ButtonWithEvent event='getTotalActiveTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTotalActiveTime')} />
+                <ButtonWithEvent event='getLastIdleTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getLastIdleTime')} />
                 <ButtonWithEvent event='getTotalIdleTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTotalIdleTime')} />
               </VStack>
             </HStack>
