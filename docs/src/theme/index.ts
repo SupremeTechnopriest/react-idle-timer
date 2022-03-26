@@ -47,8 +47,14 @@ const components = {
   }
 }
 
+const fonts = {
+  heading: 'Inter, sans-serif',
+  body: 'Inter, sans-serif'
+}
+
 export const theme = extendTheme({
   config,
+  fonts,
   textStyles,
   mdx,
   styles,
