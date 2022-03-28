@@ -178,13 +178,13 @@ export function App () {
     return () => {
       clearInterval(interval)
     }
-  }, [])
+  }, [getRemainingTime, isPrompted])
 
   return (
     <div className='modal' style={{ display: open ? 'block' : 'none' }}>
-      <p>Logging you out in {remaining} seconds<p>
+      <p>Logging you out in {remaining} seconds</p>
       <button onClick={handleStillHere}>Im Still Here</button>
-    <div/>
+    </div>
   )
 }
 ```
