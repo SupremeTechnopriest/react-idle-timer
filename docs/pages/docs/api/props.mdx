@@ -134,11 +134,11 @@ set of properties. Examples of how they are used can be found in the
   defaultValue='false'
 />
 
-### nativeTimers
+### timers
 <Property 
-  description='Use native timers instead of WebWorker timers. You might want to set this if you have strict csp rules and can tolerate background throttling of timers. The WebWorker for timers is provided via a blob url.'
-  type='boolean'
-  defaultValue='false'
+  description='Set custom timers.  By default main thread timers are used to allow for better tree shaking. If you want to use worker thread timers, import them from the package and set them here.'
+  type='ITimers'
+  defaultValue='{ setTimeout, clearTimeout, setInterval, clearInterval }'
 />
 
 ### crossTab

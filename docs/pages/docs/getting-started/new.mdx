@@ -95,14 +95,29 @@ breaking change but something that is good to be aware of while migrating.
 
 When a window is backgrounded, the browser will throttle timers in an attempt to 
 save on CPU cycles. This can cause IdleTimer to produce delayed and inaccurate 
-results. To combat this, all timers in v5 have been moved to a WebWorker to keep 
-them alive when a window is throttled by the browser. The worker is provided via 
-a blob URL and this can cause strict CSP rules to be violated. It is strongly 
+results. To combat this, the timers interface has been exposed as a property and
+an implementation of WebWorker thread timers are exposed in order to keep them 
+alive when a window is throttled by the browser. The worker is provided via a 
+blob URL and this can cause strict CSP rules to be violated. It is strongly 
 suggested that you update your rule to allow the worker to run so the timers are 
-accurate. If this is not an option, you can enable native timers by 
-setting the [nativeTimers](/docs/api/props#nativetimers) property. Also, take a 
-look at [Testing Considerations](/docs/getting-started/testing) for information 
-on how to mock these timers for your test suites.
+accurate. If this is not an option, you can omit the `timers` property and use
+the default main thread timers.  Main thread timers are the default in order to 
+allow projects that wish to omit worker thread timers to tree shake out the
+worker code. If you decide to enable worker timers, take a look at 
+[Testing Considerations](/docs/getting-started/testing) for information on how 
+to mock these timers for your test suites.
+
+```js
+import { useIdleTimer, workerTimers } from 'react-idle-timer'
+
+export const App = () => {
+  const idleTimer = useIdleTimer({ timers: workerTimers })
+
+  return (
+    <h1>Using web worker timers!</h1>
+  )
+}
+```
 
 ### Integrated Prompting
 

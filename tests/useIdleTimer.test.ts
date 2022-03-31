@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react-hooks'
 import { sleep, waitFor } from './test.utils'
 
 import { useIdleTimer } from '../src'
-import * as timers from '../src/utils/timers'
+import { timers, createMocks } from '../src/utils/timers'
 
 describe('useIdleTimer', () => {
   let props
@@ -18,6 +18,7 @@ describe('useIdleTimer', () => {
       promptTimeout: undefined,
       element: undefined,
       events: undefined,
+      timers: undefined,
       immediateEvents: undefined,
       onPrompt: undefined,
       onIdle: undefined,
@@ -32,7 +33,6 @@ describe('useIdleTimer', () => {
       stopOnIdle: undefined,
       capture: undefined,
       passive: undefined,
-      nativeTimers: undefined,
       crossTab: undefined,
       emitOnAllTabs: undefined
     }
@@ -864,16 +864,26 @@ describe('useIdleTimer', () => {
         })
       })
 
-      describe('.nativeTimers', () => {
-        it('Should use native timers', () => {
-          const spy = jest.spyOn(timers, 'createMocks').mockImplementation(jest.fn)
-          props.nativeTimers = true
+      describe('.timers', () => {
+        it('Should use custom timers', () => {
+          const setTimeout = jest.fn()
+          const clearTimeout = jest.fn()
+          const setInterval = jest.fn()
+          const clearInterval = jest.fn()
+          props.timers = {
+            setTimeout,
+            clearTimeout,
+            setInterval,
+            clearInterval
+          }
           idleTimer()
-          expect(timers.timers.setInterval).toEqual(setInterval)
-          expect(timers.timers.clearInterval).toEqual(clearInterval)
-          expect(timers.timers.setTimeout).toEqual(setTimeout)
-          expect(timers.timers.clearTimeout).toEqual(clearTimeout)
-          expect(spy).toHaveBeenCalled()
+          expect(timers.setInterval).toEqual(setInterval)
+          expect(timers.clearInterval).toEqual(clearInterval)
+          expect(timers.setTimeout).toEqual(setTimeout)
+          expect(timers.clearTimeout).toEqual(clearTimeout)
+
+          // Rest timers
+          createMocks()
         })
       })
 

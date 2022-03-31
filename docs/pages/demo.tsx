@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { useIdleTimer, MessageType } from 'react-idle-timer'
+import { useIdleTimer, MessageType, workerTimers } from 'react-idle-timer'
 import { motion, useMotionValue } from 'framer-motion'
 import {
   chakra,
@@ -151,6 +151,7 @@ export default function Demo () {
     getTotalIdleTime
   } = useIdleTimer({
     element: elementRef.current,
+    timers: workerTimers,
     startOnMount,
     startManually,
     stopOnIdle,

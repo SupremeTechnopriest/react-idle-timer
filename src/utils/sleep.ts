@@ -7,6 +7,6 @@ import { timers } from './timers'
  * @returns Promise resolving timeout id.
  * @private
  */
-export function sleep (time: number = 0): Promise<number> {
+export function sleep (time: number = 0): Promise<void> {
   return new Promise(resolve => timers.setTimeout(resolve, time))
 }

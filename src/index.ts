@@ -7,8 +7,9 @@ export {
   IdleTimerConsumer,
   useIdleTimerContext
 } from './IdleTimerContext'
-export { createMocks } from './utils/timers'
+export { createMocks, workerTimers } from './utils/timers'
 export { IIdleTimer } from './types/IIdleTimer'
 export { IIdleTimerProps } from './types/IIdleTimerProps'
+export { ITimers } from './types/ITimers'
 export { EventsType } from './types/EventsType'
 export { MessageType } from './types/MessageType'

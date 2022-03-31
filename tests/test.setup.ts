@@ -1,7 +1,6 @@
 import * as expect from 'expect'
 import { cleanup } from '@testing-library/react'
 import { MessageChannel } from 'worker_threads'
-import { createMocks } from '../src'
 
 expect.extend({
   toBeAround (actual, expected, precision = 2) {
@@ -23,7 +22,6 @@ expect.extend({
 beforeAll(() => {
   // @ts-ignore
   global.MessageChannel = MessageChannel
-  createMocks()
 })
 
 afterAll(cleanup)

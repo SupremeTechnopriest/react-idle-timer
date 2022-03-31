@@ -13,11 +13,8 @@ and add it to the `setupFilesAfterEnv` section of your `jest.config.js` or `pack
 We will assume the setup file is called `test.setup.js` for the following implementation.
 
 ### Mock Timers
-IdleTimer uses the library [worker-timers](https://www.npmjs.com/package/worker-timers)
-to hoist timers into a Web Worker. This prevents background throttling from producing
-unexpected and inaccurate behavior. Since there are no Web Workers in the testing
-context, we will need to mock the timers. IdleTimer exposes a function to do this
-for you.
+If you are using worker thread timers, you can mock them for your testing
+environment. IdleTimer exposes a function to do this for you.
 
 In your `test.setup.js`, add the following:
 
@@ -26,7 +23,7 @@ import { createMocks } from 'react-idle-timer'
 beforeAll(createMocks)
 ```
 
-This will have jest or your test runner of choice use the browser native timers
+This will have jest or your test runner of choice use the main thread timers
 for testing.
 
 ### Mock MessageChannel

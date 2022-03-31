@@ -7,12 +7,10 @@ import {
   IdleTimerProvider,
   IdleTimerConsumer,
   useIdleTimer,
-  createMocks
+  workerTimers
 } from '../dist/index.cjs.js'
 import { timers } from '../src/utils/timers'
 import { sleep, waitFor } from './test.utils'
-
-beforeAll(createMocks)
 
 describe('Bundle', () => {
   it('Should mock timers', async () => {
@@ -80,5 +78,12 @@ describe('Bundle', () => {
     render(<Root />)
     expect(screen.getByTestId('remaining')).toHaveTextContent('1000')
     expect(screen.getByTestId('isIdle')).toHaveTextContent('true')
+  })
+
+  it('Should return workerTimers interface', () => {
+    expect(workerTimers.setTimeout).toBeDefined()
+    expect(workerTimers.clearTimeout).toBeDefined()
+    expect(workerTimers.setInterval).toBeDefined()
+    expect(workerTimers.setInterval).toBeDefined()
   })
 })

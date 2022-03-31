@@ -1,5 +1,6 @@
 import { EventsType } from './EventsType'
 import { IIdleTimer } from './IIdleTimer'
+import { ITimers } from './ITimers'
 
 export interface IIdleTimerProps {
   /**
@@ -130,12 +131,13 @@ export interface IIdleTimerProps {
   stopOnIdle?: boolean
 
   /**
-   * Use native timers instead of web worker timers. You might want to set this
-   * if you have have strict csp rules. The worker is provided via a blob url.
+   * Timer interface to use. By default the main thread timers are used to keep
+   * the module tree shakeable. If you want to use worker timers, import them
+   * and set them here.
    *
-   * @default false
+   * @default Main Thread Timers
    */
-  nativeTimers?: boolean
+  timers?: ITimers
 
   /**
    * Enable cross tab event replication.

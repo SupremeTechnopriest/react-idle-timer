@@ -7,7 +7,7 @@ import { IS_BROWSER } from './utils/isBrowser'
 import { useRefEffect } from './utils/useRefEffect'
 import { debounceFn } from './utils/debounce'
 import { throttleFn } from './utils/throttle'
-import { createMocks, timers } from './utils/timers'
+import { setTimers, timers as timer } from './utils/timers'
 import { now } from './utils/now'
 
 import { EventType } from './types/EventType'
@@ -28,6 +28,7 @@ export function useIdleTimer ({
   promptTimeout = 0,
   element = DEFAULT_ELEMENT,
   events = DEFAULT_EVENTS,
+  timers = undefined,
   immediateEvents = [],
   onPrompt = () => {},
   onIdle = () => {},
@@ -40,7 +41,6 @@ export function useIdleTimer ({
   startOnMount = true,
   startManually = false,
   stopOnIdle = false,
-  nativeTimers = false,
   crossTab = false,
   emitOnAllTabs = false
 }: IIdleTimerProps = {}): IIdleTimer {
@@ -115,7 +115,7 @@ export function useIdleTimer ({
    */
   const destroyTimeout = (): void => {
     if (tId.current !== null) {
-      timers.clearTimeout(tId.current)
+      timer.clearTimeout(tId.current)
       tId.current = null
     }
   }
@@ -127,7 +127,7 @@ export function useIdleTimer ({
    */
   const createTimeout = (time?: number, setLastActive: boolean = true): void => {
     destroyTimeout()
-    tId.current = timers.setTimeout(toggleIdleState, time || timeout)
+    tId.current = timer.setTimeout(toggleIdleState, time || timeout)
     if (setLastActive) lastActive.current = now()
   }
 
@@ -551,7 +551,7 @@ export function useIdleTimer ({
     }
 
     // Create mock timers if nativeTimers is set
-    if (nativeTimers) createMocks()
+    if (timers) setTimers(timers)
 
     // Clear and unbind on unmount
     return () => {
