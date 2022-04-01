@@ -38,8 +38,8 @@
   },
   "bugs": "https://github.com/supremetechnopriest/react-idle-timer/issues/new/choose",
   "peerDependencies": {
-    "react": ">=17",
-    "react-dom": ">=17"
+    "react": ">=16",
+    "react-dom": ">=16"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.1",
