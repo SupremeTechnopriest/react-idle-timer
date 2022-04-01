@@ -115,7 +115,7 @@ export function useIdleTimer ({
   /**
    * Notify other tabs to reset their timer.
    */
-  const onSyncTimers = useCallback<() => void>((): void => {
+  const doSyncTimers = useCallback<() => void>((): void => {
     if (manager.current) {
       manager.current.send(MessageAction.RESET)
     }
@@ -128,16 +128,16 @@ export function useIdleTimer ({
     if (syncTimers) {
         // Create throttled action if applicable
       if (syncTimers > 0) {
-        emitSyncTimers.current = throttleFn(onSyncTimers, syncTimers)
+        emitSyncTimers.current = throttleFn(doSyncTimers, syncTimers)
 
         // No throttle
       } else {
-        emitSyncTimers.current = onSyncTimers
+        emitSyncTimers.current = doSyncTimers
       }
     }else{
       emitSyncTimers.current = null
     }
-  }, [onSyncTimers, syncTimers])
+  }, [doSyncTimers, syncTimers])
 
   /**
    * Destroy the current running timeout.
