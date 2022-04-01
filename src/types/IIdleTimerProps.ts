@@ -101,6 +101,14 @@ export interface IIdleTimerProps {
   throttle?: number
 
   /**
+   * If crossTab is true, throttle how often timers are synced between tabs.
+   * Interval in milliseconds.
+   *
+   * @default 0
+   */
+  syncTimers?: number
+
+  /**
    * Throttle the activity events. Useful if you are listening to mouse events.
    * Helps to cut down on cpu usage.
    *

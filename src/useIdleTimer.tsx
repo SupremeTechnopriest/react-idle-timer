@@ -37,6 +37,7 @@ export function useIdleTimer ({
   onMessage = () => {},
   debounce = 0,
   throttle = 0,
+  syncTimers = 0,
   eventsThrottle = 200,
   startOnMount = true,
   startManually = false,
@@ -88,7 +89,7 @@ export function useIdleTimer ({
   // On Message Emitter
   const emitOnMessage = useRefEffect<(data: string | number | object) => void>(onMessage)
 
-  // On Idle Emitter
+  // On Action Emitter
   const emitOnAction = useRef<IEventHandler>()
   useEffect(() => {
     // Cancel any existing debounce timeouts
@@ -109,6 +110,30 @@ export function useIdleTimer ({
       emitOnAction.current = onAction
     }
   }, [onAction, throttle, debounce])
+
+
+  /**
+   * Notify other tabs to reset their timer.
+   */
+  const onSyncTimers = useCallback<() => void>((): void => {
+    if (manager.current) {
+      manager.current.send(MessageAction.RESET)
+    }
+    return
+  }, [])
+
+  // syncTimers Emitter
+  const emitSyncTimers = useRef<IEventHandler>()
+  useEffect(() => {
+      // Create throttled action if applicable
+    if (syncTimers > 0) {
+      emitSyncTimers.current = throttleFn(onSyncTimers, syncTimers)
+
+      // No throttle
+    } else {
+      emitSyncTimers.current = onSyncTimers
+    }
+  }, [onSyncTimers, syncTimers])
 
   /**
    * Destroy the current running timeout.
@@ -190,11 +215,15 @@ export function useIdleTimer ({
    * @private
    */
   const eventHandler = (event: EventType): void => {
+
     // Fire onAction event
     emitOnAction.current(event)
 
     // If the prompt is open, only emit onAction
     if (prompted.current) return
+
+    // Fire syncTimers event
+    emitSyncTimers.current()
 
     // Clear any existing timeout
     destroyTimeout()
