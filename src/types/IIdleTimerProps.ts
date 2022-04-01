@@ -106,7 +106,7 @@ export interface IIdleTimerProps {
    *
    * @default 0
    */
-  syncTimers?: number
+  syncTimers?: null | number
 
   /**
    * Throttle the activity events. Useful if you are listening to mouse events.

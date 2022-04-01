@@ -37,7 +37,7 @@ export function useIdleTimer ({
   onMessage = () => {},
   debounce = 0,
   throttle = 0,
-  syncTimers = 0,
+  syncTimers = null,
   eventsThrottle = 200,
   startOnMount = true,
   startManually = false,
@@ -125,13 +125,17 @@ export function useIdleTimer ({
   // syncTimers Emitter
   const emitSyncTimers = useRef<IEventHandler>()
   useEffect(() => {
-      // Create throttled action if applicable
-    if (syncTimers > 0) {
-      emitSyncTimers.current = throttleFn(onSyncTimers, syncTimers)
+    if (syncTimers) {
+        // Create throttled action if applicable
+      if (syncTimers > 0) {
+        emitSyncTimers.current = throttleFn(onSyncTimers, syncTimers)
 
-      // No throttle
-    } else {
-      emitSyncTimers.current = onSyncTimers
+        // No throttle
+      } else {
+        emitSyncTimers.current = onSyncTimers
+      }
+    }else{
+      emitSyncTimers.current = null
     }
   }, [onSyncTimers, syncTimers])
 
@@ -222,8 +226,10 @@ export function useIdleTimer ({
     // If the prompt is open, only emit onAction
     if (prompted.current) return
 
-    // Fire syncTimers event
-    emitSyncTimers.current()
+    if (emitSyncTimers.current) {
+      // Fire syncTimers event
+      emitSyncTimers.current()
+    }
 
     // Clear any existing timeout
     destroyTimeout()
