@@ -1,11 +1,12 @@
 import * as worker from 'worker-timers'
+import { IS_BROWSER } from './isBrowser'
 import { ITimers } from '../types/ITimers'
 
 export const timers: ITimers = {
-  setTimeout,
-  clearTimeout,
-  setInterval,
-  clearInterval
+  setTimeout: IS_BROWSER ? setTimeout.bind(window) : setTimeout,
+  clearTimeout: IS_BROWSER ? clearTimeout.bind(window) : clearTimeout,
+  setInterval: IS_BROWSER ? setInterval.bind(window) : setInterval,
+  clearInterval: IS_BROWSER ? clearInterval.bind(window) : clearInterval
 }
 
 export const workerTimers: ITimers = {

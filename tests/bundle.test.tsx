@@ -9,12 +9,12 @@ import {
   useIdleTimer,
   workerTimers
 } from '../dist/index.cjs.js'
-import { timers } from '../src/utils/timers'
+import { timers, createMocks } from '../src/utils/timers'
 import { sleep, waitFor } from './test.utils'
 
 describe('Bundle', () => {
-  it('Should mock timers', async () => {
-    // await createMocks()
+  it('Should mock timers', () => {
+    createMocks()
     expect(timers.setTimeout).toEqual(setTimeout)
     expect(timers.clearTimeout).toEqual(clearTimeout)
     expect(timers.setInterval).toEqual(setInterval)
