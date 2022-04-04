@@ -152,7 +152,7 @@ describe('TabManager', () => {
 
   it('Should emit the start  on sync', async () => {
     const options = {
-      start: jest.fn()
+      reset: jest.fn()
     }
 
     const manager = createTabManager(options)
@@ -161,8 +161,8 @@ describe('TabManager', () => {
     const manager2 = createTabManager()
     manager2.sync()
 
-    await waitFor(() => options.start.mock.calls.length === 1)
-    expect(options.start).toHaveBeenCalledTimes(1)
+    await waitFor(() => options.reset.mock.calls.length === 1)
+    expect(options.reset).toHaveBeenCalledTimes(1)
   })
 
   it('Should emit the reset event', async () => {

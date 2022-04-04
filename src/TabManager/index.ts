@@ -130,7 +130,7 @@ export class TabManager {
   sync () {
     try {
       this.channel.postMessage({
-        action: MessageAction.START,
+        action: MessageAction.RESET,
         token: this.elector.token
       })
     } catch {}

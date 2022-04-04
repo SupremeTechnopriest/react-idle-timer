@@ -67,6 +67,7 @@ export function useIdleTimer ({
   const manager = useRef(null)
 
   // Prop references
+  const timeoutRef = useRefEffect<number>(timeout)
   const promptTimeoutRef = useRefEffect<number>(promptTimeout)
   const stopOnIdleRef = useRefEffect<boolean>(stopOnIdle)
 
@@ -138,7 +139,7 @@ export function useIdleTimer ({
    */
   const createTimeout = (time?: number, setLastActive: boolean = true): void => {
     destroyTimeout()
-    tId.current = timer.setTimeout(toggleIdleState, time || timeout)
+    tId.current = timer.setTimeout(toggleIdleState, time || timeoutRef.current)
     if (setLastActive) lastActive.current = now()
   }
 
@@ -204,11 +205,11 @@ export function useIdleTimer ({
     // Fire onAction event
     emitOnAction.current(event)
 
-    // Send sync event
-    if (crossTab && syncTimers) sendSyncEvent.current()
-
     // If the prompt is open, only emit onAction
     if (prompted.current) return
+
+    // Send sync event
+    if (crossTab && syncTimers) sendSyncEvent.current()
 
     // Clear any existing timeout
     destroyTimeout()
@@ -219,7 +220,7 @@ export function useIdleTimer ({
     // If the user is idle or last active time is more than timeout, flip the idle state
     if (
       (idle.current && !stopOnIdle) ||
-      (!idle.current && elapsedTimeSinceLastActive > timeout)
+      (!idle.current && elapsedTimeSinceLastActive > timeoutRef.current)
     ) {
       toggleIdleState(event)
     }
@@ -332,7 +333,7 @@ export function useIdleTimer ({
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeout, manager, emitOnAllTabs])
+  }, [tId, idle, timeoutRef, manager, emitOnAllTabs])
 
   /**
   * Restore initial state and restart timer, calling onActive
@@ -370,7 +371,7 @@ export function useIdleTimer ({
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeout, manager, emitOnAllTabs])
+  }, [tId, idle, timeoutRef, manager, emitOnAllTabs])
 
   /**
    * Pause a running timer.
@@ -430,7 +431,7 @@ export function useIdleTimer ({
       }
     }
     return true
-  }, [tId, remaining, emitOnAllTabs, manager])
+  }, [tId, timeoutRef, remaining, emitOnAllTabs, manager])
 
   /**
    * Sends a message to all tabs.
@@ -483,7 +484,7 @@ export function useIdleTimer ({
       ? remaining.current
       : prompted.current
         ? promptTimeoutRef.current
-        : timeout
+        : timeoutRef.current
 
     // Time since last active
     const timeSinceLastActive = lastActive.current
@@ -494,7 +495,7 @@ export function useIdleTimer ({
 
     const timeLeft = Math.ceil(timeoutTotal - timeSinceLastActive)
     return timeLeft < 0 ? 0 : Math.abs(timeLeft)
-  }, [timeout, promptTimeout, prompted, remaining, lastActive])
+  }, [timeoutRef, promptTimeout, prompted, remaining, lastActive])
 
   /**
    * Get how much time has elapsed in milliseconds.
@@ -593,7 +594,7 @@ export function useIdleTimer ({
         bindEvents()
       }
     }
-  }, [element, JSON.stringify(events), JSON.stringify(immediateEvents)])
+  }, [element, JSON.stringify(events), JSON.stringify(immediateEvents), firstLoad, startManually, startOnMount])
 
   // Dynamic Start
   useEffect(() => {
@@ -612,13 +613,14 @@ export function useIdleTimer ({
     } else {
       bindEvents()
     }
-  }, [startManually, startOnMount])
+  }, [startManually, startOnMount, firstLoad])
 
   // Dynamic timeout
   useEffect(() => {
     if (firstLoad.current) {
       firstLoad.current = false
     } else {
+      timeoutRef.current = timeout
       if (startManually) return
       if (idle.current) {
         reset()
@@ -626,7 +628,7 @@ export function useIdleTimer ({
         start()
       }
     }
-  }, [timeout])
+  }, [timeout, startManually, firstLoad, idle])
 
   // Cross Tab Manager
   useEffect(() => {
