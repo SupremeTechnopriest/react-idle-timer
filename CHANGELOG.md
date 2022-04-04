@@ -3,7 +3,7 @@
 ## 5.0.0
 
 > Version 5 is a complete, from scratch, typescript rewrite.  A lot of effort went
-> into this release.  If you find this package useful and have the means, please 
+> into this release.  If you find this package useful and have the means, please
 > consider a small [donation]('https://github.com/sponsors/supremetechnopriest')!
 
 #### ⚡️ Features
@@ -12,6 +12,7 @@
 - Add cross tab custom message broadcasting.
 - New higher order component `withIdleTimer`.
 - New provider `IdleTimerProvider`.
+- Add `syncTimers` property.
 
 #### ✨ Enhancements
 - Timeouts and Intervals are now hoisted into a web worker to bypass browser background throttles.
@@ -73,7 +74,7 @@
 
 #### ⚡️ Features
 - Add cross tab support. See examples and README for usage and documentation.
-- Add an `isLeader()` method that returns a boolean indicating wether or not the current tab is the lead orchestrator for cross tab reconciliation. 
+- Add an `isLeader()` method that returns a boolean indicating wether or not the current tab is the lead orchestrator for cross tab reconciliation.
 - Add a `startManually` configuration option to enable starting of the timer and activity detection manually. An alias to `reset()` called `start()` is also exposed to keep the code more semantic. If `startManually` is set to `true`, the `IdleTimer` component and `useIdleTimer` hook wont start until `reset()` or `start()` are called.
 
 #### 🐞 Bug Fixes
@@ -348,9 +349,9 @@ Events are bound when:
 
 ## 4.0.0
 
-Version 4.0 contains a rewrite of the build system and a refactor of the source 
-code for IdleTimer. After accepting many pull requests, the projects code style 
-was destroyed, so some forced styling was added and PRs that don't respect this 
+Version 4.0 contains a rewrite of the build system and a refactor of the source
+code for IdleTimer. After accepting many pull requests, the projects code style
+was destroyed, so some forced styling was added and PRs that don't respect this
 style will not be accepted. Contribution guide now on the README.  
 
 #### 🔥 Code Removal
@@ -368,8 +369,8 @@ style will not be accepted. Contribution guide now on the README.
 
 ## 3.0.0
 
-Dropped support for date formatting in version 3. IdleTimer returns raw 
-date objects and you can use which ever library you like to format it. If you 
+Dropped support for date formatting in version 3. IdleTimer returns raw
+date objects and you can use which ever library you like to format it. If you
 would like to continue using the built in formatter, stick with version 2.
 
 #### 🔥 Breaking Changes
