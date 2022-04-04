@@ -89,7 +89,7 @@ export function useIdleTimer ({
   // On Message Emitter
   const emitOnMessage = useRefEffect<(data: string | number | object) => void>(onMessage)
 
-  // On Idle Emitter
+  // On Action Emitter
   const emitOnAction = useRef<IEventHandler>()
   useEffect(() => {
     // Cancel any existing debounce timeouts
