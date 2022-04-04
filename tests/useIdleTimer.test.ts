@@ -908,7 +908,22 @@ describe('useIdleTimer', () => {
           expect(props.onActive).toHaveBeenCalledTimes(1)
         })
 
-        it('Should emit methods on all tabs', async () => {
+        it('Should update crossTab dynamically', async () => {
+          props.timeout = 200
+          props.crossTab = true
+          const { result, rerender } = idleTimer()
+          expect(result.current.isLeader()).toBe(false)
+          await waitFor(() => result.current.isIdle())
+
+          props.crossTab = false
+          rerender()
+
+          expect(result.current.isLeader()).toBe(true)
+        })
+      })
+
+      describe('.emitOnAllTabs', () => {
+        it('Should emit events on all tabs', async () => {
           props.timeout = 200
           props.crossTab = true
           props.emitOnAllTabs = true
@@ -930,18 +945,22 @@ describe('useIdleTimer', () => {
           await sleep(101)
           expect(result.current.isIdle()).toBe(true)
         })
+      })
 
-        it('Should update crossTab dynamically', async () => {
-          props.timeout = 200
+      describe('.syncTimers', () => {
+        it('Should keep timers relatively in sync', async () => {
+          props.timeout = 500
           props.crossTab = true
-          const { result, rerender } = idleTimer()
-          expect(result.current.isLeader()).toBe(false)
-          await waitFor(() => result.current.isIdle())
-
-          props.crossTab = false
-          rerender()
-
-          expect(result.current.isLeader()).toBe(true)
+          props.syncTimers = 200
+          props.eventsThrottle = 0
+          const { result } = idleTimer()
+          const { result: result2 } = idleTimer()
+          result.current.start()
+          await sleep(100)
+          fireEvent.mouseDown(document)
+          await sleep(200)
+          expect(result.current.getRemainingTime()).toBeAround(300, 20)
+          expect(result2.current.getRemainingTime()).toBeAround(300, 20)
         })
       })
     })

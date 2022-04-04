@@ -242,7 +242,10 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
             <SwitchWithEvent event='stopOnIdle' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.stopOnIdle')} />
             <SwitchWithEvent event='crossTab' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.crossTab')} onChange={setCrossTab} />
             {crossTab && (
-              <SwitchWithEvent event='emitOnAllTabs' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.emitOnAllTabs')} />
+              <>
+                <SwitchWithEvent event='emitOnAllTabs' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.emitOnAllTabs')} />
+                <NumberInputWithEvent event='syncTimers' defaultValue={0} frames={[frameA, frameB]} setDescription={setDescription} description={t('props.syncTimers')} />
+              </>
             )}
           </VStack>
         </TabPanel>

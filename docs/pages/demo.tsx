@@ -75,7 +75,8 @@ export default function Demo () {
   const [eventsThrottle, setEventsThrottle] = useState<number>(0)
   const [crossTab, setCrossTab] = useState<boolean>(false)
   const [emitOnAllTabs, setEmitOnAllTabs] = useState<boolean>(false)
-  const emitOnSelf = useRef<boolean>(false)
+  const [syncTimers, setSyncTimers] = useState<number>(0)
+  const [emitOnSelf, setEmitOnSelf] = useState<boolean>(false)
 
   const [lastEvent, setLastEvent] = useState<string>('INITIAL')
   const [lastKey, setLastKey] = useState<string>('')
@@ -166,7 +167,8 @@ export default function Demo () {
     onAction,
     onMessage,
     crossTab,
-    emitOnAllTabs
+    emitOnAllTabs,
+    syncTimers
   })
 
   const closePrompt = () => {
@@ -308,12 +310,16 @@ export default function Demo () {
         setEmitOnAllTabs(data)
         break
       }
+      case 'syncTimers': {
+        setSyncTimers(data)
+        break
+      }
       case 'message': {
-        message(data, emitOnSelf.current)
+        message(data, emitOnSelf)
         break
       }
       case 'emitOnSelf': {
-        emitOnSelf.current = data
+        setEmitOnSelf(data)
         break
       }
       default:
@@ -359,6 +365,9 @@ export default function Demo () {
           setCrossTab={data => handler('crossTab', data)}
           emitOnAllTabs={emitOnAllTabs}
           setEmitOnAllTabs={data => handler('emitOnAllTabs', data)}
+          syncTimers={syncTimers}
+          setSyncTimers={setSyncTimers}
+          emitOnSelf={emitOnSelf}
           setEmitOnSelf={data => handler('emitOnSelf', data)}
           start={() => handler('start')}
           reset={() => handler('reset')}

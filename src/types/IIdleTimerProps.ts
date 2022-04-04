@@ -153,4 +153,12 @@ export interface IIdleTimerProps {
    * @default false
    */
   emitOnAllTabs?: boolean
+
+  /**
+   * Sync the timers across all tabs. The value is the interval in which timers
+   * will be synced. Setting it to 0 is equivalent to turning the feature off.
+   *
+   * @default 0
+   */
+  syncTimers?: number
 }

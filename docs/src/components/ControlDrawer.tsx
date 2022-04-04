@@ -186,7 +186,9 @@ interface IControlDrawerProps extends IdleTimerType {
   setStopOnIdle: (value: boolean) => void
   setCrossTab: (value: boolean) => void
   setEmitOnAllTabs: (value: boolean) => void
+  emitOnSelf: boolean
   setEmitOnSelf: (value: boolean) => void
+  setSyncTimers: (value: number) => void
 }
 
 export function ControlDrawer (props: IControlDrawerProps) {
@@ -233,11 +235,16 @@ export function ControlDrawer (props: IControlDrawerProps) {
                     <NumberInputWithLabel label='throttle' defaultValue={props.throttle} onChange={props.setThrottle} />
                     <NumberInputWithLabel label='eventsThrottle' defaultValue={props.eventsThrottle} onChange={props.setEventsThrottle} />
                     <Spacer />
-                    <SwitchWithLabel label='startOnMount' onChange={data => props.setStartOnMount(data)} />
-                    <SwitchWithLabel label='startManually' defaultChecked onChange={data => props.setStartManually(data)} />
-                    <SwitchWithLabel label='stopOnIdle' onChange={data => props.setStopOnIdle(data)} />
-                    <SwitchWithLabel label='crossTab' onChange={data => props.setCrossTab(data)} />
-                    <SwitchWithLabel label='emitOnAllTabs' onChange={data => props.setEmitOnAllTabs(data)} />
+                    <SwitchWithLabel label='startOnMount' onChange={props.setStartOnMount} />
+                    <SwitchWithLabel label='startManually' defaultChecked onChange={props.setStartManually} />
+                    <SwitchWithLabel label='stopOnIdle' onChange={props.setStopOnIdle} />
+                    <SwitchWithLabel label='crossTab' onChange={props.setCrossTab} />
+                    {props.crossTab && (
+                      <>
+                        <SwitchWithLabel label='emitOnAllTabs' onChange={props.setEmitOnAllTabs} />
+                        <NumberInputWithLabel label='syncTimers' defaultValue={props.syncTimers} onChange={props.setSyncTimers} />
+                      </>
+                    )}
                   </VStack>
                 </TabPanel>
                 <TabPanel>
@@ -262,8 +269,8 @@ export function ControlDrawer (props: IControlDrawerProps) {
                         <ButtonWithLabel label='getTotalIdleTime' onClick={() => props.getTotalIdleTime()} />
                       </VStack>
                     </HStack>
-                    <MessageInput label='message' onClick={data => props.message(data)} />
-                    <SwitchWithLabel label='emitOnSelf' onChange={props.setEmitOnSelf}/>
+                    <MessageInput label='message' onClick={props.message} />
+                    <SwitchWithLabel label='emitOnSelf' defaultChecked={props.emitOnSelf} onChange={props.setEmitOnSelf}/>
                   </VStack>
                 </TabPanel>
               </TabPanels>

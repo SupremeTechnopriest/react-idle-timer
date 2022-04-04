@@ -42,7 +42,8 @@ export function useIdleTimer ({
   startManually = false,
   stopOnIdle = false,
   crossTab = false,
-  emitOnAllTabs = false
+  emitOnAllTabs = false,
+  syncTimers = 0
 }: IIdleTimerProps = {}): IIdleTimer {
   // Time References
   const startTime = useRef<number>(now())
@@ -109,6 +110,16 @@ export function useIdleTimer ({
       emitOnAction.current = onAction
     }
   }, [onAction, throttle, debounce])
+
+  // Sync timers event
+  const sendSyncEvent = useRef<() => void>()
+  useEffect(() => {
+    if (crossTab && syncTimers) {
+      sendSyncEvent.current = throttleFn(() => {
+        manager.current.sync()
+      }, syncTimers)
+    }
+  }, [crossTab, syncTimers])
 
   /**
    * Destroy the current running timeout.
@@ -193,6 +204,9 @@ export function useIdleTimer ({
     // Fire onAction event
     emitOnAction.current(event)
 
+    // Send sync event
+    if (crossTab && syncTimers) sendSyncEvent.current()
+
     // If the prompt is open, only emit onAction
     if (prompted.current) return
 
@@ -248,7 +262,7 @@ export function useIdleTimer ({
       handleEvent.current = eventHandler
     }
     if (eventsWereBound) bindEvents()
-  }, [eventsThrottle])
+  }, [eventsThrottle, crossTab, syncTimers])
 
   /**
   * Binds the specified events.

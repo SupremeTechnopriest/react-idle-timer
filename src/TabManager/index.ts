@@ -127,6 +127,15 @@ export class TabManager {
     }
   }
 
+  sync () {
+    try {
+      this.channel.postMessage({
+        action: MessageAction.START,
+        token: this.elector.token
+      })
+    } catch {}
+  }
+
   message (data: any) {
     try {
       this.channel.postMessage({
