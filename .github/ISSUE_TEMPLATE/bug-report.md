@@ -1,7 +1,7 @@
 ---
 name: 🐞 Bug Report
 labels: triage, bug
-about: Report a bug found in IdleTimer and its Documentation.
+about: Report a bug found in IdleTimer or its Documentation.
 ---
 
 ## Bug information
