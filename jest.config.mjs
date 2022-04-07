@@ -11,6 +11,7 @@ export default {
   collectCoverageFrom: [
     'src/TabManager/*.ts',
     'src/utils/*.ts',
-    'src/*.{ts|tsx}'
+    'src/*.ts',
+    'src/*.tsx'
   ]
 }
