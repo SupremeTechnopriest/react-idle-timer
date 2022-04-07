@@ -40,8 +40,10 @@ export class LeaderElector {
   public token: string = createToken()
 
   public isLeader: boolean = false
-  public isDead: boolean = false
-  public isApplying: boolean = false
+
+  private isDead: boolean = false
+  private isApplying: boolean = false
+  private reApply: boolean = false
 
   private intervals: number[] = []
   private listeners: ((message: MessageEvent<IInternalMessage>) => void)[] = []
@@ -60,7 +62,10 @@ export class LeaderElector {
   private async apply (): Promise<boolean> {
     if (this.isLeader) return false
     if (this.isDead) return false
-    if (this.isApplying) return false
+    if (this.isApplying) {
+      this.reApply = true
+      return false
+    }
     this.isApplying = true
 
     let abort = false
@@ -89,13 +94,16 @@ export class LeaderElector {
       this.sendAction(InternalAction.APPLY)
       await sleep(this.options.responseTime)
 
-      if (abort) throw new Error()
-      this.sendAction(InternalAction.APPLY)
-
-      this.assumeLead()
-
       this.channel.removeEventListener('message', handleMessage)
       this.isApplying = false
+
+      if (abort) {
+        if (this.reApply) return this.apply()
+        return false
+      } else {
+        this.assumeLead()
+      }
+
       return true
     } catch {
       return false

@@ -41,7 +41,6 @@ export class TabManager {
   private elector: LeaderElector
   private options: ITabManagerOptions
 
-  public isLeader: boolean = false
   public allIdle: boolean = false
 
   private registry: Map<string, boolean> = new Map()
@@ -53,9 +52,7 @@ export class TabManager {
     this.channel = new BroadcastChannel(channelName)
     this.elector = new LeaderElector(this.channel, { fallbackInterval, responseTime })
 
-    this.elector.waitForLeadership().then(() => {
-      this.isLeader = true
-    })
+    this.elector.waitForLeadership()
 
     this.channel.addEventListener('message', (message: MessageEvent<IMessage>) => {
       const { action, token, data } = message.data
@@ -97,6 +94,10 @@ export class TabManager {
     })
 
     this.send(MessageAction.REGISTER)
+  }
+
+  get isLeader () {
+    return this.elector.isLeader
   }
 
   idle (token: string = this.elector.token) {
@@ -153,8 +154,8 @@ export class TabManager {
   }
 
   close () {
-    this.send(MessageAction.DEREGISTER)
     this.elector.close()
+    this.send(MessageAction.DEREGISTER)
     this.channel.close()
   }
 }

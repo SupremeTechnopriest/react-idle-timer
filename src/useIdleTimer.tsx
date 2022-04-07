@@ -568,12 +568,25 @@ export function useIdleTimer ({
     // Create mock timers if nativeTimers is set
     if (timers) setTimers(timers)
 
-    // Clear and unbind on unmount
-    return () => {
+    // Add beforeunload listener
+    const beforeunload = () => {
+      if (manager.current) manager.current.close()
+      if (emitOnAction.current.cancel) emitOnAction.current.cancel()
       destroyTimeout()
       unbindEvents(true)
-      if (emitOnAction.current.cancel) emitOnAction.current.cancel()
+    }
+
+    if (IS_BROWSER) {
+      window.addEventListener('beforeunload', beforeunload)
+    }
+
+    // Clear and unbind on unmount
+    return () => {
+      if (IS_BROWSER) window.removeEventListener('beforeunload', beforeunload)
       if (manager.current) manager.current.close()
+      if (emitOnAction.current.cancel) emitOnAction.current.cancel()
+      destroyTimeout()
+      unbindEvents(true)
     }
   }, [])
 

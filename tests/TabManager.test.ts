@@ -150,7 +150,7 @@ describe('TabManager', () => {
     expect(options.start).toHaveBeenCalledTimes(1)
   })
 
-  it('Should emit the start  on sync', async () => {
+  it('Should emit the start on sync', async () => {
     const options = {
       reset: jest.fn()
     }

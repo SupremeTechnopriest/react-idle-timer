@@ -39,6 +39,22 @@ describe('useIdleTimer', () => {
   })
 
   describe('useIdleTimer', () => {
+    describe('lifecycle', () => {
+      it('Should unmount before unload', async () => {
+        props.crossTab = true
+        props.debounce = 200
+        props.onAction = jest.fn()
+        idleTimer()
+        fireEvent.mouseDown(document)
+        await sleep(200)
+        expect(props.onAction).toHaveBeenCalledTimes(1)
+        fireEvent(window, new Event('beforeunload'))
+        fireEvent.mouseDown(document)
+        await sleep(200)
+        expect(props.onAction).toHaveBeenCalledTimes(1)
+      })
+    })
+
     describe('.props', () => {
       describe('.element', () => {
         it('Should set custom element', async () => {
