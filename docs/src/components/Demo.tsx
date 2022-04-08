@@ -313,9 +313,9 @@ export function Demo () {
             setCrossTab={setCrossTab}
             setDescription={setDescription}
           />
-          <Window ref={windowA} url='/demo?hideControls=true' />
+          <Window ref={windowA} url='/demo?hideControls=true&startManually' />
           {crossTab && (
-            <Window ref={windowB} url='/demo?hideControls=true' />
+            <Window ref={windowB} url='/demo?hideControls=true&startManually' />
           )}
         </Grid>
         <Flex

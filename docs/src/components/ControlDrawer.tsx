@@ -235,13 +235,13 @@ export function ControlDrawer (props: IControlDrawerProps) {
                     <NumberInputWithLabel label='throttle' defaultValue={props.throttle} onChange={props.setThrottle} />
                     <NumberInputWithLabel label='eventsThrottle' defaultValue={props.eventsThrottle} onChange={props.setEventsThrottle} />
                     <Spacer />
-                    <SwitchWithLabel label='startOnMount' onChange={props.setStartOnMount} />
-                    <SwitchWithLabel label='startManually' defaultChecked onChange={props.setStartManually} />
-                    <SwitchWithLabel label='stopOnIdle' onChange={props.setStopOnIdle} />
-                    <SwitchWithLabel label='crossTab' onChange={props.setCrossTab} />
+                    <SwitchWithLabel label='startOnMount' defaultChecked={props.startOnMount} onChange={props.setStartOnMount} />
+                    <SwitchWithLabel label='startManually' defaultChecked={props.startManually} onChange={props.setStartManually} />
+                    <SwitchWithLabel label='stopOnIdle' defaultChecked={props.stopOnIdle} onChange={props.setStopOnIdle} />
+                    <SwitchWithLabel label='crossTab' defaultChecked={props.crossTab} onChange={props.setCrossTab} />
                     {props.crossTab && (
                       <>
-                        <SwitchWithLabel label='emitOnAllTabs' onChange={props.setEmitOnAllTabs} />
+                        <SwitchWithLabel label='emitOnAllTabs' defaultChecked={props.emitOnAllTabs} onChange={props.setEmitOnAllTabs} />
                         <NumberInputWithLabel label='syncTimers' defaultValue={props.syncTimers} onChange={props.setSyncTimers} />
                       </>
                     )}
