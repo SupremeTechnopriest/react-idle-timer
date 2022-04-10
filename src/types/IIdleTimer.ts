@@ -46,13 +46,6 @@ export interface IIdleTimer {
   isPrompted(): boolean
 
   /**
-   * Returns wether or not this is the leader tab.
-   *
-   * @returns Leader state.
-   */
-  isLeader(): boolean
-
-  /**
    * Time remaining before idle or prompt.
    *
    * @returns Number of milliseconds until idle or prompt.
