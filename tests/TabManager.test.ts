@@ -46,6 +46,23 @@ describe('TabManager', () => {
     expect(() => manager.close()).not.toThrow()
   })
 
+  it('Should call onPrompt when all tabs are idle', async () => {
+    const options = {
+      onPrompt: jest.fn(),
+      onIdle: jest.fn(),
+      onActive: jest.fn()
+    }
+    const manager = createTabManager(options)
+    manager.allIdle = false
+
+    const manager2 = createTabManager()
+    manager2.prompt()
+    manager.prompt()
+
+    await waitFor(() => options.onPrompt.mock.calls.length === 2)
+    expect(options.onPrompt).toBeCalledTimes(2)
+  })
+
   it('Should call onIdle when all tabs are idle', async () => {
     const options = {
       onIdle: jest.fn(),
@@ -86,13 +103,11 @@ describe('TabManager', () => {
     }
     const manager = createTabManager(options)
     const manager2 = createTabManager()
-    manager2.active()
-
     manager2.close()
-    manager.idle()
 
-    await waitFor(() => options.onIdle.mock.calls.length === 1)
-    expect(options.onIdle).toHaveBeenCalledTimes(1)
+    await sleep(200)
+
+    expect(manager.registry.size).toBe(1)
   })
 
   it('Should emit events on all tabs', async () => {

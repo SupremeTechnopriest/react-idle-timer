@@ -620,11 +620,9 @@ export function useIdleTimer ({
     if (crossTab) {
       manager.current = new TabManager({
         channelName: 'idle-timer',
-        onPrompt: emitOnPrompt.current
-          ? () => {
-              togglePrompted()
-            }
-          : undefined,
+        onPrompt: () => {
+          togglePrompted()
+        },
         onIdle: () => {
           toggleIdle()
         },
