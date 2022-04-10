@@ -904,7 +904,29 @@ describe('useIdleTimer', () => {
       })
 
       describe('.crossTab', () => {
-        it('Should emit idle and active on manager', async () => {
+        it('Should emit prompt, idle and active on manager', async () => {
+          props.timeout = 200
+          props.promptTimeout = 200
+          props.startManually = true
+          props.crossTab = true
+          props.onPrompt = jest.fn()
+          props.onIdle = jest.fn()
+          props.onActive = jest.fn()
+          const { result } = idleTimer()
+
+          result.current.start()
+          await waitFor(() => result.current.isIdle())
+
+          expect(result.current.isIdle()).toBe(true)
+          expect(props.onPrompt).toHaveBeenCalledTimes(1)
+          expect(props.onIdle).toHaveBeenCalledTimes(1)
+
+          fireEvent.mouseDown(document)
+          expect(result.current.isIdle()).toBe(false)
+          expect(props.onActive).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should emit start, reset, pause and resume on manager', async () => {
           props.timeout = 200
           props.startManually = true
           props.crossTab = true
@@ -914,13 +936,22 @@ describe('useIdleTimer', () => {
 
           result.current.start()
           await waitFor(() => result.current.isIdle())
+          result.current.reset()
+
+          await sleep(100)
+          result.current.pause()
+
+          expect(result.current.isIdle()).toBe(false)
+          expect(result.current.getRemainingTime()).toBeAround(100, 20)
+
+          result.current.resume()
+          await sleep(100)
 
           expect(result.current.isIdle()).toBe(true)
-          expect(props.onIdle).toHaveBeenCalledTimes(1)
+          expect(props.onIdle).toHaveBeenCalledTimes(2)
 
           fireEvent.mouseDown(document)
           expect(result.current.isIdle()).toBe(false)
-          expect(props.onActive).toHaveBeenCalledTimes(1)
         })
 
         it('Should update crossTab dynamically', async () => {

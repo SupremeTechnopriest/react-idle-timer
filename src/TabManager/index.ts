@@ -43,10 +43,8 @@ export class TabManager {
   private options: ITabManagerOptions
 
   private token: string = createToken()
-
+  public registry: Map<string, RegistryState> = new Map()
   public allIdle: boolean = false
-
-  private registry: Map<string, RegistryState> = new Map()
 
   constructor (options: ITabManagerOptions) {
     const { channelName } = options
