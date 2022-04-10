@@ -120,7 +120,6 @@
     "startManually": "Require the timer to be started manually.",
     "stopOnIdle": "Once the user goes idle the IdleTimer will not reset on user input instead, start() or reset() must be called manually to restart the timer.",
     "crossTab": "Enable the cross tab feature.",
-    "emitOnAllTabs": "Emit events and methods on all tabs when crossTab is enabled.",
     "syncTimers": "Sync timers across all tabs."
   },
   "methods": {
@@ -129,7 +128,6 @@
     "pause": "Store remaining time and stop timer.",
     "resume": "Resumes a paused timer.",
     "isIdle": "Returns wether or not the user is idle.",
-    "isLeader": "Returns wether or not this is the leader tab.",
     "isPrompted": "Returns wether or not this tab is in the prompted state.",
     "getRemainingTime": "Time remaining before idle in milliseconds.",
     "getElapsedTime": "How much time has elapsed in milliseconds since last reset.",

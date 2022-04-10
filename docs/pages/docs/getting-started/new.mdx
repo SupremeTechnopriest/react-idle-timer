@@ -40,22 +40,43 @@ In v4, the `crossTab` prop used to take a `boolean` or an `object` of configurat
 options.  Now in v5, the `crossTab` prop only takes a `boolean`. This is how you
 enable or disable the Cross Tab Reconciliation feature.  It is disabled by default.
 
-The only configuration option that has been included in v5 is `emitOnAllTabs` and
-it is now its own property and is of type `boolean`. It does the same thing as it
-did in v4 and defaults to false. All of the rest of the options from v4 have been 
-set to sane defaults. This results in a more simple API surface and less type ambiguity.
+All of the rest of the options from v4 have been set to sane defaults. 
+This results in a more simple API surface and less type ambiguity.
+Events are emitted on all tabs by default and leader election has been removed.
+Leader election was rarely used and is not compatible with the new IdleTimer
+features.
+
+A new property has been added called `syncTimers`. It takes a `number` that
+represents the throttle value in milliseconds for the sync function.  Every user
+action that is defined in the `events` array will be replicated to all tabs, thus
+keeping the timeouts across tabs roughly in sync. By default this property has
+a value of 0 which is equivalent to disabled. Set it to the maximum amount of
+drift between timeouts that is tolerable for you project. Setting it too low will
+cause a lot of messaging between tabs. A good place to start is around `200`. 
 
 In v4 the following code...
 ```jsx
 // Hook
 const idleTimer = useIdleTimer({
   crossTab: {
-    emitOnIdle: true
+    type: undefined,
+    channelName: 'idle-timer',
+    fallbackInterval: 2000,
+    responseTime: 100,
+    removeTimeout: 1000 * 60,
+    emitOnAllTabs: true
   }
 })
 
 // Component
-<IdleTimer crossTab={{ emitOnIdle: true }} />
+<IdleTimer crossTab={{
+  type: undefined,
+  channelName: 'idle-timer',
+  fallbackInterval: 2000,
+  responseTime: 100,
+  removeTimeout: 1000 * 60,
+  emitOnAllTabs: false
+}} />
 ```
 
 Becomes this in v5...
@@ -63,12 +84,23 @@ Becomes this in v5...
 ```jsx
 // Hook
 const idleTimer = useIdleTimer({
-  crossTab: true,
-  emitOnIdle: true
+  crossTab: true
 })
 
 // Higher Order Component Wrapped 
-<IdleTimer crossTab emitOnIdle />
+<IdleTimer crossTab />
+```
+
+With the new `syncTimers` feature:
+
+```jsx
+const idleTimer = useIdleTimer({
+  crossTab: true,
+  syncTimers: 200
+})
+
+// Higher Order Component Wrapped 
+<IdleTimer crossTab syncTimers={200} />
 ```
 
 #### Last Active and Idle Times

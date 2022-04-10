@@ -185,7 +185,6 @@ interface IControlDrawerProps extends IdleTimerType {
   setStartManually: (value: boolean) => void
   setStopOnIdle: (value: boolean) => void
   setCrossTab: (value: boolean) => void
-  setEmitOnAllTabs: (value: boolean) => void
   emitOnSelf: boolean
   setEmitOnSelf: (value: boolean) => void
   setSyncTimers: (value: number) => void
@@ -241,7 +240,6 @@ export function ControlDrawer (props: IControlDrawerProps) {
                     <SwitchWithLabel label='crossTab' defaultChecked={props.crossTab} onChange={props.setCrossTab} />
                     {props.crossTab && (
                       <>
-                        <SwitchWithLabel label='emitOnAllTabs' defaultChecked={props.emitOnAllTabs} onChange={props.setEmitOnAllTabs} />
                         <NumberInputWithLabel label='syncTimers' defaultValue={props.syncTimers} onChange={props.setSyncTimers} />
                       </>
                     )}
@@ -256,8 +254,8 @@ export function ControlDrawer (props: IControlDrawerProps) {
                         <ButtonWithLabel label='pause' onClick={() => props.pause()} />
                         <ButtonWithLabel label='resume' onClick={() => props.resume()} />
                         <ButtonWithLabel label='isIdle' onClick={() => props.isIdle()} />
-                        <ButtonWithLabel label='isLeader' onClick={() => props.isLeader()} />
                         <ButtonWithLabel label='isPrompted' onClick={() => props.isPrompted()} />
+                        <Button disabled w='full'></Button>
                       </VStack>
                       <VStack width='60%'>
                         <ButtonWithLabel label='getRemainingTime' onClick={() => props.getRemainingTime()} />

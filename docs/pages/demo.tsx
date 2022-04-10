@@ -74,9 +74,8 @@ export default function Demo () {
   const [throttle, setThrottle] = useState<number>(0)
   const [eventsThrottle, setEventsThrottle] = useState<number>(0)
   const [crossTab, setCrossTab] = useState<boolean>(false)
-  const [emitOnAllTabs, setEmitOnAllTabs] = useState<boolean>(false)
   const [syncTimers, setSyncTimers] = useState<number>(0)
-  const [emitOnSelf, setEmitOnSelf] = useState<boolean>(false)
+  const emitOnSelf = useRef<boolean>(false)
 
   useEffect(() => {
     if (query.timeout) setTimeoutValue(parseInt(query.timeout as string, 10))
@@ -89,8 +88,7 @@ export default function Demo () {
     if (query.startManually !== undefined && query.startManually !== 'false') setStartManually(true)
     if (query.stopOnIdle !== undefined && query.stopOnIdle !== 'false') setStopOnIdle(true)
     if (query.crossTab !== undefined && query.crossTab !== 'false') setCrossTab(true)
-    if (query.emitOnAllTabs !== undefined && query.emitOnAllTabs !== 'false') setEmitOnAllTabs(true)
-    if (query.emitOnSelf !== undefined && query.emitOnSelf !== 'false') setEmitOnSelf(true)
+    if (query.emitOnSelf !== undefined && query.emitOnSelf !== 'false') emitOnSelf.current = true
   }, [query])
 
   const [lastEvent, setLastEvent] = useState<string>('INITIAL')
@@ -156,7 +154,6 @@ export default function Demo () {
     resume,
     message,
     isIdle,
-    isLeader,
     isPrompted,
     getRemainingTime,
     getElapsedTime,
@@ -182,7 +179,6 @@ export default function Demo () {
     onAction,
     onMessage,
     crossTab,
-    emitOnAllTabs,
     syncTimers
   })
 
@@ -232,11 +228,6 @@ export default function Demo () {
       case 'isIdle': {
         const result = isIdle()
         alert('isIdle', result)
-        return result
-      }
-      case 'isLeader': {
-        const result = isLeader()
-        alert('isLeader', result)
         return result
       }
       case 'isPrompted': {
@@ -321,20 +312,16 @@ export default function Demo () {
         setCrossTab(data)
         break
       }
-      case 'emitOnAllTabs': {
-        setEmitOnAllTabs(data)
-        break
-      }
       case 'syncTimers': {
         setSyncTimers(data)
         break
       }
       case 'message': {
-        message(data, emitOnSelf)
+        message(data, emitOnSelf.current)
         break
       }
       case 'emitOnSelf': {
-        setEmitOnSelf(data)
+        emitOnSelf.current = data
         break
       }
       default:
@@ -378,11 +365,9 @@ export default function Demo () {
           setStopOnIdle={data => handler('stopOnIdle', data)}
           crossTab={crossTab}
           setCrossTab={data => handler('crossTab', data)}
-          emitOnAllTabs={emitOnAllTabs}
-          setEmitOnAllTabs={data => handler('emitOnAllTabs', data)}
           syncTimers={syncTimers}
           setSyncTimers={setSyncTimers}
-          emitOnSelf={emitOnSelf}
+          emitOnSelf={emitOnSelf.current}
           setEmitOnSelf={data => handler('emitOnSelf', data)}
           start={() => handler('start')}
           reset={() => handler('reset')}
@@ -390,7 +375,6 @@ export default function Demo () {
           resume={() => handler('resume')}
           message={data => handler('message', data)}
           isIdle={() => handler('isIdle')}
-          isLeader={() => handler('isLeader')}
           isPrompted={() => handler('isPrompted')}
           getRemainingTime={() => handler('getRemainingTime')}
           getElapsedTime={() => handler('getElapsedTime')}
