@@ -4,12 +4,10 @@ import { waitFor, sleep } from './test.utils'
 let managers = []
 const createTabManager = ({
   channelName = 'idle-timer',
-  fallbackInterval = 2000,
-  responseTime = 100,
-  emitOnAllTabs = false,
   onIdle = () => {},
   onActive = () => {},
   onMessage = () => {},
+  onPrompt = () => {},
   start = () => {},
   reset = () => {},
   pause = () => {},
@@ -17,12 +15,10 @@ const createTabManager = ({
 } = {}) => {
   const manager = new TabManager({
     channelName,
-    fallbackInterval,
-    responseTime,
-    emitOnAllTabs,
     onIdle,
     onActive,
     onMessage,
+    onPrompt,
     start,
     reset,
     pause,
@@ -31,8 +27,6 @@ const createTabManager = ({
   managers.push(manager)
   return manager
 }
-
-const t3s = { timeout: 3000 }
 
 describe('TabManager', () => {
   afterEach(() => {
@@ -47,12 +41,6 @@ describe('TabManager', () => {
     expect(manager).toBeDefined()
   })
 
-  it('Should become the leader', async () => {
-    const manager = createTabManager()
-    await waitFor(() => manager.isLeader === true, t3s)
-    expect(manager.isLeader).toBe(true)
-  })
-
   it('Should close the TabManager', async () => {
     const manager = createTabManager()
     expect(() => manager.close()).not.toThrow()
@@ -65,7 +53,6 @@ describe('TabManager', () => {
     }
     const manager = createTabManager(options)
     manager.allIdle = false
-    await waitFor(() => manager.isLeader === true, t3s)
 
     const manager2 = createTabManager()
     manager2.idle()
@@ -82,7 +69,6 @@ describe('TabManager', () => {
     }
     const manager = createTabManager(options)
     manager.allIdle = true
-    await waitFor(() => manager.isLeader === true, t3s)
 
     const manager2 = createTabManager()
     manager2.allIdle = true
@@ -99,10 +85,7 @@ describe('TabManager', () => {
       onActive: jest.fn()
     }
     const manager = createTabManager(options)
-    await waitFor(() => manager.isLeader === true, t3s)
-
     const manager2 = createTabManager()
-    await sleep(200)
     manager2.active()
 
     manager2.close()
@@ -115,16 +98,14 @@ describe('TabManager', () => {
   it('Should emit events on all tabs', async () => {
     const options = {
       onIdle: jest.fn(),
-      onActive: jest.fn(),
-      emitOnAllTabs: true
+      onActive: jest.fn()
     }
 
     const manager = createTabManager(options)
-    await waitFor(() => manager.isLeader === true, t3s)
-
     const manager2 = createTabManager(options)
     await sleep(200)
 
+    manager.idle()
     manager2.idle()
     await waitFor(() => options.onIdle.mock.calls.length === 2)
 
@@ -140,9 +121,7 @@ describe('TabManager', () => {
       start: jest.fn()
     }
 
-    const manager = createTabManager(options)
-    await waitFor(() => manager.isLeader === true, t3s)
-
+    createTabManager(options)
     const manager2 = createTabManager()
     manager2.send(MessageAction.START)
 
@@ -155,9 +134,7 @@ describe('TabManager', () => {
       reset: jest.fn()
     }
 
-    const manager = createTabManager(options)
-    await waitFor(() => manager.isLeader === true, t3s)
-
+    createTabManager(options)
     const manager2 = createTabManager()
     manager2.sync()
 
@@ -170,9 +147,7 @@ describe('TabManager', () => {
       reset: jest.fn()
     }
 
-    const manager = createTabManager(options)
-    await waitFor(() => manager.isLeader === true, t3s)
-
+    createTabManager(options)
     const manager2 = createTabManager()
     manager2.send(MessageAction.RESET)
 
@@ -185,9 +160,7 @@ describe('TabManager', () => {
       pause: jest.fn()
     }
 
-    const manager = createTabManager(options)
-    await waitFor(() => manager.isLeader === true, t3s)
-
+    createTabManager(options)
     const manager2 = createTabManager()
     manager2.send(MessageAction.PAUSE)
 
@@ -200,9 +173,7 @@ describe('TabManager', () => {
       resume: jest.fn()
     }
 
-    const manager = createTabManager(options)
-    await waitFor(() => manager.isLeader === true, t3s)
-
+    createTabManager(options)
     const manager2 = createTabManager()
     manager2.send(MessageAction.RESUME)
 
@@ -215,10 +186,9 @@ describe('TabManager', () => {
       onMessage: jest.fn()
     }
 
-    const manager = createTabManager(options)
-    await waitFor(() => manager.isLeader === true, t3s)
-
     const data = 'foo'
+
+    createTabManager(options)
     const manager2 = createTabManager()
     manager2.message(data)
 

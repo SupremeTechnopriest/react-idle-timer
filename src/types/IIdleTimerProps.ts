@@ -147,14 +147,6 @@ export interface IIdleTimerProps {
   crossTab?: boolean
 
   /**
-   * By default, events are only emitted on the leader tab when crossTab is enabled.
-   * Enabling this option will emit events on all tabs.
-   *
-   * @default false
-   */
-  emitOnAllTabs?: boolean
-
-  /**
    * Sync the timers across all tabs. The value is the interval in which timers
    * will be synced. Setting it to 0 is equivalent to turning the feature off.
    *

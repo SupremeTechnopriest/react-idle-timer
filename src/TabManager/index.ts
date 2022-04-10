@@ -1,11 +1,9 @@
 import { BroadcastChannel } from './BroadcastChannel'
-import { LeaderElector } from './LeaderElector'
+import { createToken } from '../utils/token'
 
 interface ITabManagerOptions {
   channelName: string
-  emitOnAllTabs: boolean
-  fallbackInterval: number
-  responseTime: number
+  onPrompt: (event?: Event) => void
   onIdle: (event?: Event) => void
   onActive: (event?: Event) => void
   onMessage: (data: any) => void
@@ -20,14 +18,18 @@ export enum MessageAction {
   DEREGISTER,
   IDLE,
   ACTIVE,
-  EMIT_IDLE,
-  EMIT_ACTIVE,
-  EMIT_MESSAGE,
+  PROMPT,
   START,
   RESET,
   PAUSE,
   RESUME,
   MESSAGE
+}
+
+enum RegistryState {
+  PROMPTED,
+  ACTIVE,
+  IDLE
 }
 
 interface IMessage {
@@ -38,27 +40,28 @@ interface IMessage {
 
 export class TabManager {
   private channel: BroadcastChannel
-  private elector: LeaderElector
   private options: ITabManagerOptions
+
+  private token: string = createToken()
 
   public allIdle: boolean = false
 
-  private registry: Map<string, boolean> = new Map()
+  private registry: Map<string, RegistryState> = new Map()
 
   constructor (options: ITabManagerOptions) {
-    const { channelName, fallbackInterval, responseTime } = options
+    const { channelName } = options
     this.options = options
 
     this.channel = new BroadcastChannel(channelName)
-    this.elector = new LeaderElector(this.channel, { fallbackInterval, responseTime })
 
-    this.elector.waitForLeadership()
+    this.registry.set(this.token, RegistryState.ACTIVE)
 
     this.channel.addEventListener('message', (message: MessageEvent<IMessage>) => {
       const { action, token, data } = message.data
+
       switch (action) {
         case MessageAction.REGISTER:
-          this.registry.set(token, false)
+          this.registry.set(token, RegistryState.ACTIVE)
           break
         case MessageAction.DEREGISTER:
           this.registry.delete(token)
@@ -69,13 +72,10 @@ export class TabManager {
         case MessageAction.ACTIVE:
           this.active(token)
           break
-        case MessageAction.EMIT_IDLE:
-          this.options.onIdle()
+        case MessageAction.PROMPT:
+          this.prompt(token)
           break
-        case MessageAction.EMIT_ACTIVE:
-          this.options.onActive()
-          break
-        case MessageAction.EMIT_MESSAGE:
+        case MessageAction.MESSAGE:
           this.options.onMessage(data)
           break
         case MessageAction.START:
@@ -96,35 +96,44 @@ export class TabManager {
     this.send(MessageAction.REGISTER)
   }
 
-  get isLeader () {
-    return this.elector.isLeader
-  }
+  prompt (token: string = this.token) {
+    this.registry.set(token, RegistryState.PROMPTED)
+    const isPrompted = [...this.registry.values()].every(v => v === RegistryState.PROMPTED)
 
-  idle (token: string = this.elector.token) {
-    this.registry.set(token, true)
-    const isIdle = [...this.registry.values()].every(v => v)
-    if (!this.allIdle && isIdle) {
-      this.allIdle = true
-      if (this.isLeader) {
-        this.options.onIdle()
-        if (this.options.emitOnAllTabs) this.send(MessageAction.EMIT_IDLE)
-      } else {
-        this.send(MessageAction.IDLE)
-      }
+    if (token === this.token) {
+      this.send(MessageAction.PROMPT)
+    }
+
+    if (isPrompted) {
+      this.options.onPrompt()
     }
   }
 
-  active (token: string = this.elector.token) {
-    this.registry.set(token, false)
-    const isActive = [...this.registry.values()].some(v => !v)
+  idle (token: string = this.token) {
+    this.registry.set(token, RegistryState.IDLE)
+    const isIdle = [...this.registry.values()].every(v => v === RegistryState.IDLE)
+
+    if (token === this.token) {
+      this.send(MessageAction.IDLE)
+    }
+
+    if (!this.allIdle && isIdle) {
+      this.allIdle = true
+      this.options.onIdle()
+    }
+  }
+
+  active (token: string = this.token) {
+    this.registry.set(token, RegistryState.ACTIVE)
+    const isActive = [...this.registry.values()].some(v => v === RegistryState.ACTIVE)
+
+    if (token === this.token) {
+      this.send(MessageAction.ACTIVE)
+    }
+
     if (this.allIdle && isActive) {
       this.allIdle = false
-      if (this.isLeader) {
-        this.options.onActive()
-        if (this.options.emitOnAllTabs) this.send(MessageAction.EMIT_ACTIVE)
-      } else {
-        this.send(MessageAction.ACTIVE)
-      }
+      this.options.onActive()
     }
   }
 
@@ -132,7 +141,7 @@ export class TabManager {
     try {
       this.channel.postMessage({
         action: MessageAction.RESET,
-        token: this.elector.token
+        token: this.token
       })
     } catch {}
   }
@@ -140,8 +149,8 @@ export class TabManager {
   message (data: any) {
     try {
       this.channel.postMessage({
-        action: MessageAction.EMIT_MESSAGE,
-        token: this.elector.token,
+        action: MessageAction.MESSAGE,
+        token: this.token,
         data
       })
     } catch {}
@@ -149,12 +158,11 @@ export class TabManager {
 
   send (action: MessageAction) {
     try {
-      this.channel.postMessage({ action, token: this.elector.token })
+      this.channel.postMessage({ action, token: this.token })
     } catch {}
   }
 
   close () {
-    this.elector.close()
     this.send(MessageAction.DEREGISTER)
     this.channel.close()
   }

@@ -42,7 +42,6 @@ export function useIdleTimer ({
   startManually = false,
   stopOnIdle = false,
   crossTab = false,
-  emitOnAllTabs = false,
   syncTimers = 0
 }: IIdleTimerProps = {}): IIdleTimer {
   // Time References
@@ -144,6 +143,45 @@ export function useIdleTimer ({
   }
 
   /**
+   * Create a prompt timeout.
+   *
+   */
+  const togglePrompted = (event?: EventType): void => {
+    remaining.current = 0
+    promptTime.current = now()
+    prompted.current = true
+    createTimeout(promptTimeoutRef.current, false)
+    emitOnPrompt.current(event)
+  }
+
+  const toggleIdle = () => {
+    // Flip idle
+    idle.current = true
+    lastIdle.current = now()
+
+    // Handle idle event
+    if (stopOnIdleRef.current) {
+      destroyTimeout()
+      unbindEvents()
+    } else if (prompted.current) {
+      promptTime.current = 0
+      prompted.current = false
+    }
+
+    emitOnIdle.current()
+  }
+
+  const toggleActive = (event?: EventType) => {
+    prompted.current = false
+    promptTime.current = 0
+    idle.current = false
+    idleTime.current += now() - lastIdle.current
+    bindEvents()
+    createTimeout()
+    emitOnActive.current(event)
+  }
+
+  /**
    * Toggles the idle state and calls the correct action function.
    *
    * @private
@@ -154,44 +192,28 @@ export function useIdleTimer ({
     if (nextIdle) {
       // Handle prompt
       if (promptTimeoutRef.current > 0 && !prompted.current) {
-        remaining.current = 0
-        promptTime.current = now()
-        prompted.current = true
-        emitOnPrompt.current(event)
-        createTimeout(promptTimeoutRef.current, false)
+        if (manager.current) {
+          manager.current.prompt()
+        } else {
+          togglePrompted(event)
+        }
         return
       }
 
-      // Flip idle
-      idle.current = nextIdle
-
-      // Handle idle event
-      if (stopOnIdleRef.current) {
-        destroyTimeout()
-        unbindEvents()
-      } else if (prompted.current) {
-        promptTime.current = 0
-        prompted.current = false
-      }
-
-      lastIdle.current = now()
       if (manager.current) {
         manager.current.idle()
       } else {
-        emitOnIdle.current()
+        toggleIdle()
       }
 
       return
     }
 
     // Handle Active
-    idle.current = nextIdle
-    idleTime.current += now() - lastIdle.current
-    bindEvents()
     if (manager.current) {
       manager.current.active()
     } else {
-      emitOnActive.current(event)
+      toggleActive(event)
     }
   }
 
@@ -245,6 +267,8 @@ export function useIdleTimer ({
 
     // If the user is active, set a new timeout
     createTimeout()
+
+    if (manager.current) manager.current.active()
   }
 
   /**
@@ -317,6 +341,11 @@ export function useIdleTimer ({
     // Bind the events
     bindEvents()
 
+    // Close prompt if open
+    if (prompted.current) {
+      emitOnActive.current()
+    }
+
     // Set state
     idle.current = false
     prompted.current = false
@@ -324,16 +353,14 @@ export function useIdleTimer ({
     remaining.current = 0
     promptTime.current = 0
 
-    if (manager.current) {
-      manager.current.allIdle = false
-      if (!remote && emitOnAllTabs) {
-        manager.current.send(MessageAction.START)
-      }
+    if (manager.current && !remote) {
+      manager.current.active()
+      manager.current.send(MessageAction.START)
     }
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeoutRef, manager, emitOnAllTabs])
+  }, [tId, idle, timeoutRef, manager])
 
   /**
   * Restore initial state and restart timer, calling onActive
@@ -347,10 +374,9 @@ export function useIdleTimer ({
 
     // Emit active
     if (idle.current || prompted.current) {
+      emitOnActive.current()
       if (manager.current) {
         manager.current.active()
-      } else {
-        emitOnActive.current()
       }
     }
 
@@ -364,14 +390,14 @@ export function useIdleTimer ({
 
     if (manager.current) {
       manager.current.allIdle = false
-      if (!remote && emitOnAllTabs) {
+      if (!remote) {
         manager.current.send(MessageAction.RESET)
       }
     }
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeoutRef, manager, emitOnAllTabs])
+  }, [tId, idle, timeoutRef, manager])
 
   /**
    * Pause a running timer.
@@ -394,12 +420,12 @@ export function useIdleTimer ({
     destroyTimeout()
 
     if (manager.current) {
-      if (!remote && emitOnAllTabs) {
+      if (!remote) {
         manager.current.send(MessageAction.PAUSE)
       }
     }
     return true
-  }, [tId, manager, emitOnAllTabs])
+  }, [tId, manager])
 
   /**
    * Resumes a paused timer.
@@ -426,12 +452,12 @@ export function useIdleTimer ({
 
     // Replicate to manager
     if (manager.current) {
-      if (!remote && emitOnAllTabs) {
+      if (!remote) {
         manager.current.send(MessageAction.RESUME)
       }
     }
     return true
-  }, [tId, timeoutRef, remaining, emitOnAllTabs, manager])
+  }, [tId, timeoutRef, remaining, manager])
 
   /**
    * Sends a message to all tabs.
@@ -464,13 +490,6 @@ export function useIdleTimer ({
   }, [prompted])
 
   /**
-   * Returns wether or not this is the leader tab
-   */
-  const isLeader = useCallback<() => boolean>((): boolean => {
-    return manager.current ? manager.current.isLeader : true
-  }, [manager])
-
-  /**
    * Time remaining before idle
    *
    * @return Milliseconds remaining
@@ -493,9 +512,9 @@ export function useIdleTimer ({
         : (now() - lastActive.current)
       : 0
 
-    const timeLeft = Math.ceil(timeoutTotal - timeSinceLastActive)
+    const timeLeft = Math.ceil(timeoutTotal - timeSinceLastActive) // ?
     return timeLeft < 0 ? 0 : Math.abs(timeLeft)
-  }, [timeoutRef, promptTimeout, prompted, remaining, lastActive])
+  }, [timeoutRef, promptTimeoutRef, prompted, remaining, lastActive])
 
   /**
    * Get how much time has elapsed in milliseconds.
@@ -590,24 +609,38 @@ export function useIdleTimer ({
     }
   }, [])
 
-  // Dynamic events and element
+  // Cross Tab Manager
   useEffect(() => {
-    if (!firstLoad.current) {
-      const newEvents = [
-        ...new Set([...events, ...immediateEvents]).values()
-      ]
-      unbindEvents()
-      eventsRef.current = newEvents
-      elementRef.current = element
-      immediateEventsRef.current = immediateEvents
-      if (startManually) return
-      if (startOnMount) {
-        start()
-      } else {
-        bindEvents()
-      }
+    // Close any existing manager
+    if (manager.current) {
+      manager.current.close()
     }
-  }, [element, JSON.stringify(events), JSON.stringify(immediateEvents), firstLoad, startManually, startOnMount])
+
+    // Set up cross tab
+    if (crossTab) {
+      manager.current = new TabManager({
+        channelName: 'idle-timer',
+        onPrompt: emitOnPrompt.current
+          ? () => {
+              togglePrompted()
+            }
+          : undefined,
+        onIdle: () => {
+          toggleIdle()
+        },
+        onActive: () => {
+          toggleActive()
+        },
+        onMessage: emitOnMessage.current,
+        start,
+        reset,
+        pause,
+        resume
+      })
+    } else {
+      manager.current = null
+    }
+  }, [crossTab, emitOnPrompt, emitOnIdle, emitOnActive, emitOnMessage, start, reset, pause, resume])
 
   // Dynamic Start
   useEffect(() => {
@@ -628,6 +661,25 @@ export function useIdleTimer ({
     }
   }, [startManually, startOnMount, firstLoad])
 
+  // Dynamic events and element
+  useEffect(() => {
+    if (!firstLoad.current) {
+      const newEvents = [
+        ...new Set([...events, ...immediateEvents]).values()
+      ]
+      unbindEvents()
+      eventsRef.current = newEvents
+      elementRef.current = element
+      immediateEventsRef.current = immediateEvents
+      if (startManually) return
+      if (startOnMount) {
+        start()
+      } else {
+        bindEvents()
+      }
+    }
+  }, [element, JSON.stringify(events), JSON.stringify(immediateEvents), firstLoad, startManually, startOnMount])
+
   // Dynamic timeout
   useEffect(() => {
     if (firstLoad.current) {
@@ -643,33 +695,6 @@ export function useIdleTimer ({
     }
   }, [timeout, startManually, firstLoad, idle])
 
-  // Cross Tab Manager
-  useEffect(() => {
-    // Close any existing manager
-    if (manager.current) {
-      manager.current.close()
-    }
-
-    // Set up cross tab
-    if (crossTab) {
-      manager.current = new TabManager({
-        channelName: 'idle-timer',
-        fallbackInterval: 2000,
-        responseTime: 100,
-        emitOnAllTabs,
-        onIdle: emitOnIdle.current,
-        onActive: emitOnActive.current,
-        onMessage: emitOnMessage.current,
-        start,
-        reset,
-        pause,
-        resume
-      })
-    } else {
-      manager.current = null
-    }
-  }, [crossTab, emitOnAllTabs, emitOnIdle, emitOnActive, emitOnMessage, start, reset, pause, resume])
-
   // Return API
   return {
     message,
@@ -679,7 +704,6 @@ export function useIdleTimer ({
     resume,
     isIdle,
     isPrompted,
-    isLeader,
     getRemainingTime,
     getElapsedTime,
     getTotalElapsedTime,

@@ -34,7 +34,7 @@ describe('useIdleTimer', () => {
       capture: undefined,
       passive: undefined,
       crossTab: undefined,
-      emitOnAllTabs: undefined
+      syncTimers: undefined
     }
   })
 
@@ -911,7 +911,6 @@ describe('useIdleTimer', () => {
           props.onIdle = jest.fn()
           props.onActive = jest.fn()
           const { result } = idleTimer()
-          await waitFor(() => result.current.isLeader(), { timeout: 3000 })
 
           result.current.start()
           await waitFor(() => result.current.isIdle())
@@ -927,39 +926,15 @@ describe('useIdleTimer', () => {
         it('Should update crossTab dynamically', async () => {
           props.timeout = 200
           props.crossTab = true
+          props.onIdle = jest.fn()
           const { result, rerender } = idleTimer()
-          expect(result.current.isLeader()).toBe(false)
           await waitFor(() => result.current.isIdle())
 
           props.crossTab = false
           rerender()
 
-          expect(result.current.isLeader()).toBe(true)
-        })
-      })
-
-      describe('.emitOnAllTabs', () => {
-        it('Should emit events on all tabs', async () => {
-          props.timeout = 200
-          props.crossTab = true
-          props.emitOnAllTabs = true
-          const { result } = idleTimer()
-
-          result.current.start()
-          expect(result.current.isIdle()).toBe(false)
           await waitFor(() => result.current.isIdle())
-          expect(result.current.isIdle()).toBe(true)
-
-          result.current.reset()
-          expect(result.current.isIdle()).toBe(false)
-
-          await sleep(100)
-          result.current.pause()
-          expect(result.current.isIdle()).toBe(false)
-
-          result.current.resume()
-          await sleep(101)
-          expect(result.current.isIdle()).toBe(true)
+          expect(props.onIdle).toHaveBeenCalledTimes(1)
         })
       })
 
@@ -1296,26 +1271,6 @@ describe('useIdleTimer', () => {
           expect(result.current.isPrompted()).toBe(true)
           fireEvent.mouseDown(document)
           expect(props.onAction).toHaveBeenCalledTimes(1)
-        })
-      })
-
-      describe('.isLeader', () => {
-        it('Should return true when crossTab is false', async () => {
-          props.timeout = 200
-          props.crossTab = false
-          const { result } = idleTimer()
-          expect(result.current.isLeader()).toBe(true)
-          await waitFor(() => result.current.isIdle())
-          expect(result.current.isLeader()).toBe(true)
-        })
-
-        it('Should return false initially when crossTab is true', async () => {
-          props.timeout = 200
-          props.crossTab = true
-          const { result } = idleTimer()
-          expect(result.current.isLeader()).toBe(false)
-          await waitFor(() => result.current.isLeader(), { timeout: 3000 })
-          expect(result.current.isLeader()).toBe(true)
         })
       })
 

@@ -34,13 +34,11 @@ describe('Bundle', () => {
     const fn = jest.fn()
     const timer = renderHook(() => useIdleTimer({
       crossTab: true,
-      emitOnAllTabs: true,
       onMessage: fn
     }))
 
     renderHook(() => useIdleTimer({
       crossTab: true,
-      emitOnAllTabs: true,
       onMessage: fn
     }))
 
