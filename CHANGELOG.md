@@ -28,6 +28,8 @@
 #### 🔥 Code Removal
 - Remove `capture` property.
 - Remove `passive` property.
+- Remove `emitOnAllTabs` property.
+- Remove `isLeader` method.
 
 #### 📝 Documentation
 - New documentation site.
