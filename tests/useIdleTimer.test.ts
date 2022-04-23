@@ -942,10 +942,11 @@ describe('useIdleTimer', () => {
           result.current.pause()
 
           expect(result.current.isIdle()).toBe(false)
-          expect(result.current.getRemainingTime()).toBeAround(100, 20)
+          const remaining = result.current.getRemainingTime()
+          expect(remaining).toBeAround(100, 20)
 
           result.current.resume()
-          await sleep(100)
+          await sleep(remaining)
 
           expect(result.current.isIdle()).toBe(true)
           expect(props.onIdle).toHaveBeenCalledTimes(2)
