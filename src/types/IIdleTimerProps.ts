@@ -153,4 +153,10 @@ export interface IIdleTimerProps {
    * @default 0
    */
   syncTimers?: number
+
+  /**
+   * Enables the leader election feature. Leader Election will assign one tab to
+   * be the leader.  Determine if a tab is leader using the `isLeader` method.
+   */
+  leaderElection?: boolean
 }

@@ -1,9 +1,11 @@
-import { MessageAction, TabManager } from '../src/TabManager'
+import { TabManager } from '../src/TabManager'
+import { MessageActionType } from '../src/types/MessageActionType'
 import { waitFor, sleep } from './test.utils'
 
 let managers = []
 const createTabManager = ({
   channelName = 'idle-timer',
+  leaderElection = false,
   onIdle = () => {},
   onActive = () => {},
   onMessage = () => {},
@@ -15,6 +17,7 @@ const createTabManager = ({
 } = {}) => {
   const manager = new TabManager({
     channelName,
+    leaderElection,
     onIdle,
     onActive,
     onMessage,
@@ -138,7 +141,7 @@ describe('TabManager', () => {
 
     createTabManager(options)
     const manager2 = createTabManager()
-    manager2.send(MessageAction.START)
+    manager2.send(MessageActionType.START)
 
     await waitFor(() => options.start.mock.calls.length === 1)
     expect(options.start).toHaveBeenCalledTimes(1)
@@ -164,7 +167,7 @@ describe('TabManager', () => {
 
     createTabManager(options)
     const manager2 = createTabManager()
-    manager2.send(MessageAction.RESET)
+    manager2.send(MessageActionType.RESET)
 
     await waitFor(() => options.reset.mock.calls.length === 1)
     expect(options.reset).toHaveBeenCalledTimes(1)
@@ -177,7 +180,7 @@ describe('TabManager', () => {
 
     createTabManager(options)
     const manager2 = createTabManager()
-    manager2.send(MessageAction.PAUSE)
+    manager2.send(MessageActionType.PAUSE)
 
     await waitFor(() => options.pause.mock.calls.length === 1)
     expect(options.pause).toHaveBeenCalledTimes(1)
@@ -190,7 +193,7 @@ describe('TabManager', () => {
 
     createTabManager(options)
     const manager2 = createTabManager()
-    manager2.send(MessageAction.RESUME)
+    manager2.send(MessageActionType.RESUME)
 
     await waitFor(() => options.resume.mock.calls.length === 1)
     expect(options.resume).toHaveBeenCalledTimes(1)

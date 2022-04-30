@@ -34,7 +34,8 @@ describe('useIdleTimer', () => {
       capture: undefined,
       passive: undefined,
       crossTab: undefined,
-      syncTimers: undefined
+      syncTimers: undefined,
+      leaderElection: undefined
     }
   })
 
@@ -1303,6 +1304,34 @@ describe('useIdleTimer', () => {
           expect(result.current.isPrompted()).toBe(true)
           fireEvent.mouseDown(document)
           expect(props.onAction).toHaveBeenCalledTimes(1)
+        })
+      })
+
+      describe('.isLeader', () => {
+        it('Should throw error when crossTab is not set', async () => {
+          props.crossTab = false
+          const { result } = idleTimer()
+          expect(() => result.current.isLeader()).toThrow(
+            new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
+          )
+        })
+
+        it('Should throw error when leaderElection is not set', async () => {
+          props.crossTab = true
+          const { result } = idleTimer()
+          expect(() => result.current.isLeader()).toThrowError(
+            '❌ Leader election is not enabled. To Enable it set the "leaderElection" property to true.'
+          )
+        })
+
+        it('Should return boolean when properly set up', async () => {
+          props.timeout = 200
+          props.crossTab = true
+          props.leaderElection = true
+          const { result } = idleTimer()
+          expect(result.current.isLeader()).toBe(false)
+          await waitFor(() => result.current.isLeader(), { timeout: 3000 })
+          expect(result.current.isLeader()).toBe(true)
         })
       })
 

@@ -1,8 +1,11 @@
 import { BroadcastChannel } from './BroadcastChannel'
+import { LeaderElector } from './LeaderElector'
 import { createToken } from '../utils/token'
+import { MessageActionType } from '../types/MessageActionType'
 
 interface ITabManagerOptions {
   channelName: string
+  leaderElection: boolean
   onPrompt: (event?: Event) => void
   onIdle: (event?: Event) => void
   onActive: (event?: Event) => void
@@ -13,19 +16,6 @@ interface ITabManagerOptions {
   resume: (remote?: boolean) => void
 }
 
-export enum MessageAction {
-  REGISTER,
-  DEREGISTER,
-  IDLE,
-  ACTIVE,
-  PROMPT,
-  START,
-  RESET,
-  PAUSE,
-  RESUME,
-  MESSAGE
-}
-
 enum RegistryState {
   PROMPTED,
   ACTIVE,
@@ -33,7 +23,7 @@ enum RegistryState {
 }
 
 interface IMessage {
-  action: MessageAction
+  action: MessageActionType
   token: string
   data?: any
 }
@@ -41,6 +31,7 @@ interface IMessage {
 export class TabManager {
   private channel: BroadcastChannel
   private options: ITabManagerOptions
+  private elector: LeaderElector
 
   private token: string = createToken()
   public registry: Map<string, RegistryState> = new Map()
@@ -54,44 +45,58 @@ export class TabManager {
 
     this.registry.set(this.token, RegistryState.ACTIVE)
 
+    if (options.leaderElection) {
+      const electorOptions = {
+        fallbackInterval: 2000,
+        responseTime: 100
+      }
+      this.elector = new LeaderElector(this.channel, electorOptions)
+      this.elector.waitForLeadership()
+    }
+
     this.channel.addEventListener('message', (message: MessageEvent<IMessage>) => {
       const { action, token, data } = message.data
 
       switch (action) {
-        case MessageAction.REGISTER:
+        case MessageActionType.REGISTER:
           this.registry.set(token, RegistryState.ACTIVE)
           break
-        case MessageAction.DEREGISTER:
+        case MessageActionType.DEREGISTER:
           this.registry.delete(token)
           break
-        case MessageAction.IDLE:
+        case MessageActionType.IDLE:
           this.idle(token)
           break
-        case MessageAction.ACTIVE:
+        case MessageActionType.ACTIVE:
           this.active(token)
           break
-        case MessageAction.PROMPT:
+        case MessageActionType.PROMPT:
           this.prompt(token)
           break
-        case MessageAction.MESSAGE:
+        case MessageActionType.MESSAGE:
           this.options.onMessage(data)
           break
-        case MessageAction.START:
+        case MessageActionType.START:
           this.options.start(true)
           break
-        case MessageAction.RESET:
+        case MessageActionType.RESET:
           this.options.reset(true)
           break
-        case MessageAction.PAUSE:
+        case MessageActionType.PAUSE:
           this.options.pause(true)
           break
-        case MessageAction.RESUME:
+        case MessageActionType.RESUME:
           this.options.resume(true)
           break
       }
     })
 
-    this.send(MessageAction.REGISTER)
+    this.send(MessageActionType.REGISTER)
+  }
+
+  get isLeader () {
+    if (!this.elector) throw new Error('❌ Leader election is not enabled. To Enable it set the "leaderElection" property to true.')
+    return this.elector.isLeader
   }
 
   prompt (token: string = this.token) {
@@ -99,7 +104,7 @@ export class TabManager {
     const isPrompted = [...this.registry.values()].every(v => v === RegistryState.PROMPTED)
 
     if (token === this.token) {
-      this.send(MessageAction.PROMPT)
+      this.send(MessageActionType.PROMPT)
     }
 
     if (isPrompted) {
@@ -112,7 +117,7 @@ export class TabManager {
     const isIdle = [...this.registry.values()].every(v => v === RegistryState.IDLE)
 
     if (token === this.token) {
-      this.send(MessageAction.IDLE)
+      this.send(MessageActionType.IDLE)
     }
 
     if (!this.allIdle && isIdle) {
@@ -126,7 +131,7 @@ export class TabManager {
     const isActive = [...this.registry.values()].some(v => v === RegistryState.ACTIVE)
 
     if (token === this.token) {
-      this.send(MessageAction.ACTIVE)
+      this.send(MessageActionType.ACTIVE)
     }
 
     if (this.allIdle && isActive) {
@@ -138,7 +143,7 @@ export class TabManager {
   sync () {
     try {
       this.channel.postMessage({
-        action: MessageAction.RESET,
+        action: MessageActionType.RESET,
         token: this.token
       })
     } catch {}
@@ -147,21 +152,24 @@ export class TabManager {
   message (data: any) {
     try {
       this.channel.postMessage({
-        action: MessageAction.MESSAGE,
+        action: MessageActionType.MESSAGE,
         token: this.token,
         data
       })
     } catch {}
   }
 
-  send (action: MessageAction) {
+  send (action: MessageActionType) {
     try {
       this.channel.postMessage({ action, token: this.token })
     } catch {}
   }
 
   close () {
-    this.send(MessageAction.DEREGISTER)
+    if (this.options.leaderElection) {
+      this.elector.close()
+    }
+    this.send(MessageActionType.DEREGISTER)
     this.channel.close()
   }
 }

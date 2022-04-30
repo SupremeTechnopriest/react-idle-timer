@@ -39,6 +39,13 @@ export interface IIdleTimer {
   isIdle(): boolean
 
   /**
+   * Returns wether or not the current tab is the leader.
+   *
+   * @returns Leader state.
+   */
+  isLeader(): boolean
+
+  /**
    * Returns wether or not the prompt is active.
    *
    * @returns Prompted state.
