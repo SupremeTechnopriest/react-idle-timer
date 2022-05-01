@@ -2,22 +2,17 @@
 
 ### 5.1.0
 
-### ⚡️ Features
+#### ⚡️ Features
 - New implementation of Leader Election.
 
-> Turns out that Leader Election was useful for some people.  While the old implementation 
-> was incompatible with v5, this new implementation is compatible. A new property
-> `leaderElection` is exposed to enable the feature. The major difference between
-> the v4 and v5 implementation is that in v5 events are not isolated to your leader
-> tab automatically. You will need to call the `isLeader` method inside your event
-> handlers. See the [docs](https://idletimer.dev/docs/getting-started/new#leader-election)
-> for more information.
+## ⚡️ Features
+- New implementation of Leader Election.
+
+> Due to popular request, Leader Election has returned in version 5.1.0. While the old implementation was incompatible with v5, this new implementation is compatible. A new property `leaderElection` is exposed to enable the feature. The major difference between the v4 and v5 implementation is that in v5 events are not isolated to your leader tab automatically. You will need to call the `isLeader` method inside your event handlers. See the [docs](https://idletimer.dev/docs/getting-started/new#leader-election) for more information.
 
 ## 5.0.0
 
-> Version 5 is a complete, from scratch, typescript rewrite.  A lot of effort went
-> into this release.  If you find this package useful and have the means, please
-> consider a small [donation]('https://github.com/sponsors/supremetechnopriest')!
+> Version 5 is a complete, from scratch, typescript rewrite. A lot of effort went into this release. If you find this package useful and have the means, please consider a small [donation]('https://github.com/sponsors/supremetechnopriest')!
 
 #### ⚡️ Features
 - Add built in prompt handling.
