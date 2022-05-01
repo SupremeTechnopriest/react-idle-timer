@@ -9,7 +9,7 @@ and the [testing-library](https://testing-library.com/docs/react-testing-library
 utilities, but the principles can be applied to any framework.
 
 To keep your tests clean and modular, you will want to create a startup script 
-and add it to the `setupFilesAfterEnv` section of your `jest.config.js` or `package.json`.  
+and add it to the `setupFilesAfterEnv` section of your `jest.config.js` or `package.json`. 
 We will assume the setup file is called `test.setup.js` for the following implementation.
 
 ### Mock Timers
@@ -28,7 +28,7 @@ for testing.
 
 ### Mock MessageChannel
 IdleTimer uses [MessageChannel](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel)
-for the cross tab messaging layer internally.  This is not mocked by default
+for the cross tab messaging layer internally. This is not mocked by default
 in `js-dom`. If you are using the cross tab feature, you will need to mock the global.
 Add the following to your `test.setup.js`.
 
@@ -45,7 +45,7 @@ afterAll(cleanup)
 ```
 
 If you are using Typescript you will have to either ignore the global assignment
-or extend the global name space for your test runner.  Since you are unlikely to 
+or extend the global name space for your test runner. Since you are unlikely to 
 need types for MessageChannel, `// @ts-ignore` will suffice.
 
 ### Full Mock

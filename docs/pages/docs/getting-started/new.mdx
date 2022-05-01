@@ -3,42 +3,42 @@ title: What's New in v5
 description: What's new in the latest IdleTimer release
 ---
 
-> Version 5 is a from scratch rewrite.  A lot of effort went
-> into this release.  If you find this package useful and have the means, please 
+> Version 5 is a from scratch rewrite. A lot of effort went
+> into this release. If you find this package useful and have the means, please 
 > consider a small [donation]('https://github.com/sponsors/supremetechnopriest') 🙂
 
 The entire project has been rewritten in typescript for a more robust typescript
-experience.  New issue and pull request templates have been added along
+experience. New issue and pull request templates have been added along
 with a [contributing](/docs/about/contributing) guide for anyone who would like 
-to contribute to the project.  Lastly this documentation site has been created 
+to contribute to the project. Lastly this documentation site has been created 
 to serve as a knowledge base for all things related to the IdleTimer project.
 If you have any ideas for sections, demos or tutorials to add feel free to start a 
 [discussion](https://github.com/supremetechnopriest/react-idle-timer/discussions) 
 or open an [issue](https://github.com/supremetechnopriest/react-idle-timer/issues/new/choose).
 
 If you are upgrading from v4 there are a few breaking changes that you should
-take into account.  The rest of the API has not changed. Only new features
+take into account. The rest of the API has not changed. Only new features
 and improvements to existing ones.
 
 ## Breaking Changes
 
 #### Removal of `<IdleTimer />` Component
 
-The major change in v5 is the removal of the `IdleTimer` component.  It has been
+The major change in v5 is the removal of the `IdleTimer` component. It has been
 replaced with the [withIdleTimer](/docs/api/withIdleTimer) higher order component.
 You can use the higher order component to create the `IdleTimer` component if you
-wish and it would be a drop in replacement for the v4 component.  A guide on how
+wish and it would be a drop in replacement for the v4 component. A guide on how
 to do that can be found [here](/docs/api/with-idle-timer#idletimer-component).
 
 #### Simplified Cross Tab API
 
 The Cross Tab feature has been rewritten from the ground up. It is now much smaller
-and more specialized for this particular use case.  All the edge cases have been
+and more specialized for this particular use case. All the edge cases have been
 solved and the API surface has been reduced to the essentials. 
 
 In v4, the `crossTab` prop used to take a `boolean` or an `object` of configuration
-options.  Now in v5, the `crossTab` prop only takes a `boolean`. This is how you
-enable or disable the Cross Tab Reconciliation feature.  It is disabled by default.
+options. Now in v5, the `crossTab` prop only takes a `boolean`. This is how you
+enable or disable the Cross Tab Reconciliation feature. It is disabled by default.
 
 All of the rest of the options from v4 have been set to sane defaults. 
 This results in a more simple API surface and less type ambiguity.
@@ -47,7 +47,7 @@ down to the `leaderElection` prop and the `isLeader` method. See more about lead
 election in the [next section](/docs/getting-started/new#leader-election).
 
 A new property has been added called `syncTimers`. It takes a `number` that
-represents the throttle value in milliseconds for the sync function.  Every user
+represents the throttle value in milliseconds for the sync function. Every user
 action that is defined in the `events` array will be replicated to all tabs, thus
 keeping the timeouts across tabs roughly in sync. By default this property has
 a value of 0 which is equivalent to disabled. Set it to the maximum amount of
@@ -105,8 +105,8 @@ const idleTimer = useIdleTimer({
 
 #### Leader Election
 In v4 Leader Election was enabled by default and would automatically emit events
-on only the leader tab.  In v5, leader election has to be enabled manually by
-setting the [leaderElection](/docs/api/props#leaderelection) property.  In order
+on only the leader tab. In v5, leader election has to be enabled manually by
+setting the [leaderElection](/docs/api/props#leaderelection) property. In order
 to emit events only on the leader, you can use the [isLeader](/docs/api/methods#isleader)
 method inside your event handlers.
 
@@ -133,8 +133,8 @@ const App = () => {
 #### Last Active and Idle Times
 The `getLastActiveTime()` and `getLastIdleTime()` methods now return 
 [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) 
-objects instead of a timestamp.  This will eliminate the need to cast to a Date 
-before formatting.  If you want to get the old timestamp you can just call 
+objects instead of a timestamp. This will eliminate the need to cast to a Date 
+before formatting. If you want to get the old timestamp you can just call 
 `getLastActiveTime().getTime()` and `getLastIdleTime().getTime()`.
 
 ## Non Breaking Changes
@@ -160,7 +160,7 @@ alive when a window is throttled by the browser. The worker is provided via a
 blob URL and this can cause strict CSP rules to be violated. It is strongly 
 suggested that you update your rule to allow the worker to run so the timers are 
 accurate. If this is not an option, you can omit the `timers` property and use
-the default main thread timers.  Main thread timers are the default in order to 
+the default main thread timers. Main thread timers are the default in order to 
 allow projects that wish to omit worker thread timers to tree shake out the
 worker code. If you decide to enable worker timers, take a look at 
 [Testing Considerations](/docs/getting-started/testing) for information on how 
@@ -224,7 +224,7 @@ export function App () {
   
   const onActive = () => {
     // onActive will only be called if `reset()` is called while `isPrompted()` 
-    // is true.  Here you will also want to close your modal and perform
+    // is true. Here you will also want to close your modal and perform
     // any active actions. 
     setOpen(false)
     setRemaining(0)
@@ -266,7 +266,7 @@ export function App () {
 ### Cross Tab Messaging
 
 IdleTimer now exposes its cross tab messaging layer so you can easily broadcast
-arbitrary messages to all instances of your page running in all tabs.  This is 
+arbitrary messages to all instances of your page running in all tabs. This is 
 exposed by two new APIs...
 
 a message callback:
@@ -334,7 +334,7 @@ immediateEvents?: IEventsType[]
 Any events added to `immediateEvents` will immediately switch the user into an 
 idle or prompted state, calling `onIdle` or `onPrompt` respectively. This is
 useful for events such as `pagehide`, where you want to bypass the timeout and
-go directly to an idle state.  
+go directly to an idle state. 
 
 If an event is set in both `events` and `immediateEvents`, the immediate event
 will take precedence allowing you to override the default events if you like.

@@ -13,4 +13,4 @@ Link: <!-- Put the link to your website here. -->
 
 ### Logo
 
-<!-- Upload your logo here.  Your logo should be exactly 100px high. -->
+<!-- Upload your logo here. Your logo should be exactly 100px high. -->

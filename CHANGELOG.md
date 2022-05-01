@@ -147,7 +147,7 @@
 ## 4.4.0
 
 #### ⚡️ Features
-- Add `getTotalActiveTime` method.  Returns the total time in milliseconds the user was active.
+- Add `getTotalActiveTime` method. Returns the total time in milliseconds the user was active.
 
 ### 4.3.7
 
@@ -295,10 +295,10 @@ Events are bound when:
 ## 4.1.0
 
 #### ⚡️ Features
-- Add property `stopOnIdle` defaults to `false`. Setting to `true` will prevent user activity from restarting the `IdleTimer` once it has gone idle.  This useful if you want to do some custom async stuff before the `IdleTimer` gets restarted.  In order to restart the `IdleTimer` call `reset()` on your ref.
-- Add event handler `onActive` which enables reporting of all user activity from `IdleTimer`.  The built in `debounce` or `throttle` properties will help increase performance if you are using the `onActive` event. By default `debounce` and `throttle` are off.  Only one can be enabled at a time.
-- Add property `debounce` defaults to 0.  Set the `onActive` debounce delay in milliseconds. The `throttle` property cannot be set if this property is set.
-- Add property `throttle` defaults to 0.  Set the `onActive` throttle delay in milliseconds.  The `debounce` property cannot be set if this property is set.
+- Add property `stopOnIdle` defaults to `false`. Setting to `true` will prevent user activity from restarting the `IdleTimer` once it has gone idle. This useful if you want to do some custom async stuff before the `IdleTimer` gets restarted. In order to restart the `IdleTimer` call `reset()` on your ref.
+- Add event handler `onActive` which enables reporting of all user activity from `IdleTimer`. The built in `debounce` or `throttle` properties will help increase performance if you are using the `onActive` event. By default `debounce` and `throttle` are off. Only one can be enabled at a time.
+- Add property `debounce` defaults to 0. Set the `onActive` debounce delay in milliseconds. The `throttle` property cannot be set if this property is set.
+- Add property `throttle` defaults to 0. Set the `onActive` throttle delay in milliseconds. The `debounce` property cannot be set if this property is set.
 
 ### 4.0.9
 
@@ -362,7 +362,7 @@ Events are bound when:
 Version 4.0 contains a rewrite of the build system and a refactor of the source
 code for IdleTimer. After accepting many pull requests, the projects code style
 was destroyed, so some forced styling was added and PRs that don't respect this
-style will not be accepted. Contribution guide now on the README.  
+style will not be accepted. Contribution guide now on the README. 
 
 #### 🔥 Code Removal
 - The property `startOnLoad` has been renamed to `startOnMount` to make more sense in a react context.
@@ -370,8 +370,8 @@ style will not be accepted. Contribution guide now on the README.
 - The property `idleAction` has been renamed to `onIdle`.
 
 #### ✨ Enhancements
-- Add [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) property.  Defaults to `true`, bind events with passive mode enabled.
-- Add [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) property.  Defaults to `true`, bind events with capture mode enabled.
+- Add [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) property. Defaults to `true`, bind events with passive mode enabled.
+- Add [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) property. Defaults to `true`, bind events with capture mode enabled.
 - Pass event through to `onActive` callback functions.
 
 #### 🐞 Bug Fixes

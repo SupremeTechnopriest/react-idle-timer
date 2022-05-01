@@ -51,7 +51,7 @@ export interface IIdleTimerProps {
 
   /**
    * When promptTimeout is set, this function is called after the user becomes
-   * idle. This is useful for displaying a confirm prompt.  If the prompt timeout
+   * idle. This is useful for displaying a confirm prompt. If the prompt timeout
    * is reached, onIdle is then called.
    *
    * @default () -> {}

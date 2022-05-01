@@ -9,7 +9,7 @@ description: IdleTimer Changelog
 #### ⚡️ Features
 - Add new implementation of Leader Election.
 
-> Due to popular request, Leader Election has returned in version 5.1.0.  
+> Due to popular request, Leader Election has returned in version 5.1.0. 
 > While the old implementation was incompatible with v5, this new implementation 
 > is compatible. A new property `leaderElection` is exposed to enable the feature. 
 > The major difference between the v4 and v5 implementation is that in v5 events 
@@ -21,8 +21,8 @@ description: IdleTimer Changelog
 ## 5.0.0
 <Divider />
 
-> Version 5 is a complete, from scratch, typescript rewrite.  A lot of effort went
-> into this release.  If you find this package useful and have the means, please
+> Version 5 is a complete, from scratch, typescript rewrite. A lot of effort went
+> into this release. If you find this package useful and have the means, please
 > consider a small [donation]('https://github.com/sponsors/supremetechnopriest')!
 
 #### ⚡️ Features
@@ -33,6 +33,7 @@ description: IdleTimer Changelog
 - New provider `IdleTimerProvider`.
 - Add `syncTimers` property.
 
+. 
 #### ✨ Enhancements
 - Timeouts and Intervals are now hoisted into a web worker to bypass browser background throttles.
 - Rewrite `crossTab` from the ground up. The new implementation is much smaller and more efficient.
@@ -173,7 +174,7 @@ description: IdleTimer Changelog
 <Divider />
 
 #### ⚡️ Features
-- Add `getTotalActiveTime` method.  Returns the total time in milliseconds the user was active.
+- Add `getTotalActiveTime` method. Returns the total time in milliseconds the user was active.
 
 ### 4.3.7
 <Divider />
@@ -345,10 +346,10 @@ Events are bound when:
 <Divider />
 
 #### ⚡️ Features
-- Add property `stopOnIdle` defaults to `false`. Setting to `true` will prevent user activity from restarting the `IdleTimer` once it has gone idle.  This useful if you want to do some custom async stuff before the `IdleTimer` gets restarted.  In order to restart the `IdleTimer` call `reset()` on your ref.
-- Add event handler `onActive` which enables reporting of all user activity from `IdleTimer`.  The built in `debounce` or `throttle` properties will help increase performance if you are using the `onActive` event. By default `debounce` and `throttle` are off.  Only one can be enabled at a time.
-- Add property `debounce` defaults to 0.  Set the `onActive` debounce delay in milliseconds. The `throttle` property cannot be set if this property is set.
-- Add property `throttle` defaults to 0.  Set the `onActive` throttle delay in milliseconds.  The `debounce` property cannot be set if this property is set.
+- Add property `stopOnIdle` defaults to `false`. Setting to `true` will prevent user activity from restarting the `IdleTimer` once it has gone idle. This useful if you want to do some custom async stuff before the `IdleTimer` gets restarted. In order to restart the `IdleTimer` call `reset()` on your ref.
+- Add event handler `onActive` which enables reporting of all user activity from `IdleTimer`. The built in `debounce` or `throttle` properties will help increase performance if you are using the `onActive` event. By default `debounce` and `throttle` are off. Only one can be enabled at a time.
+- Add property `debounce` defaults to 0. Set the `onActive` debounce delay in milliseconds. The `throttle` property cannot be set if this property is set.
+- Add property `throttle` defaults to 0. Set the `onActive` throttle delay in milliseconds. The `debounce` property cannot be set if this property is set.
 
 ### 4.0.9
 <Divider />
@@ -430,8 +431,8 @@ style will not be accepted. Contribution guide now on the README.
 - The property `idleAction` has been renamed to `onIdle`.
 
 #### ✨ Enhancements
-- Add [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) property.  Defaults to `true`, bind events with passive mode enabled.
-- Add [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) property.  Defaults to `true`, bind events with capture mode enabled.
+- Add [passive](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) property. Defaults to `true`, bind events with passive mode enabled.
+- Add [capture](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) property. Defaults to `true`, bind events with capture mode enabled.
 - Pass event through to `onActive` callback functions.
 
 #### 🐞 Bug Fixes

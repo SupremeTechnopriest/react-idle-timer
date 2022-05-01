@@ -52,7 +52,7 @@ set of properties. Examples of how they are used can be found in the
 
 ### onPrompt
 <Property 
-  description='When `promptTimeout` is set, this function is called after the user becomes idle. This is useful for displaying a confirm prompt.  If the prompt timeout is reached, `onIdle` is then called.'
+  description='When `promptTimeout` is set, this function is called after the user becomes idle. This is useful for displaying a confirm prompt. If the prompt timeout is reached, `onIdle` is then called.'
   type='() => void'
   defaultValue='() => {}'
 />
@@ -136,7 +136,7 @@ set of properties. Examples of how they are used can be found in the
 
 ### timers
 <Property 
-  description='Set custom timers.  By default main thread timers are used to allow for better tree shaking. If you want to use worker thread timers, import them from the package and set them here.'
+  description='Set custom timers. By default main thread timers are used to allow for better tree shaking. If you want to use worker thread timers, import them from the package and set them here.'
   type='ITimers'
   defaultValue='{ setTimeout, clearTimeout, setInterval, clearInterval }'
 />

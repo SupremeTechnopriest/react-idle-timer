@@ -29,15 +29,15 @@
       "description": "Robust feature set for all your activity detection needs.",
       "idleDetection": {
         "title": "Idle Detection",
-        "description": "Callbacks for when your user goes idle and becomes active again after being idle.  Timers are offloaded to a WebWorker to avoid background throttling."
+        "description": "Callbacks for when your user goes idle and becomes active again after being idle. Timers are offloaded to a WebWorker to avoid background throttling."
       },
       "activityDetection": {
         "title": "Activity Detection",
-        "description": "Callback when your user performs the specified events.  This call back can be debounced or throttled to preserve performance."
+        "description": "Callback when your user performs the specified events. This call back can be debounced or throttled to preserve performance."
       },
       "confirmPrompt": {
         "title": "Confirm Prompt",  
-        "description": "Callback to open a confirm prompt with a countdown timer before the idle event is fired.  Give your users a chance to let you know they are still there."
+        "description": "Callback to open a confirm prompt with a countdown timer before the idle event is fired. Give your users a chance to let you know they are still there."
       },
       "crossTabSupport": {
         "title": "Cross Tab Support",
@@ -60,7 +60,7 @@
     },
     "sponsor": {
       "title": "Support IdleTimer",
-      "description": "A lot of time and effort goes into maintaining and improving this project. Your donations help ensure that IdleTimer is the best it can be.  You can support by subscribing or a one time donation. All donations have an associated reward.",
+      "description": "A lot of time and effort goes into maintaining and improving this project. Your donations help ensure that IdleTimer is the best it can be. You can support by subscribing or a one time donation. All donations have an associated reward.",
       "sponsorTheProject": "Sponsor the project securely with Github",
       "organizationSponsors": "Organization Sponsors",
       "individualSponsors": "Individual Sponsors"
@@ -108,7 +108,7 @@
     "promptTimeout": "When the user becomes idle, the onPrompt function is called and after the prompt timeout in milliseconds is reached, the onIdle function is called.",
     "events": "DOM events to watch for activity on.",
     "immediateEvents": "DOM events that will immediately call onIdle",
-    "onPrompt": "When promptTimeout is set, this function is called after the user becomes idle. This is useful for displaying a confirm prompt.  If the prompt timeout is reached, onIdle is then called.",
+    "onPrompt": "When promptTimeout is set, this function is called after the user becomes idle. This is useful for displaying a confirm prompt. If the prompt timeout is reached, onIdle is then called.",
     "onIdle": "Function to call when user becomes idle.",
     "onActive": "Function to call when user becomes active.",
     "onAction": "Function to call on user activity.",

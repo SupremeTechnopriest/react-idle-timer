@@ -34,7 +34,7 @@
 
 </br>
 
-Welcome to the all new IdleTimer! The documentation has moved to [https://idletimer.dev](https://idletimer.dev).  There you can find everything you need to get started using and contributing to IdleTimer.
+Welcome to the all new IdleTimer! The documentation has moved to [https://idletimer.dev](https://idletimer.dev). There you can find everything you need to get started using and contributing to IdleTimer.
 
 </br>
 </br>

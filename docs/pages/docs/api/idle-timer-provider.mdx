@@ -4,7 +4,7 @@ description: Context Provider to populate child components
 ---
 
 If you need to use the IdleTimer API in child components, you may want to
-consider using the Context Provider.  Rather than prop drilling through your 
+consider using the Context Provider. Rather than prop drilling through your 
 App's hierarchy, you can use the `IdleTimerProvider` to add the API as context 
 to child components.
 
@@ -25,7 +25,7 @@ import {
 ### Functional Components
 
 For functional components, you will be using the `IdleTimerProvider` component
-and the `useIdleTimerContext` hook.  
+and the `useIdleTimerContext` hook. 
 
 ```jsx
 import { IdleTimerProvider, useIdleTimerContext } from 'react-idle-timer'
@@ -73,7 +73,7 @@ export function App () {
 ### Class Components
 
 For class components, you have a few options depending on where you are using the
-API.  If you only need to use the API within your `render` method, you can use 
+API. If you only need to use the API within your `render` method, you can use 
 the `IdleTimerConsumer`.
 
 ```jsx

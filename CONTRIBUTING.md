@@ -69,7 +69,7 @@ Scan through our [existing issues](https://github.com/supremetechnopriest/react-
 
 4. Run 'npm install -g nps` if you don't already have [npm package scripts](https://www.npmjs.com/package/nps) installed.
 
-4. If you are working on the docs, you will need to add a `.env.local` file to the `/docs` directory.  Inside the file you will need to add the following and replace [your_token] with a github [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+4. If you are working on the docs, you will need to add a `.env.local` file to the `/docs` directory. Inside the file you will need to add the following and replace [your_token] with a github [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 
 ```
 GOOGLE_ANALYTICS=G-XXXXXXXXXX
@@ -78,7 +78,7 @@ GITHUB_TOKEN=[your_token]
 
 4. Create a working branch and start with your changes!
 
-All the scripts to work with IdleTimer can be found in `package-scripts.js`.  As a contributor the only scripts you should need are `nps.test` for working on the source code and `nps docs.dev` for working on the documentation. 
+All the scripts to work with IdleTimer can be found in `package-scripts.js`. As a contributor the only scripts you should need are `nps.test` for working on the source code and `nps docs.dev` for working on the documentation. 
 
 ### Commit your update
 
