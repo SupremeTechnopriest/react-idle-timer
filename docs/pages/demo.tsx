@@ -75,6 +75,7 @@ export default function Demo () {
   const [eventsThrottle, setEventsThrottle] = useState<number>(0)
   const [crossTab, setCrossTab] = useState<boolean>(false)
   const [syncTimers, setSyncTimers] = useState<number>(0)
+  const [leaderElection, setLeaderElection] = useState<boolean>(false)
   const emitOnSelf = useRef<boolean>(false)
 
   useEffect(() => {
@@ -155,6 +156,7 @@ export default function Demo () {
     message,
     isIdle,
     isPrompted,
+    isLeader,
     getRemainingTime,
     getElapsedTime,
     getTotalElapsedTime,
@@ -179,7 +181,8 @@ export default function Demo () {
     onAction,
     onMessage,
     crossTab,
-    syncTimers
+    syncTimers,
+    leaderElection
   })
 
   const closePrompt = () => {
@@ -234,6 +237,16 @@ export default function Demo () {
         const result = isPrompted()
         alert('isPrompted', result)
         return result
+      }
+      case 'isLeader': {
+        try {
+          const result = isLeader()
+          alert('isLeader', result)
+          return result
+        } catch (err) {
+          alert('isLeader', err.message)
+          return err.message
+        }
       }
       case 'getRemainingTime': {
         const result = getRemainingTime()
@@ -316,6 +329,10 @@ export default function Demo () {
         setSyncTimers(data)
         break
       }
+      case 'leaderElection': {
+        setLeaderElection(data)
+        break
+      }
       case 'message': {
         message(data, emitOnSelf.current)
         break
@@ -367,6 +384,8 @@ export default function Demo () {
           setCrossTab={data => handler('crossTab', data)}
           syncTimers={syncTimers}
           setSyncTimers={setSyncTimers}
+          leaderElection={leaderElection}
+          setLeaderElection={data => handler('leaderElection', data)}
           emitOnSelf={emitOnSelf.current}
           setEmitOnSelf={data => handler('emitOnSelf', data)}
           start={() => handler('start')}
@@ -376,6 +395,7 @@ export default function Demo () {
           message={data => handler('message', data)}
           isIdle={() => handler('isIdle')}
           isPrompted={() => handler('isPrompted')}
+          isLeader={() => handler('isLeader')}
           getRemainingTime={() => handler('getRemainingTime')}
           getElapsedTime={() => handler('getElapsedTime')}
           getTotalElapsedTime={() => handler('getTotalElapsedTime')}

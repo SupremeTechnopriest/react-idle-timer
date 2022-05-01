@@ -156,7 +156,7 @@ export interface IIdleTimerProps {
 
   /**
    * Enables the leader election feature. Leader Election will assign one tab to
-   * be the leader.  Determine if a tab is leader using the `isLeader` method.
+   * be the leader. Determine if a tab is leader using the `isLeader` method.
    */
   leaderElection?: boolean
 }

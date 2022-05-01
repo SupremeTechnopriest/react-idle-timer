@@ -42,9 +42,9 @@ enable or disable the Cross Tab Reconciliation feature.  It is disabled by defau
 
 All of the rest of the options from v4 have been set to sane defaults. 
 This results in a more simple API surface and less type ambiguity.
-Events are emitted on all tabs by default and leader election has been removed.
-Leader election was rarely used and is not compatible with the new IdleTimer
-features.
+Events are emitted on all tabs by default and leader election has been reduced
+down to the `leaderElection` prop and the `isLeader` method. See more about leader
+election in the [next section](/docs/getting-started/new#leader-election).
 
 A new property has been added called `syncTimers`. It takes a `number` that
 represents the throttle value in milliseconds for the sync function.  Every user
@@ -101,6 +101,33 @@ const idleTimer = useIdleTimer({
 
 // Higher Order Component Wrapped 
 <IdleTimer crossTab syncTimers={200} />
+```
+
+#### Leader Election
+In v4 Leader Election was enabled by default and would automatically emit events
+on only the leader tab.  In v5, leader election has to be enabled manually by
+setting the [leaderElection](/docs/api/props#leaderelection) property.  In order
+to emit events only on the leader, you can use the [isLeader](/docs/api/methods#isleader)
+method inside your event handlers.
+
+```js
+import { useIdleTimer } from 'react-idle-timer'
+
+const App = () => {
+  const { isLeader } = useIdleTimer({
+    crossTab: true,
+    leaderElection: true,
+    onIdle: () => {
+      if (isLeader()) {
+        // I am the leader, perform remote action
+      } else {
+        // I am not the leader, perform local action
+      }
+    }
+  })
+
+  return <></>
+}
 ```
 
 #### Last Active and Idle Times

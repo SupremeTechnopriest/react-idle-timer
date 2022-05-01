@@ -243,6 +243,7 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
             <SwitchWithEvent event='crossTab' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.crossTab')} onChange={setCrossTab} />
             {crossTab && (
               <>
+                <SwitchWithEvent event='leaderElection' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.leaderElection')} />
                 <NumberInputWithEvent event='syncTimers' defaultValue={0} frames={[frameA, frameB]} setDescription={setDescription} description={t('props.syncTimers')} />
               </>
             )}
@@ -258,7 +259,7 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
                 <ButtonWithEvent event='resume' frames={[frameA]} setDescription={setDescription} description={t('methods.resume')} />
                 <ButtonWithEvent event='isIdle' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isIdle')} />
                 <ButtonWithEvent event='isPrompted' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isPrompted')} />
-                <Button disabled w='full'></Button>
+                <ButtonWithEvent event='isLeader' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isLeader')} />
               </VStack>
               <VStack width='60%'>
                 <ButtonWithEvent event='getRemainingTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getRemainingTime')} />
