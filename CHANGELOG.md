@@ -9,7 +9,7 @@
 
 ## 5.0.0
 
-> Version 5 is a complete, from scratch, typescript rewrite. A lot of effort went into this release. If you find this package useful and have the means, please consider a small [donation]('https://github.com/sponsors/supremetechnopriest')!
+> Version 5 is a complete, from scratch, typescript rewrite. A lot of effort went into this release. If you find this package useful and have the means, please consider a small [donation](https://github.com/sponsors/supremetechnopriest)!
 
 #### ⚡️ Features
 - Add built in prompt handling.
