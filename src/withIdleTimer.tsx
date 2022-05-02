@@ -1,4 +1,4 @@
-import { ComponentType } from 'react'
+import React, { ComponentType } from 'react'
 import { Subtract } from 'utility-types'
 
 import { IIdleTimer, IIdleTimerProps, useIdleTimer } from '.'
