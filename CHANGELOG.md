@@ -1,5 +1,10 @@
 # Changelog
 
+### 5.1.1
+
+#### 🐞 Bug Fixes
+- Add missing React import in `withIdleTimer`.
+
 ### 5.1.0
 
 #### ⚡️ Features
