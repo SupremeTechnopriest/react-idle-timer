@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react'
+import { Component, createRef, ReactNode } from 'react'
 import { render, fireEvent, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
@@ -115,6 +115,32 @@ describe('withIdleTimer', () => {
     fireEvent.mouseDown(document)
     expect(onActive).toHaveBeenCalledTimes(1)
     expect(onAction).toHaveBeenCalledTimes(1)
+    rerender(<Instance required />)
+  })
+
+  it('Should forward ref to IIdleTimer instance', async () => {
+    class Root extends Component<IProps, {}> {
+      render () {
+        return (
+          <></>
+        )
+      }
+    }
+
+    const idleTimerRef = createRef<IIdleTimer>()
+    const Instance = withIdleTimer<IProps>(Root)
+
+    const { rerender } = render(
+      <Instance
+        ref={idleTimerRef}
+        timeout={200}
+        required
+      />
+    )
+
+    expect(idleTimerRef.current).not.toBeNull()
+    await sleep(200)
+    expect(idleTimerRef.current.isIdle()).toBeTruthy()
     rerender(<Instance required />)
   })
 })
