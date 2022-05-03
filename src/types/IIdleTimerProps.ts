@@ -1,3 +1,4 @@
+import { RefObject } from 'react'
 import { EventsType } from './EventsType'
 import { IIdleTimer } from './IIdleTimer'
 import { ITimers } from './ITimers'
@@ -8,7 +9,7 @@ export interface IIdleTimerProps {
    *
    * @default undefined
    */
-  ref?: (ref: IIdleTimer) => void
+  ref?: RefObject<IIdleTimer>;
 
   /**
    * Activity Timeout in milliseconds.

@@ -10,7 +10,8 @@ import { IIdleTimer, IIdleTimerProps, useIdleTimer } from '.'
  * @returns Component wrapped with IdleTimer.
  */
 export function withIdleTimer<T extends IIdleTimer> (Component: ComponentType<T>) {
-  return function IdleTimer (props?: Subtract<T, IIdleTimer> & IIdleTimerProps) {
+  type WithIdleTimerProps = Subtract<T, IIdleTimer> & IIdleTimerProps
+  return React.forwardRef<IIdleTimer, WithIdleTimerProps>(function IdleTimer (props, ref) {
     const options = { ...props }
 
     if (!options.onPrompt && Component.prototype.onPrompt) {
@@ -38,6 +39,13 @@ export function withIdleTimer<T extends IIdleTimer> (Component: ComponentType<T>
     }
 
     const idleTimer = useIdleTimer(options)
+
+    if (typeof ref === 'function') {
+      ref(idleTimer)
+    } else if (ref) {
+      ref.current = idleTimer
+    }
+
     return <Component {...(props as unknown as T)} {...idleTimer} />
-  }
+  })
 }
