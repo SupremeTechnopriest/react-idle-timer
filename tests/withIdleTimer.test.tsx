@@ -1,4 +1,4 @@
-import { Component, createRef, ReactNode } from 'react'
+import { Component, type ReactNode, createRef } from 'react'
 import { render, fireEvent, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
@@ -140,7 +140,7 @@ describe('withIdleTimer', () => {
 
     expect(idleTimerRef.current).not.toBeNull()
     await sleep(200)
-    expect(idleTimerRef.current.isIdle()).toBeTruthy()
+    expect(idleTimerRef.current.isIdle()).toBe(true)
     rerender(<Instance required />)
   })
 })
