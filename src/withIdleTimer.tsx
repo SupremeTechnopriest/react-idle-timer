@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react'
+import { ComponentType, forwardRef } from 'react'
 import { Subtract } from 'utility-types'
 
 import { IIdleTimer, IIdleTimerProps, useIdleTimer } from '.'
@@ -11,7 +11,7 @@ import { IIdleTimer, IIdleTimerProps, useIdleTimer } from '.'
  */
 export function withIdleTimer<T extends IIdleTimer> (Component: ComponentType<T>) {
   type WithIdleTimerProps = Subtract<T, IIdleTimer> & IIdleTimerProps
-  return React.forwardRef<IIdleTimer, WithIdleTimerProps>(function IdleTimer (props, ref) {
+  return forwardRef<IIdleTimer, WithIdleTimerProps>(function IdleTimer (props, ref) {
     const options = { ...props }
 
     if (!options.onPrompt && Component.prototype.onPrompt) {

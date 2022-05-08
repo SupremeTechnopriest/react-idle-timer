@@ -1,4 +1,4 @@
-import { Component, type ReactNode, createRef } from 'react'
+import { ReactNode, Component, createRef } from 'react'
 import { render, fireEvent, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
