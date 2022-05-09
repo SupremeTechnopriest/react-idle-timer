@@ -1,14 +1,16 @@
 import { Component } from 'react'
 import { renderHook } from '@testing-library/react-hooks'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import {
+  IIdleTimer,
   IdleTimerProvider,
   IdleTimerConsumer,
   useIdleTimer,
+  withIdleTimer,
   workerTimers
-} from '../dist/index.cjs.js'
+} from '../'
 import { timers, createMocks } from '../src/utils/timers'
 import { sleep, waitFor } from './test.utils'
 
@@ -22,9 +24,11 @@ describe('Bundle', () => {
   })
 
   it('Should run with mocked timers', async () => {
-    const timer = renderHook(() => useIdleTimer({
-      timeout: 200
-    }))
+    const timer = renderHook(() =>
+      useIdleTimer({
+        timeout: 200
+      })
+    )
     timer.result.current.start()
     expect(timer.result.current.isIdle()).toBe(false)
     await waitFor(() => timer.result.current.isIdle())
@@ -32,15 +36,19 @@ describe('Bundle', () => {
 
   it('Should mock MessageChannel', async () => {
     const fn = jest.fn()
-    const timer = renderHook(() => useIdleTimer({
-      crossTab: true,
-      onMessage: fn
-    }))
+    const timer = renderHook(() =>
+      useIdleTimer({
+        crossTab: true,
+        onMessage: fn
+      })
+    )
 
-    renderHook(() => useIdleTimer({
-      crossTab: true,
-      onMessage: fn
-    }))
+    renderHook(() =>
+      useIdleTimer({
+        crossTab: true,
+        onMessage: fn
+      })
+    )
 
     timer.result.current.message('foo', true)
     await sleep(100)
@@ -54,8 +62,8 @@ describe('Bundle', () => {
           <IdleTimerConsumer>
             {({ getRemainingTime, isIdle }) => (
               <>
-                <div data-testid='remaining'>{String(getRemainingTime())}</div>
-                <div data-testid='isIdle'>{String(isIdle())}</div>
+                <div data-testid="remaining">{String(getRemainingTime())}</div>
+                <div data-testid="isIdle">{String(isIdle())}</div>
               </>
             )}
           </IdleTimerConsumer>
@@ -76,6 +84,34 @@ describe('Bundle', () => {
     render(<Root />)
     expect(screen.getByTestId('remaining')).toHaveTextContent('1000')
     expect(screen.getByTestId('isIdle')).toHaveTextContent('true')
+  })
+
+  it('Should render higher order component', () => {
+    interface IProps extends IIdleTimer {
+      required: boolean
+      optional?: string
+    }
+
+    class Root extends Component<IProps, {}> {
+      render () {
+        return (
+          <>
+            <div data-testid="remaining">
+              {String(this.props.getRemainingTime())}
+            </div>
+            <div data-testid="isIdle">{String(this.props.isIdle())}</div>
+          </>
+        )
+      }
+    }
+
+    const Instance = withIdleTimer<IProps>(Root)
+    const { rerender } = render(<Instance timeout={1000} required />)
+    expect(screen.getByTestId('remaining')).toHaveTextContent('1000')
+    expect(screen.getByTestId('isIdle')).toHaveTextContent('true')
+    fireEvent.mouseDown(document)
+    rerender(<Instance required />)
+    expect(screen.getByTestId('isIdle')).toHaveTextContent('false')
   })
 
   it('Should return workerTimers interface', () => {
