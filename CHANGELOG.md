@@ -1,5 +1,10 @@
 # Changelog
 
+### 5.1.2
+
+#### ✨ Enhancements
+- Forward ref on `withIdleTimer`.
+
 ### 5.1.1
 
 #### 🐞 Bug Fixes
