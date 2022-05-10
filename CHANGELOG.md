@@ -1,5 +1,10 @@
 # Changelog
 
+### 5.1.3
+
+#### 🐞 Bug Fixes
+- Use builtin `Omit` over utility-types `Subtract`. Fixes missing dependency error.
+
 ### 5.1.2
 
 #### ✨ Enhancements
