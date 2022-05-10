@@ -61,7 +61,6 @@
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "typescript": "^4.6.3",
-    "utility-types": "^3.10.0",
     "worker-timers": "^7.0.45"
   }
 }
