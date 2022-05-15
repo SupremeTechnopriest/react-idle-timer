@@ -148,6 +148,12 @@ export interface IIdleTimerProps {
   crossTab?: boolean
 
   /**
+   * Name of this IdleTimer instance. Useful if you are instantiating multiple
+   * IdleTimer instances with crossTab enabled.
+   */
+  name?: string
+
+  /**
    * Sync the timers across all tabs. The value is the interval in which timers
    * will be synced. Setting it to 0 is equivalent to turning the feature off.
    *

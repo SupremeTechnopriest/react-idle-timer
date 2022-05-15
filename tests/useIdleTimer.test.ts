@@ -34,6 +34,7 @@ describe('useIdleTimer', () => {
       capture: undefined,
       passive: undefined,
       crossTab: undefined,
+      name: undefined,
       syncTimers: undefined,
       leaderElection: undefined
     }
@@ -968,6 +969,23 @@ describe('useIdleTimer', () => {
 
           await waitFor(() => result.current.isIdle())
           expect(props.onIdle).toHaveBeenCalledTimes(1)
+        })
+      })
+
+      describe('.name', () => {
+        it('Should set separate names for multiple instances', async () => {
+          props.timeout = 200
+          props.crossTab = true
+          props.name = 'timer-1'
+          props.onIdle = jest.fn()
+          props.crossTab = false
+          const timer1 = idleTimer()
+
+          props.name = 'timer-2'
+          const timer2 = idleTimer()
+          await waitFor(() => timer1.result.current.isIdle())
+          await waitFor(() => timer2.result.current.isIdle())
+          expect(props.onIdle).toHaveBeenCalledTimes(2)
         })
       })
 

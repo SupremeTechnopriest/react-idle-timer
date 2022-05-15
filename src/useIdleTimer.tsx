@@ -43,6 +43,7 @@ export function useIdleTimer ({
   startManually = false,
   stopOnIdle = false,
   crossTab = false,
+  name = 'idle-timer',
   syncTimers = 0,
   leaderElection = false
 }: IIdleTimerProps = {}): IIdleTimer {
@@ -640,7 +641,7 @@ export function useIdleTimer ({
     // Set up cross tab
     if (crossTab) {
       manager.current = new TabManager({
-        channelName: 'idle-timer',
+        channelName: name,
         leaderElection,
         onPrompt: () => {
           togglePrompted()
@@ -660,7 +661,7 @@ export function useIdleTimer ({
     } else {
       manager.current = null
     }
-  }, [crossTab, leaderElection, emitOnPrompt, emitOnIdle, emitOnActive, emitOnMessage, start, reset, pause, resume])
+  }, [crossTab, name, leaderElection, emitOnPrompt, emitOnIdle, emitOnActive, emitOnMessage, start, reset, pause, resume])
 
   // Dynamic Start
   useEffect(() => {
