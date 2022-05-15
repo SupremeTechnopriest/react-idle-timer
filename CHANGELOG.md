@@ -1,5 +1,10 @@
 # Changelog
 
+### 5.2.0
+
+#### ✨ Enhancements
+- Add `name` property to support multiple instances when `crossTab` is enabled.
+
 ### 5.1.3
 
 #### 🐞 Bug Fixes
