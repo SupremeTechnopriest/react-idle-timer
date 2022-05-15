@@ -146,7 +146,13 @@ set of properties. Examples of how they are used can be found in the
   description='Enable cross tab event replication.'
   type='boolean'
   defaultValue='false'
-  required
+/>
+
+### name
+<Property 
+  description='Sets the name for the IdleTimer instance. This is required if you are running multiple instances with `crossTab` enabled.'
+  type='string'
+  defaultValue='idle-timer'
 />
 
 ### syncTimers
