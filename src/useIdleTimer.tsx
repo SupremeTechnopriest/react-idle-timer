@@ -202,6 +202,9 @@ export function useIdleTimer ({
     const nextIdle = !idle.current
     // Handle idle
     if (nextIdle) {
+      // Cancel onAction callbacks
+      if (emitOnAction.current.cancel) emitOnAction.current.cancel()
+
       // Handle prompt
       if (promptTimeoutRef.current > 0 && !prompted.current) {
         if (manager.current) {
@@ -212,6 +215,7 @@ export function useIdleTimer ({
         return
       }
 
+      // Handle idle
       if (manager.current) {
         manager.current.idle()
       } else {
