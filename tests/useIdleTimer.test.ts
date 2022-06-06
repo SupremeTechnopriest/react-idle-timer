@@ -937,8 +937,6 @@ describe('useIdleTimer', () => {
           const { result } = idleTimer()
 
           result.current.start()
-          await waitFor(() => result.current.isIdle())
-          result.current.reset()
 
           await sleep(100)
           result.current.pause()
@@ -951,7 +949,7 @@ describe('useIdleTimer', () => {
           await sleep(remaining)
 
           expect(result.current.isIdle()).toBe(true)
-          expect(props.onIdle).toHaveBeenCalledTimes(2)
+          expect(props.onIdle).toHaveBeenCalledTimes(1)
 
           fireEvent.mouseDown(document)
           expect(result.current.isIdle()).toBe(false)
@@ -1049,6 +1047,16 @@ describe('useIdleTimer', () => {
           props.startOnMount = false
           const { result } = idleTimer()
           result.current.reset()
+          expect(result.current.isIdle()).toBe(false)
+        })
+
+        it('Should not start time when startManually is set', async () => {
+          props.timeout = 200
+          props.startOnMount = false
+          props.startManually = true
+          const { result } = idleTimer()
+          result.current.reset()
+          await sleep(200)
           expect(result.current.isIdle()).toBe(false)
         })
 

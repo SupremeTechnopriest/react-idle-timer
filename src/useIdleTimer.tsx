@@ -384,14 +384,6 @@ export function useIdleTimer ({
     // Bind the events
     bindEvents()
 
-    // Emit active
-    if (idle.current || prompted.current) {
-      emitOnActive.current()
-      if (manager.current) {
-        manager.current.active()
-      }
-    }
-
     // Reset state
     idle.current = false
     prompted.current = false
@@ -408,8 +400,10 @@ export function useIdleTimer ({
     }
 
     // Set new timeout
-    createTimeout()
-  }, [tId, idle, timeoutRef, manager])
+    if (!startManually) {
+      createTimeout()
+    }
+  }, [tId, idle, timeoutRef, startManually, manager])
 
   /**
    * Pause a running timer.
@@ -709,12 +703,14 @@ export function useIdleTimer ({
       timeoutRef.current = timeout
       if (startManually) return
       if (idle.current) {
-        reset()
-      } else {
-        start()
+        emitOnActive.current()
+        if (manager.current) {
+          manager.current.active()
+        }
       }
+      start()
     }
-  }, [timeout, startManually, firstLoad, idle])
+  }, [timeout, manager, startManually, firstLoad, idle])
 
   // Return API
   return {
