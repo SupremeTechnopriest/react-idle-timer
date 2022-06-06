@@ -143,4 +143,30 @@ describe('withIdleTimer', () => {
     expect(idleTimerRef.current.isIdle()).toBe(true)
     rerender(<Instance required />)
   })
+
+  it('Should forward ref as a function', async () => {
+    class Root extends Component<IProps, {}> {
+      render () {
+        return (
+          <></>
+        )
+      }
+    }
+
+    let idleTimerRef: IIdleTimer = null
+    const Instance = withIdleTimer<IProps>(Root)
+
+    const { rerender } = render(
+      <Instance
+        ref={(ref: IIdleTimer) => { idleTimerRef = ref }}
+        timeout={200}
+        required
+      />
+    )
+
+    expect(idleTimerRef).not.toBeNull()
+    await sleep(200)
+    expect(idleTimerRef.isIdle()).toBe(true)
+    rerender(<Instance required />)
+  })
 })

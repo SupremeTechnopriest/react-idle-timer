@@ -276,6 +276,25 @@ describe('useIdleTimer', () => {
           expect(props.onIdle).toHaveBeenCalledTimes(2)
         })
 
+        it('Should call active on manager when timeout is updated', async () => {
+          props.onIdle = jest.fn()
+          props.onActive = jest.fn()
+          props.timeout = 200
+          props.crossTab = true
+          const { rerender, result } = idleTimer()
+
+          await waitFor(() => result.current.isIdle())
+          expect(props.onIdle).toHaveBeenCalledTimes(1)
+
+          props.timeout = 400
+          rerender()
+
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getTotalActiveTime()).toBeAround(600, 30)
+          expect(props.onIdle).toHaveBeenCalledTimes(2)
+          expect(props.onActive).toHaveBeenCalledTimes(2)
+        })
+
         it('Should update when started manually', async () => {
           props.timeout = 400
           props.startOnMount = false
@@ -937,6 +956,9 @@ describe('useIdleTimer', () => {
           const { result } = idleTimer()
 
           result.current.start()
+          await waitFor(() => result.current.isIdle())
+          result.current.reset()
+          result.current.start()
 
           await sleep(100)
           result.current.pause()
@@ -949,7 +971,7 @@ describe('useIdleTimer', () => {
           await sleep(remaining)
 
           expect(result.current.isIdle()).toBe(true)
-          expect(props.onIdle).toHaveBeenCalledTimes(1)
+          expect(props.onIdle).toHaveBeenCalledTimes(2)
 
           fireEvent.mouseDown(document)
           expect(result.current.isIdle()).toBe(false)
