@@ -1,5 +1,15 @@
 # Changelog
 
+### 5.3.0
+
+#### ✨ Enhancements
+- The `reset` method now respects `startManually` property. It will no longer automatically call `onActive`.
+- Export `DEFAULT_EVENTS` for easy extension of events. #260
+
+#### 🐞 Bug Fixes
+- The `getRemainingTime` method now always returns the time to idle instead of time to prompt and then time to idle. #256
+- Debounced `onAction` callbacks will automatically be cancelled on idle. #255
+
 ### 5.2.0
 
 #### ✨ Enhancements
