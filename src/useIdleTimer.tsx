@@ -517,18 +517,14 @@ export function useIdleTimer ({
     // Get how long the timer was set for
     const timeoutTotal = remaining.current
       ? remaining.current
-      : prompted.current
-        ? promptTimeoutRef.current
-        : timeoutRef.current
+      : promptTimeoutRef.current + timeoutRef.current
 
     // Time since last active
     const timeSinceLastActive = lastActive.current
-      ? prompted.current
-        ? (now() - (promptTime.current))
-        : (now() - lastActive.current)
+      ? now() - lastActive.current
       : 0
 
-    const timeLeft = Math.ceil(timeoutTotal - timeSinceLastActive) // ?
+    const timeLeft = Math.ceil(timeoutTotal - timeSinceLastActive)
     return timeLeft < 0 ? 0 : Math.abs(timeLeft)
   }, [timeoutRef, promptTimeoutRef, prompted, remaining, lastActive])
 

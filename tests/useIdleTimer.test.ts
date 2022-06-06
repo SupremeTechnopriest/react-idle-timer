@@ -1404,7 +1404,7 @@ describe('useIdleTimer', () => {
 
           const { result } = idleTimer()
           await sleep(100)
-          expect(result.current.getRemainingTime()).toBeAround(100, 10)
+          expect(result.current.getRemainingTime()).toBeAround(500, 10)
 
           await waitFor(() => result.current.isPrompted())
           expect(props.onPrompt).toHaveBeenCalledTimes(1)
