@@ -790,6 +790,21 @@ describe('useIdleTimer', () => {
           expect(fn2).toHaveBeenCalledTimes(1)
         })
 
+        it('Should cancel debounced callback on idle', async () => {
+          props.onAction = jest.fn()
+          props.timeout = 200
+          props.debounce = 400
+          props.eventsThrottle = 0
+          const { result } = idleTimer()
+          fireEvent.mouseDown(document)
+          fireEvent.mouseDown(document)
+          fireEvent.mouseDown(document)
+          fireEvent.mouseDown(document)
+          await waitFor(() => result.current.isIdle())
+          await sleep(300)
+          expect(props.onAction).toHaveBeenCalledTimes(0)
+        })
+
         it('Should dynamically update debounce', async () => {
           props.onAction = jest.fn()
           props.debounce = 400
