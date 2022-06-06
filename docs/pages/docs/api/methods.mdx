@@ -10,13 +10,13 @@ and [higher order component](/docs/api/with-idle-timer) docs.
 
 ### start
 <Property 
-  description='Restore initial state and restart timer. Does not call `onActive`.'
+  description='Resets the IdleTimer instance to its initial state and starts the timer.'
   type='() => void'
 />
 
 ### reset
 <Property 
-  description='Restore initial state and restart timer. Calls `onActive`.'
+  description='Resets the IdleTimer instance to its initial state.'
   type='() => void'
 />
 
@@ -58,7 +58,7 @@ and [higher order component](/docs/api/with-idle-timer) docs.
 
 ### getRemainingTime
 <Property 
-  description='Returns the number of milliseconds until idle or prompt.'
+  description='Returns the number of milliseconds until idle.'
   type='() => number'
 />
 
