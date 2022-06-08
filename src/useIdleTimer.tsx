@@ -482,7 +482,7 @@ export function useIdleTimer ({
   }, [onMessage])
 
   /**
-   * Returns wether or not the user is idle.
+   * Returns whether or not the user is idle.
    *
    * @return Idle state
    */
@@ -491,7 +491,7 @@ export function useIdleTimer ({
   }, [idle])
 
   /**
-   * Return wether or not the prompt is active.
+   * Return whether or not the prompt is active.
    *
    * @returns Prompt state
    */
@@ -500,7 +500,7 @@ export function useIdleTimer ({
   }, [prompted])
 
   /**
-   * Returns wether or not this is the leader tab
+   * Returns whether or not this is the leader tab
    */
   const isLeader = useCallback<() => boolean>((): boolean => {
     if (!manager.current) {

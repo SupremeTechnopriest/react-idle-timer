@@ -12,14 +12,14 @@ export interface IIdleTimer {
   /**
    * Store remaining time and stop timer.
    *
-   * @returns Wether or not the instance was paused.
+   * @returns whether or not the instance was paused.
    */
   pause(): boolean
 
   /**
    * Resumes a paused timer.
    *
-   * @returns Wether or not the instance was resumed.
+   * @returns whether or not the instance was resumed.
    */
   resume(): boolean
 
@@ -32,21 +32,21 @@ export interface IIdleTimer {
   message(data: string | number | object, emitOnSelf?: boolean): void
 
   /**
-  * Returns wether or not the user is idle.
+  * Returns whether or not the user is idle.
   *
   * @returns Idle state.
   */
   isIdle(): boolean
 
   /**
-   * Returns wether or not the current tab is the leader.
+   * Returns whether or not the current tab is the leader.
    *
    * @returns Leader state.
    */
   isLeader(): boolean
 
   /**
-   * Returns wether or not the prompt is active.
+   * Returns whether or not the prompt is active.
    *
    * @returns Prompted state.
    */
