@@ -111,7 +111,7 @@
 
 #### ⚡️ Features
 - Add cross tab support. See examples and README for usage and documentation.
-- Add an `isLeader()` method that returns a boolean indicating wether or not the current tab is the lead orchestrator for cross tab reconciliation.
+- Add an `isLeader()` method that returns a boolean indicating whether or not the current tab is the lead orchestrator for cross tab reconciliation.
 - Add a `startManually` configuration option to enable starting of the timer and activity detection manually. An alias to `reset()` called `start()` is also exposed to keep the code more semantic. If `startManually` is set to `true`, the `IdleTimer` component and `useIdleTimer` hook wont start until `reset()` or `start()` are called.
 
 #### 🐞 Bug Fixes
@@ -389,7 +389,7 @@ Events are bound when:
 Version 4.0 contains a rewrite of the build system and a refactor of the source
 code for IdleTimer. After accepting many pull requests, the projects code style
 was destroyed, so some forced styling was added and PRs that don't respect this
-style will not be accepted. Contribution guide now on the README. 
+style will not be accepted. Contribution guide now on the README.
 
 #### 🔥 Code Removal
 - The property `startOnLoad` has been renamed to `startOnMount` to make more sense in a react context.
