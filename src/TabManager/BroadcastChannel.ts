@@ -15,7 +15,7 @@ class Polyfill {
   public readonly name: string
 
   /**
-   * Wether or not this channel is closed
+   * whether or not this channel is closed
    */
   public closed: boolean = false
 
