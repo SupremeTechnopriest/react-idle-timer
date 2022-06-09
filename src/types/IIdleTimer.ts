@@ -1,13 +1,18 @@
 export interface IIdleTimer {
   /**
-   * Restore initial state and restart timer. Does not call onActive.
+   * Restore initial state and restart timer.
    */
   start(): void
 
   /**
-   * Restore initial state and restart timer. Calls onActive.
+   * Restore initial state.
    */
   reset(): void
+
+  /**
+   * Restore initial state and emit onActive is user was idle.
+   */
+  active(): void
 
   /**
    * Store remaining time and stop timer.

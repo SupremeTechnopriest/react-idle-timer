@@ -410,6 +410,43 @@ export function useIdleTimer ({
   }, [tId, idle, timeoutRef, startManually, manager])
 
   /**
+   * Manually trigger an activation event.
+   */
+  const active = useCallback<(remote?: boolean) => void>((remote?: boolean): void => {
+    // Clear timeout
+    destroyTimeout()
+
+    // Bind the events
+    bindEvents()
+
+    // Emit active
+    if (idle.current || prompted.current) {
+      emitOnActive.current()
+      if (manager.current) {
+        manager.current.active()
+      }
+    }
+
+    // Reset state
+    idle.current = false
+    prompted.current = false
+    paused.current = false
+    remaining.current = 0
+    promptTime.current = 0
+    lastReset.current = now()
+
+    if (manager.current) {
+      manager.current.allIdle = false
+      if (!remote) {
+        manager.current.send(MessageActionType.ACTIVE)
+      }
+    }
+
+    // Set new timeout
+    createTimeout()
+  }, [tId, idle, timeoutRef, manager])
+
+  /**
    * Pause a running timer.
    *
    */
@@ -717,6 +754,7 @@ export function useIdleTimer ({
     message,
     start,
     reset,
+    active,
     pause,
     resume,
     isIdle,

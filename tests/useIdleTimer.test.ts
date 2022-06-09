@@ -1111,6 +1111,48 @@ describe('useIdleTimer', () => {
         })
       })
 
+      describe('.active()', () => {
+        it('Should start timer when active is called', () => {
+          props.startOnMount = false
+          const { result } = idleTimer()
+          result.current.active()
+          expect(result.current.isIdle()).toBe(false)
+        })
+
+        it('Should call onActive if user was idle', async () => {
+          props.timeout = 200
+          props.onActive = jest.fn()
+          const { result } = idleTimer()
+          await waitFor(() => result.current.isIdle())
+          result.current.active()
+          expect(props.onActive).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should emit active event when cross tab is enabled', async () => {
+          props.timeout = 200
+          props.onActive = jest.fn()
+          props.crossTab = true
+          const { result } = idleTimer()
+          idleTimer()
+          await waitFor(() => result.current.isIdle())
+          result.current.active()
+          expect(props.onActive).toHaveBeenCalledTimes(2)
+        })
+
+        it('Should bind all events on active()', async () => {
+          props.onAction = jest.fn()
+          props.stopOnIdle = true
+          props.timeout = 200
+          const { result } = idleTimer()
+          await waitFor(() => result.current.isIdle())
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(0)
+          result.current.active()
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(1)
+        })
+      })
+
       describe('.pause()', () => {
         it('Should pause the timer', () => {
           const { result } = idleTimer()
@@ -1487,7 +1529,7 @@ describe('useIdleTimer', () => {
           expect(result.current.getRemainingTime()).toBe(0)
         })
 
-        it('Should reset when start or reset is called', async () => {
+        it('Should reset when start, reset or active is called', async () => {
           props.timeout = 200
           const { result } = idleTimer()
           await sleep(100)
@@ -1499,6 +1541,10 @@ describe('useIdleTimer', () => {
           await waitFor(() => result.current.isIdle())
           expect(result.current.getRemainingTime()).toBe(0)
           result.current.start()
+          expect(result.current.getRemainingTime()).toBeAround(200, 10)
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getRemainingTime()).toBe(0)
+          result.current.active()
           expect(result.current.getRemainingTime()).toBeAround(200, 10)
         })
       })
