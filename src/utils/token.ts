@@ -1,5 +1,3 @@
-import { now } from './now'
-
 /**
  * Generate a random token.
  *
@@ -7,5 +5,5 @@ import { now } from './now'
  * @private
  */
 export function createToken (): string {
-  return now().toString(36).substring(2)
+  return Math.random().toString(36).substring(2)
 }
