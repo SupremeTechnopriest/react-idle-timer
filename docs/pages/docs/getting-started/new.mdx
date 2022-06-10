@@ -94,6 +94,7 @@ const idleTimer = useIdleTimer({
 With the new `syncTimers` feature:
 
 ```jsx
+// Hook
 const idleTimer = useIdleTimer({
   crossTab: true,
   syncTimers: 200
@@ -102,6 +103,33 @@ const idleTimer = useIdleTimer({
 // Higher Order Component Wrapped 
 <IdleTimer crossTab syncTimers={200} />
 ```
+
+If you are using multiple IdleTimer instances on the same page, you can use the
+`name` prop to isolate crossTab events to their respective instances.
+
+```jsx
+// Hook
+const logoutTimer = useIdleTimer({
+  timeout: 1000 * 60 * 30,
+  crossTab: true,
+  syncTimers: 200,
+  name: 'logout-timer'
+})
+
+const activityTimer = useIdleTimer({
+  timeout: 1000 * 60 * 5,
+  crossTab: true,
+  syncTimers: 200,
+  name: 'activity-timer'
+})
+
+// Higher Order Component Wrapped 
+<IdleTimer crossTab timeout={1000 * 60 * 30} syncTimers={200} name='logout-timer' />
+<IdleTimer crossTab timeout={1000 * 60 * 5} syncTimers={200} name='activity-timer' />
+```
+
+There is also a new method [getTabId()](/docs/api/methods#gettabid) that will 
+return the current tabs id that is used internally by IdleTimer's `crossTab` feature.
 
 #### Leader Election
 In v4 Leader Election was enabled by default and would automatically emit events
@@ -350,3 +378,10 @@ the higher order component [here](/docs/api/with-idle-timer).
 If you need to access the IdleTimer API in nested children, you can opt to use 
 the `IdleTimerProvider` rather than drilling props through your App's hierarchy.
 More about the Provider and related exports [here](/docs/api/idle-timer-provider).
+
+### Activate Method
+The `reset` method will now reset IdleTimer to it's initial state only. It will no
+longer call `onActive` if the user was idle. This functionality has been replaced
+by the [activate()](/docs/api/methods#active) method. You can call `activate()` to
+manually activate a user, resetting the timer and calling `onActive` if the user
+was idle. 

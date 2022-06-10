@@ -253,6 +253,7 @@ export function ControlDrawer (props: IControlDrawerProps) {
                       <VStack width='40%'>
                         <ButtonWithLabel label='start' onClick={() => props.start()} />
                         <ButtonWithLabel label='reset' onClick={() => props.reset()} />
+                        <ButtonWithLabel label='activate' onClick={() => props.activate()} />
                         <ButtonWithLabel label='pause' onClick={() => props.pause()} />
                         <ButtonWithLabel label='resume' onClick={() => props.resume()} />
                         <ButtonWithLabel label='isIdle' onClick={() => props.isIdle()} />
@@ -260,6 +261,7 @@ export function ControlDrawer (props: IControlDrawerProps) {
                         <ButtonWithLabel label='isLeader' onClick={() => props.isLeader()} />
                       </VStack>
                       <VStack width='60%'>
+                        <ButtonWithLabel label='getTabId' onClick={() => props.getTabId()} />
                         <ButtonWithLabel label='getRemainingTime' onClick={() => props.getRemainingTime()} />
                         <ButtonWithLabel label='getElapsedTime' onClick={() => props.getElapsedTime()} />
                         <ButtonWithLabel label='getTotalElapsedTime' onClick={() => props.getTotalElapsedTime()} />

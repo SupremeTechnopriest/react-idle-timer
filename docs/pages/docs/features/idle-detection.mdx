@@ -31,7 +31,8 @@ The methods associated with idle detection are:
 
 {/* cspell:disable */}
 - [start](/docs/api/methods#start): Starts the timer.
-- [reset](/docs/api/methods#reset): Resets the timer and calls `onActive`.
+- [reset](/docs/api/methods#reset): Resets the timer to its initial state.
+- [activate](/docs/api/methods#activate): Resets the IdleTimer instance to its initial state, starts the timer and emits `onActive` if the user was idle.
 - [pause](/docs/api/methods#pause): Pauses a running timer.
 - [resume](/docs/api/methods#resume): Resumes a running timer.
 - [getElapsedTime](/docs/api/methods#getelapsedtime): Returns the time in milliseconds since the host component was mounted.

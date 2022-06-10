@@ -34,7 +34,10 @@ function Motion (props: IMotionProps) {
 
   const tick = useCallback(() => {
     const time = props.isOpen ? props.promptTimeout : props.timeout
-    const left = props.getRemainingTime()
+    const left = props.isOpen
+      ? props.getRemainingTime()
+      : props.getRemainingTime() - props.promptTimeout
+
     height.set(left / time)
     if (shouldAnimate) {
       window.requestAnimationFrame(tick)
@@ -151,12 +154,14 @@ export default function Demo () {
   const {
     start,
     reset,
+    activate,
     pause,
     resume,
     message,
     isIdle,
     isPrompted,
     isLeader,
+    getTabId,
     getRemainingTime,
     getElapsedTime,
     getTotalElapsedTime,
@@ -214,6 +219,10 @@ export default function Demo () {
         setLastEvent('RESET')
         setLastKey('')
         return reset()
+      case 'activate':
+        setLastEvent('ACTIVATE')
+        setLastKey('')
+        return activate()
       case 'pause':
         if (pause()) {
           setLastEvent('PAUSE')
@@ -247,6 +256,11 @@ export default function Demo () {
           alert('isLeader', err.message)
           return err.message
         }
+      }
+      case 'getTabId': {
+        const result = getTabId()
+        alert('getTabId', result)
+        return result
       }
       case 'getRemainingTime': {
         const result = getRemainingTime()
@@ -390,12 +404,14 @@ export default function Demo () {
           setEmitOnSelf={data => handler('emitOnSelf', data)}
           start={() => handler('start')}
           reset={() => handler('reset')}
+          activate={() => handler('activate')}
           pause={() => handler('pause')}
           resume={() => handler('resume')}
           message={data => handler('message', data)}
           isIdle={() => handler('isIdle')}
           isPrompted={() => handler('isPrompted')}
           isLeader={() => handler('isLeader')}
+          getTabId={() => handler('getTabId')}
           getRemainingTime={() => handler('getRemainingTime')}
           getElapsedTime={() => handler('getElapsedTime')}
           getTotalElapsedTime={() => handler('getTotalElapsedTime')}

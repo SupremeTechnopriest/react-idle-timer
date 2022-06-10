@@ -66,10 +66,13 @@ export const App = () => {
   const {
     start,
     reset,
+    activate,
     pause,
     resume,
     isIdle,
     isPrompted,
+    isLeader,
+    getTabId,
     getRemainingTime,
     getElapsedTime,
     getLastIdleTime,
@@ -105,7 +108,9 @@ export const App = () => {
     startManually: false,
     stopOnIdle: false,
     crossTab: false,
-    syncTimers: 0
+    name: 'idle-timer',
+    syncTimers: 0,
+    leaderElection: false
   })
   return (
     <HomePage />

@@ -20,6 +20,12 @@ and [higher order component](/docs/api/with-idle-timer) docs.
   type='() => void'
 />
 
+### activate
+<Property 
+  description='Resets the IdleTimer instance to its initial state, starts the timer and emits `onActive` if the user was idle.'
+  type='() => void'
+/>
+
 ### pause
 <Property 
   description='Pauses the IdleTimer instance. When paused all events are unbound.'
@@ -54,6 +60,12 @@ and [higher order component](/docs/api/with-idle-timer) docs.
 <Property 
   description='Returns whether or not current tab is the leader.'
   type='() => boolean'
+/>
+
+### getTabId
+<Property 
+  description='Returns the current tabs id.'
+  type='() => string'
 />
 
 ### getRemainingTime

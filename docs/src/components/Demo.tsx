@@ -255,6 +255,7 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
               <VStack width='40%'>
                 <ButtonWithEvent event='start' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.start')} />
                 <ButtonWithEvent event='reset' frames={[frameA]} setDescription={setDescription} description={t('methods.reset')} />
+                <ButtonWithEvent event='activate' frames={[frameA]} setDescription={setDescription} description={t('methods.activate')} />
                 <ButtonWithEvent event='pause' frames={[frameA]} setDescription={setDescription} description={t('methods.pause')} />
                 <ButtonWithEvent event='resume' frames={[frameA]} setDescription={setDescription} description={t('methods.resume')} />
                 <ButtonWithEvent event='isIdle' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isIdle')} />
@@ -262,6 +263,7 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
                 <ButtonWithEvent event='isLeader' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isLeader')} />
               </VStack>
               <VStack width='60%'>
+                <ButtonWithEvent event='getTabId' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTabId')} />
                 <ButtonWithEvent event='getRemainingTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getRemainingTime')} />
                 <ButtonWithEvent event='getElapsedTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getElapsedTime')} />
                 <ButtonWithEvent event='getTotalElapsedTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTotalElapsedTime')} />

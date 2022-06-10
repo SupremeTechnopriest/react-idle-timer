@@ -15,6 +15,8 @@ The properties associated with the cross tab feature are:
 {/* cspell:disable */}
 - [crossTab](/docs/api/props#crosstab): Enables the cross tab feature.
 - [syncTimers](/docs/api/props#synctimers): Syncs timeout durations between tabs when user activity is detected.
+- [name](/docs/api/props#name): Name of the idle timer instance. Set this if you are using crossTab with multiple instances on the same page.
+- [leaderElection](/docs/api/props#leaderelection): Enables the leader election feature.
 - [onMessage](/docs/api/props#onprompt): Function called when a message is received.
 {/* cspell:enable */}
 
@@ -24,6 +26,8 @@ The methods associated with the cross tab feature are:
 
 {/* cspell:disable */}
 - [message()](/docs/api/methods#message): Broadcast a message to all tabs.
+- [isLeader()](/docs/api/methods#isleader): Returns whether or not the current tab is the elected leader.
+- [getTabId()](/docs/api/methods#gettabid): Returns the current tab's id.
 {/* cspell:enable */}
 
 ### Examples
