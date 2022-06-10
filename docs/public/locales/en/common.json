@@ -36,7 +36,7 @@
         "description": "Callback when your user performs the specified events. This call back can be debounced or throttled to preserve performance."
       },
       "confirmPrompt": {
-        "title": "Confirm Prompt",  
+        "title": "Confirm Prompt",
         "description": "Callback to open a confirm prompt with a countdown timer before the idle event is fired. Give your users a chance to let you know they are still there."
       },
       "crossTabSupport": {

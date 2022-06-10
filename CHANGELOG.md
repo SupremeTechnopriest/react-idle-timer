@@ -398,7 +398,7 @@ Events are bound when:
 Version 4.0 contains a rewrite of the build system and a refactor of the source
 code for IdleTimer. After accepting many pull requests, the projects code style
 was destroyed, so some forced styling was added and PRs that don't respect this
-style will not be accepted. Contribution guide now on the README. 
+style will not be accepted. Contribution guide now on the README.
 
 #### 🔥 Code Removal
 - The property `startOnLoad` has been renamed to `startOnMount` to make more sense in a react context.
