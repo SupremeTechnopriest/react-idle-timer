@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.4.0
+
+#### ⚡️ Features
+- Add [getTabId()](https://idletimer.dev/docs/api/methods#gettabid) method.
+- Add [activate()](https://idletimer.dev/docs/api/methods#activate) method. #263
+
+#### 🐞 Bug Fixes
+- Fix a bug where events would leak when `crossTab` is enabled causing bad performance when many tabs are open. #247
+
 ### 5.3.0
 
 #### ✨ Enhancements
