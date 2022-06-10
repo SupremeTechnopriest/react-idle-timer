@@ -258,7 +258,7 @@ export function App () {
     setRemaining(0)
   }
 
-  const { getRemainingTime, isPrompted, reset } = useIdleTimer({
+  const { getRemainingTime, isPrompted, activate } = useIdleTimer({
     timeout,
     promptTimeout,
     onPrompt,
@@ -268,7 +268,7 @@ export function App () {
 
   const handleStillHere = () => {
     setOpen(false)
-    reset()
+    activate()
   }
 
   useEffect(() => {
