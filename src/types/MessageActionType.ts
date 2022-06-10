@@ -9,6 +9,7 @@ export enum MessageActionType {
   PROMPT,
   START,
   RESET,
+  ACTIVATE,
   PAUSE,
   RESUME,
   MESSAGE

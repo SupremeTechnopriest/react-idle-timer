@@ -12,7 +12,7 @@ export interface IIdleTimer {
   /**
    * Restore initial state and emit onActive is user was idle.
    */
-  active(): void
+  activate(): void
 
   /**
    * Store remaining time and stop timer.
@@ -56,6 +56,11 @@ export interface IIdleTimer {
    * @returns Prompted state.
    */
   isPrompted(): boolean
+
+  /**
+   * Returns the current tabs id.
+   */
+  getTabId(): string
 
   /**
    * Time remaining before idle or prompt.

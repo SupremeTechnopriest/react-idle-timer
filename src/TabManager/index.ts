@@ -12,6 +12,7 @@ interface ITabManagerOptions {
   onMessage: (data: any) => void
   start: (remote?: boolean) => void
   reset: (remote?: boolean) => void
+  activate: (remote?: boolean) => void
   pause: (remote?: boolean) => void
   resume: (remote?: boolean) => void
 }
@@ -33,7 +34,7 @@ export class TabManager {
   private options: ITabManagerOptions
   private elector: LeaderElector
 
-  private token: string = createToken()
+  public token: string = createToken()
   public registry: Map<string, RegistryState> = new Map()
   public allIdle: boolean = false
 
@@ -59,7 +60,7 @@ export class TabManager {
 
       switch (action) {
         case MessageActionType.REGISTER:
-          this.registry.set(token, RegistryState.ACTIVE)
+          this.registry.set(token, RegistryState.IDLE)
           break
         case MessageActionType.DEREGISTER:
           this.registry.delete(token)
@@ -73,20 +74,23 @@ export class TabManager {
         case MessageActionType.PROMPT:
           this.prompt(token)
           break
-        case MessageActionType.MESSAGE:
-          this.options.onMessage(data)
-          break
         case MessageActionType.START:
-          this.options.start(true)
+          this.start(token)
           break
         case MessageActionType.RESET:
-          this.options.reset(true)
+          this.reset(token)
+          break
+        case MessageActionType.ACTIVATE:
+          this.activate(token)
           break
         case MessageActionType.PAUSE:
-          this.options.pause(true)
+          this.pause(token)
           break
         case MessageActionType.RESUME:
-          this.options.resume(true)
+          this.resume(token)
+          break
+        case MessageActionType.MESSAGE:
+          this.options.onMessage(data)
           break
       }
     })
@@ -127,6 +131,7 @@ export class TabManager {
   }
 
   active (token: string = this.token) {
+    this.allIdle = false
     this.registry.set(token, RegistryState.ACTIVE)
     const isActive = [...this.registry.values()].some(v => v === RegistryState.ACTIVE)
 
@@ -134,19 +139,55 @@ export class TabManager {
       this.send(MessageActionType.ACTIVE)
     }
 
-    if (this.allIdle && isActive) {
-      this.allIdle = false
+    if (isActive) {
       this.options.onActive()
     }
   }
 
-  sync () {
-    try {
-      this.channel.postMessage({
-        action: MessageActionType.RESET,
-        token: this.token
-      })
-    } catch {}
+  start (token = this.token) {
+    this.allIdle = false
+    this.registry.set(token, RegistryState.ACTIVE)
+    if (token === this.token) {
+      this.send(MessageActionType.START)
+    } else {
+      this.options.start(true)
+    }
+  }
+
+  reset (token = this.token) {
+    this.allIdle = false
+    this.registry.set(token, RegistryState.ACTIVE)
+    if (token === this.token) {
+      this.send(MessageActionType.RESET)
+    } else {
+      this.options.reset(true)
+    }
+  }
+
+  activate (token = this.token) {
+    this.allIdle = false
+    this.registry.set(token, RegistryState.ACTIVE)
+    if (token === this.token) {
+      this.send(MessageActionType.ACTIVATE)
+    } else {
+      this.options.activate(true)
+    }
+  }
+
+  pause (token = this.token) {
+    if (token === this.token) {
+      this.send(MessageActionType.PAUSE)
+    } else {
+      this.options.pause(true)
+    }
+  }
+
+  resume (token = this.token) {
+    if (token === this.token) {
+      this.send(MessageActionType.RESUME)
+    } else {
+      this.options.resume(true)
+    }
   }
 
   message (data: any) {

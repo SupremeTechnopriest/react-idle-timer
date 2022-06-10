@@ -1,5 +1,4 @@
 import { TabManager } from '../src/TabManager'
-import { MessageActionType } from '../src/types/MessageActionType'
 import { waitFor, sleep } from './test.utils'
 
 let managers = []
@@ -12,6 +11,7 @@ const createTabManager = ({
   onPrompt = () => {},
   start = () => {},
   reset = () => {},
+  activate = () => {},
   pause = () => {},
   resume = () => {}
 } = {}) => {
@@ -24,6 +24,7 @@ const createTabManager = ({
     onPrompt,
     start,
     reset,
+    activate,
     pause,
     resume
   })
@@ -141,23 +142,10 @@ describe('TabManager', () => {
 
     createTabManager(options)
     const manager2 = createTabManager()
-    manager2.send(MessageActionType.START)
+    manager2.start()
 
     await waitFor(() => options.start.mock.calls.length === 1)
     expect(options.start).toHaveBeenCalledTimes(1)
-  })
-
-  it('Should emit the start on sync', async () => {
-    const options = {
-      reset: jest.fn()
-    }
-
-    createTabManager(options)
-    const manager2 = createTabManager()
-    manager2.sync()
-
-    await waitFor(() => options.reset.mock.calls.length === 1)
-    expect(options.reset).toHaveBeenCalledTimes(1)
   })
 
   it('Should emit the reset event', async () => {
@@ -167,10 +155,23 @@ describe('TabManager', () => {
 
     createTabManager(options)
     const manager2 = createTabManager()
-    manager2.send(MessageActionType.RESET)
+    manager2.reset()
 
     await waitFor(() => options.reset.mock.calls.length === 1)
     expect(options.reset).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should emit the activate event', async () => {
+    const options = {
+      activate: jest.fn()
+    }
+
+    createTabManager(options)
+    const manager2 = createTabManager()
+    manager2.activate()
+
+    await waitFor(() => options.activate.mock.calls.length === 1)
+    expect(options.activate).toHaveBeenCalledTimes(1)
   })
 
   it('Should emit the pause event', async () => {
@@ -180,7 +181,7 @@ describe('TabManager', () => {
 
     createTabManager(options)
     const manager2 = createTabManager()
-    manager2.send(MessageActionType.PAUSE)
+    manager2.pause()
 
     await waitFor(() => options.pause.mock.calls.length === 1)
     expect(options.pause).toHaveBeenCalledTimes(1)
@@ -193,7 +194,7 @@ describe('TabManager', () => {
 
     createTabManager(options)
     const manager2 = createTabManager()
-    manager2.send(MessageActionType.RESUME)
+    manager2.resume()
 
     await waitFor(() => options.resume.mock.calls.length === 1)
     expect(options.resume).toHaveBeenCalledTimes(1)

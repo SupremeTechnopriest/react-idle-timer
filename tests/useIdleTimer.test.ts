@@ -1112,10 +1112,10 @@ describe('useIdleTimer', () => {
       })
 
       describe('.active()', () => {
-        it('Should start timer when active is called', () => {
+        it('Should start timer when activate() is called', () => {
           props.startOnMount = false
           const { result } = idleTimer()
-          result.current.active()
+          result.current.activate()
           expect(result.current.isIdle()).toBe(false)
         })
 
@@ -1124,7 +1124,7 @@ describe('useIdleTimer', () => {
           props.onActive = jest.fn()
           const { result } = idleTimer()
           await waitFor(() => result.current.isIdle())
-          result.current.active()
+          result.current.activate()
           expect(props.onActive).toHaveBeenCalledTimes(1)
         })
 
@@ -1135,11 +1135,12 @@ describe('useIdleTimer', () => {
           const { result } = idleTimer()
           idleTimer()
           await waitFor(() => result.current.isIdle())
-          result.current.active()
+          result.current.activate()
+          await sleep(100)
           expect(props.onActive).toHaveBeenCalledTimes(2)
         })
 
-        it('Should bind all events on active()', async () => {
+        it('Should bind all events on activate()', async () => {
           props.onAction = jest.fn()
           props.stopOnIdle = true
           props.timeout = 200
@@ -1147,7 +1148,7 @@ describe('useIdleTimer', () => {
           await waitFor(() => result.current.isIdle())
           fireEvent.mouseDown(document)
           expect(props.onAction).toHaveBeenCalledTimes(0)
-          result.current.active()
+          result.current.activate()
           fireEvent.mouseDown(document)
           expect(props.onAction).toHaveBeenCalledTimes(1)
         })
@@ -1440,6 +1441,32 @@ describe('useIdleTimer', () => {
         })
       })
 
+      describe('.getTabId', () => {
+        it('Should throw when crossTab is not enabled', () => {
+          const { result } = idleTimer()
+          expect(() => result.current.getTabId()).toThrow(
+            new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
+          )
+        })
+
+        it('Should return unique ids', () => {
+          props.crossTab = true
+          const timer1 = idleTimer()
+          const timer2 = idleTimer()
+          expect(timer1.result.current.getTabId()).not.toBe(timer2.result.current.getTabId())
+        })
+
+        it('Should generate unique ids for many instances', () => {
+          props.crossTab = true
+          const ids = []
+          for (let i = 0; i < 100; i++) {
+            const { result } = idleTimer()
+            ids.push(result.current.getTabId())
+          }
+          expect((new Set(ids)).size).toBe(ids.length)
+        })
+      })
+
       describe('.getRemainingTime()', () => {
         it('Should return 0 for remaining time while idle', async () => {
           props.timeout = 200
@@ -1529,7 +1556,7 @@ describe('useIdleTimer', () => {
           expect(result.current.getRemainingTime()).toBe(0)
         })
 
-        it('Should reset when start, reset or active is called', async () => {
+        it('Should reset when start, reset or activate is called', async () => {
           props.timeout = 200
           const { result } = idleTimer()
           await sleep(100)
@@ -1544,7 +1571,7 @@ describe('useIdleTimer', () => {
           expect(result.current.getRemainingTime()).toBeAround(200, 10)
           await waitFor(() => result.current.isIdle())
           expect(result.current.getRemainingTime()).toBe(0)
-          result.current.active()
+          result.current.activate()
           expect(result.current.getRemainingTime()).toBeAround(200, 10)
         })
       })

@@ -16,7 +16,6 @@ import { IIdleTimer } from './types/IIdleTimer'
 import { IIdleTimerProps } from './types/IIdleTimerProps'
 import { EventsType } from './types/EventsType'
 import { MessageType } from './types/MessageType'
-import { MessageActionType } from './types/MessageActionType'
 
 /**
  * Creates an IdleTimer instance.
@@ -119,7 +118,7 @@ export function useIdleTimer ({
   useEffect(() => {
     if (crossTab && syncTimers) {
       sendSyncEvent.current = throttleFn(() => {
-        manager.current.sync()
+        manager.current.active()
       }, syncTimers)
     }
   }, [crossTab, syncTimers])
@@ -162,13 +161,14 @@ export function useIdleTimer ({
    * @private
    */
   const toggleIdle = () => {
+    destroyTimeout()
+
     // Flip idle
     idle.current = true
     lastIdle.current = now()
 
     // Handle idle event
     if (stopOnIdleRef.current) {
-      destroyTimeout()
       unbindEvents()
     } else if (prompted.current) {
       promptTime.current = 0
@@ -184,6 +184,7 @@ export function useIdleTimer ({
    * @private
    */
   const toggleActive = (event?: EventType) => {
+    destroyTimeout()
     prompted.current = false
     promptTime.current = 0
     idle.current = false
@@ -200,6 +201,7 @@ export function useIdleTimer ({
    */
   const toggleIdleState = (event?: EventType): void => {
     const nextIdle = !idle.current
+
     // Handle idle
     if (nextIdle) {
       // Cancel onAction callbacks
@@ -246,11 +248,17 @@ export function useIdleTimer ({
     // If the prompt is open, only emit onAction
     if (prompted.current) return
 
-    // Send sync event
-    if (crossTab && syncTimers) sendSyncEvent.current()
-
     // Clear any existing timeout
     destroyTimeout()
+
+    // Handle events that immediately trigger idle
+    if (
+      !idle.current &&
+      immediateEventsRef.current.includes(event.type as EventsType)
+    ) {
+      toggleIdleState(event)
+      return
+    }
 
     // Determine last time User was active, as can't rely on setTimeout ticking at the correct interval
     const elapsedTimeSinceLastActive = now() - lastActive.current
@@ -261,6 +269,7 @@ export function useIdleTimer ({
       (!idle.current && elapsedTimeSinceLastActive > timeoutRef.current)
     ) {
       toggleIdleState(event)
+      return
     }
 
     // Disable paused
@@ -272,19 +281,11 @@ export function useIdleTimer ({
     // Reset promptTime
     promptTime.current = 0
 
-    // Handle events that immediately trigger idle
-    if (
-      !idle.current &&
-      immediateEventsRef.current.includes(event.type as EventsType)
-    ) {
-      toggleIdleState(event)
-      return
-    }
-
     // If the user is active, set a new timeout
     createTimeout()
 
-    if (manager.current) manager.current.active()
+    // Send sync event
+    if (crossTab && syncTimers) sendSyncEvent.current()
   }
 
   /**
@@ -357,11 +358,6 @@ export function useIdleTimer ({
     // Bind the events
     bindEvents()
 
-    // Close prompt if open
-    if (prompted.current) {
-      emitOnActive.current()
-    }
-
     // Set state
     idle.current = false
     prompted.current = false
@@ -370,8 +366,7 @@ export function useIdleTimer ({
     promptTime.current = 0
 
     if (manager.current && !remote) {
-      manager.current.active()
-      manager.current.send(MessageActionType.START)
+      manager.current.start()
     }
 
     // Set new timeout
@@ -396,11 +391,8 @@ export function useIdleTimer ({
     promptTime.current = 0
     lastReset.current = now()
 
-    if (manager.current) {
-      manager.current.allIdle = false
-      if (!remote) {
-        manager.current.send(MessageActionType.RESET)
-      }
+    if (manager.current && !remote) {
+      manager.current.reset()
     }
 
     // Set new timeout
@@ -412,7 +404,7 @@ export function useIdleTimer ({
   /**
    * Manually trigger an activation event.
    */
-  const active = useCallback<(remote?: boolean) => void>((remote?: boolean): void => {
+  const activate = useCallback<(remote?: boolean) => void>((remote?: boolean): void => {
     // Clear timeout
     destroyTimeout()
 
@@ -421,10 +413,7 @@ export function useIdleTimer ({
 
     // Emit active
     if (idle.current || prompted.current) {
-      emitOnActive.current()
-      if (manager.current) {
-        manager.current.active()
-      }
+      toggleActive()
     }
 
     // Reset state
@@ -435,11 +424,8 @@ export function useIdleTimer ({
     promptTime.current = 0
     lastReset.current = now()
 
-    if (manager.current) {
-      manager.current.allIdle = false
-      if (!remote) {
-        manager.current.send(MessageActionType.ACTIVE)
-      }
+    if (manager.current && !remote) {
+      manager.current.activate()
     }
 
     // Set new timeout
@@ -466,11 +452,10 @@ export function useIdleTimer ({
     // Clear existing timeout
     destroyTimeout()
 
-    if (manager.current) {
-      if (!remote) {
-        manager.current.send(MessageActionType.PAUSE)
-      }
+    if (manager.current && !remote) {
+      manager.current.pause()
     }
+
     return true
   }, [tId, manager])
 
@@ -498,11 +483,10 @@ export function useIdleTimer ({
     }
 
     // Replicate to manager
-    if (manager.current) {
-      if (!remote) {
-        manager.current.send(MessageActionType.RESUME)
-      }
+    if (manager.current && !remote) {
+      manager.current.resume()
     }
+
     return true
   }, [tId, timeoutRef, remaining, manager])
 
@@ -544,6 +528,16 @@ export function useIdleTimer ({
       throw new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
     }
     return manager.current.isLeader
+  }, [manager])
+
+  /**
+   * Returns the current tabs id
+   */
+  const getTabId = useCallback<() => string>((): string => {
+    if (!manager.current) {
+      throw new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
+    }
+    return manager.current.token
   }, [manager])
 
   /**
@@ -686,6 +680,7 @@ export function useIdleTimer ({
         onMessage: emitOnMessage.current,
         start,
         reset,
+        activate,
         pause,
         resume
       })
@@ -754,12 +749,13 @@ export function useIdleTimer ({
     message,
     start,
     reset,
-    active,
+    activate,
     pause,
     resume,
     isIdle,
     isPrompted,
     isLeader,
+    getTabId,
     getRemainingTime,
     getElapsedTime,
     getTotalElapsedTime,
