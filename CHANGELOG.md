@@ -1,6 +1,12 @@
 # Changelog
 
-## 5.4.0
+### 5.4.1
+
+#### 🐞 Bug Fixes
+- Fix a bug where workerTimers were not mocked by `createMocks()`.
+- Fix a bug where `reset` was not resetting the start time affecting `getTotalActiveTime()`. #272
+
+### 5.4.0
 
 #### ⚡️ Features
 - Add [getTabId()](https://idletimer.dev/docs/api/methods#gettabid) method.
