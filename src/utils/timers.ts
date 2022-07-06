@@ -21,6 +21,10 @@ export function createMocks () {
   timers.clearTimeout = clearTimeout
   timers.setInterval = setInterval
   timers.clearInterval = clearInterval
+  workerTimers.setTimeout = setTimeout
+  workerTimers.clearTimeout = clearTimeout
+  workerTimers.setInterval = setInterval
+  workerTimers.clearInterval = clearInterval
 }
 
 export function setTimers (customTimers: ITimers): void {
