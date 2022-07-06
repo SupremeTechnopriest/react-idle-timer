@@ -1741,6 +1741,22 @@ describe('useIdleTimer', () => {
           await waitFor(() => result.current.isIdle())
           expect(result.current.getTotalActiveTime()).toBeAround(400, 20)
         })
+
+        it('Should start over when reset is called', async () => {
+          props.timeout = 200
+          const { result } = idleTimer()
+
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getTotalActiveTime()).toBeAround(200, 20)
+
+          fireEvent.mouseDown(document)
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getTotalActiveTime()).toBeAround(400, 20)
+
+          result.current.reset()
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getTotalActiveTime()).toBeAround(200, 20)
+        })
       })
     })
   })

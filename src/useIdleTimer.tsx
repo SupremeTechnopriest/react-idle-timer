@@ -389,6 +389,7 @@ export function useIdleTimer ({
     paused.current = false
     remaining.current = 0
     promptTime.current = 0
+    startTime.current = now()
     lastReset.current = now()
 
     if (manager.current && !remote) {
