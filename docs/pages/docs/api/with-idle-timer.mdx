@@ -27,16 +27,16 @@ v4 component.
 Create the `IdleTimer` component.
 
 ```js
-  import { Component } from 'react'
-  import { withIdleTimer } from 'react-idle-timer'
+import { Component } from 'react'
+import { withIdleTimer } from 'react-idle-timer'
 
-  class IdleTimerComponent extends Component {
-    render () {
-      return this.props.children
-    }
+class IdleTimerComponent extends Component {
+  render () {
+    return this.props.children
   }
+}
 
-  export const IdleTimer = withIdleTimer(IdleTimerComponent)
+export const IdleTimer = withIdleTimer(IdleTimerComponent)
 ```
 
 Use the `IdleTimer` component.
