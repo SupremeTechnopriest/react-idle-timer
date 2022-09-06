@@ -52,6 +52,7 @@ export function useIdleTimer ({
   const lastReset = useRef<number>(now())
   const lastIdle = useRef<number>(null)
   const lastActive = useRef<number>(null)
+  const lastActiveTimestamp = useRef<number>(null)
   const idleTime = useRef<number>(0)
 
   // State References
@@ -142,6 +143,7 @@ export function useIdleTimer ({
     destroyTimeout()
     tId.current = timer.setTimeout(toggleIdleState, time || timeoutRef.current)
     if (setLastActive) lastActive.current = now()
+    lastActiveTimestamp.current = Date.now()
   }
 
   /**
@@ -260,13 +262,22 @@ export function useIdleTimer ({
       return
     }
 
+    // Sanity check with a timestamp to protect against performance.now epoch changes
+    if (
+      !idle.current &&
+      Date.now() - lastActiveTimestamp.current >= timeoutRef.current
+    ) {
+      toggleIdleState(event)
+      return
+    }
+
     // Determine last time User was active, as can't rely on setTimeout ticking at the correct interval
     const elapsedTimeSinceLastActive = now() - lastActive.current
 
     // If the user is idle or last active time is more than timeout, flip the idle state
     if (
       (idle.current && !stopOnIdle) ||
-      (!idle.current && elapsedTimeSinceLastActive > timeoutRef.current)
+      (!idle.current && elapsedTimeSinceLastActive >= timeoutRef.current)
     ) {
       toggleIdleState(event)
       return

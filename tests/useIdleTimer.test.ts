@@ -55,6 +55,22 @@ describe('useIdleTimer', () => {
         await sleep(200)
         expect(props.onAction).toHaveBeenCalledTimes(1)
       })
+
+      it('Should compare sanity check timestamps', () => {
+        jest.useFakeTimers()
+        props.timeout = 10000
+        props.onIdle = jest.fn()
+        const start = Date.now()
+        const { result } = idleTimer()
+
+        expect(result.current.isIdle()).toBe(false)
+        jest.setSystemTime(start + props.timeout)
+        fireEvent.mouseDown(document)
+
+        expect(result.current.isIdle()).toBe(true)
+        expect(props.onIdle).toHaveBeenCalledTimes(1)
+        jest.useRealTimers()
+      })
     })
 
     describe('.props', () => {
