@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useMemo } from 'react'
 
 import { TabManager } from './TabManager'
 
@@ -93,26 +93,23 @@ export function useIdleTimer ({
   const emitOnMessage = useRefEffect<(data: string | number | object) => void>(onMessage)
 
   // On Action Emitter
-  const emitOnAction = useRef<IEventHandler>()
-  useEffect(() => {
-    // Cancel any existing debounce timeouts
-    if (emitOnAction.current && emitOnAction.current.cancel) {
-      emitOnAction.current.cancel()
-    }
+  const emitOnAction = useRefEffect<IEventHandler>(onAction)
+  const callOnAction = useMemo<IEventHandler>(() => {
+    const call: IEventHandler = (event: EventType) => emitOnAction.current(event)
 
     // Create debounced action if applicable
     if (debounce > 0) {
-      emitOnAction.current = debounceFn(onAction, debounce)
+      return debounceFn(call, debounce)
 
       // Create throttled action if applicable
     } else if (throttle > 0) {
-      emitOnAction.current = throttleFn(onAction, throttle)
+      return throttleFn(call, throttle)
 
       // No throttle or debounce
     } else {
-      emitOnAction.current = onAction
+      return call
     }
-  }, [onAction, throttle, debounce])
+  }, [throttle, debounce])
 
   // Sync timers event
   const sendSyncEvent = useRef<() => void>()
@@ -207,7 +204,7 @@ export function useIdleTimer ({
     // Handle idle
     if (nextIdle) {
       // Cancel onAction callbacks
-      if (emitOnAction.current.cancel) emitOnAction.current.cancel()
+      if (callOnAction.cancel) callOnAction.cancel()
 
       // Handle prompt
       if (promptTimeoutRef.current > 0 && !prompted.current) {
@@ -245,7 +242,7 @@ export function useIdleTimer ({
    */
   const eventHandler = (event: EventType): void => {
     // Fire onAction event
-    emitOnAction.current(event)
+    callOnAction(event)
 
     // If the prompt is open, only emit onAction
     if (prompted.current) return
@@ -315,7 +312,7 @@ export function useIdleTimer ({
       handleEvent.current = eventHandler
     }
     if (eventsWereBound) bindEvents()
-  }, [eventsThrottle, crossTab, syncTimers])
+  }, [eventsThrottle, throttle, debounce, emitOnAction, crossTab, syncTimers])
 
   /**
   * Binds the specified events.
@@ -571,7 +568,7 @@ export function useIdleTimer ({
       ? now() - lastActive.current
       : 0
 
-    const timeLeft = Math.ceil(timeoutTotal - timeSinceLastActive)
+    const timeLeft = Math.floor(timeoutTotal - timeSinceLastActive)
     return timeLeft < 0 ? 0 : Math.abs(timeLeft)
   }, [timeoutRef, promptTimeoutRef, prompted, remaining, lastActive])
 
@@ -649,7 +646,7 @@ export function useIdleTimer ({
     // Add beforeunload listener
     const beforeunload = () => {
       if (manager.current) manager.current.close()
-      if (emitOnAction.current.cancel) emitOnAction.current.cancel()
+      if (callOnAction.cancel) callOnAction.cancel()
       destroyTimeout()
       unbindEvents(true)
     }
@@ -662,7 +659,7 @@ export function useIdleTimer ({
     return () => {
       if (IS_BROWSER) window.removeEventListener('beforeunload', beforeunload)
       if (manager.current) manager.current.close()
-      if (emitOnAction.current.cancel) emitOnAction.current.cancel()
+      if (callOnAction.cancel) callOnAction.cancel()
       destroyTimeout()
       unbindEvents(true)
     }
