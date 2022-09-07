@@ -3,7 +3,7 @@ import { render, fireEvent, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import { IIdleTimer, withIdleTimer } from '../src'
-import { sleep } from './test.utils'
+import { sleep, waitFor } from './test.utils'
 
 interface IProps extends IIdleTimer {
   required: boolean
@@ -168,5 +168,33 @@ describe('withIdleTimer', () => {
     await sleep(200)
     expect(idleTimerRef.isIdle()).toBe(true)
     rerender(<Instance required />)
+  })
+
+  it('Should should start manually on mount lifecycle', async () => {
+    class Root extends Component<IProps, {}> {
+      componentDidMount () {
+        this.props.start()
+      }
+
+      render () {
+        return null
+      }
+    }
+
+    let idleTimerRef: IIdleTimer = null
+    const Instance = withIdleTimer<IProps>(Root)
+
+    render(
+      <Instance
+        ref={(ref: IIdleTimer) => { idleTimerRef = ref }}
+        timeout={200}
+        startManually
+        required
+      />
+    )
+
+    expect(idleTimerRef).not.toBeNull()
+    await waitFor(() => idleTimerRef.isIdle())
+    expect(idleTimerRef.isIdle()).toBe(true)
   })
 })

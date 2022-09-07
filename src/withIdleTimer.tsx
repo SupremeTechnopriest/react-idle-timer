@@ -36,6 +36,14 @@ export function withIdleTimer<T extends IIdleTimer> (Component: ComponentType<T>
       }
     }
 
+    // Timeout is needed to allow hook to finish setting up.
+    const componentDidMount = Component.prototype.componentDidMount
+    if (componentDidMount) {
+      Component.prototype.componentDidMount = () => {
+        setTimeout(() => { componentDidMount() })
+      }
+    }
+
     const idleTimer = useIdleTimer(options)
 
     if (typeof ref === 'function') {
