@@ -8,6 +8,7 @@
 #### 🐞 Bug Fixes
 - Fix `componentDidMount` on withIdleTimer higher order component. #276
 - Fix regression of memoized `onAction` callbacks. #127
+- Fix rounding error on `getRemainingTime()`.
 
 ### 5.4.1
 
