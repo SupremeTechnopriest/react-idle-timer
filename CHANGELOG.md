@@ -1,5 +1,14 @@
 # Changelog
 
+### 5.4.2
+
+#### ✨ Enhancements
+- Add a clock based sanity check as a backup for the more precise performance timing. #281
+
+#### 🐞 Bug Fixes
+- Fix `componentDidMount` on withIdleTimer higher order component. #276
+- Fix regression of memoized `onAction` callbacks. #127
+
 ### 5.4.1
 
 #### 🐞 Bug Fixes
