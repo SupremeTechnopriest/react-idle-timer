@@ -31,6 +31,7 @@ export type EventsType =
   'focusout' |
   'fullscreenchange' |
   'fullscreenerror' |
+  'gotpointercapture' |
   'hashchange' |
   'input' |
   'invalid' |
@@ -41,6 +42,7 @@ export type EventsType =
   'loadeddata' |
   'loadedmetadata' |
   'loadstart' |
+  'lostpointercapture' |
   'message' |
   'mousedown' |
   'mouseenter' |
@@ -61,6 +63,14 @@ export type EventsType =
   'pause' |
   'play' |
   'playing' |
+  'pointercancel' |
+  'pointerdown' |
+  'pointerenter' |
+  'pointerleave' |
+  'pointermove' |
+  'pointerout' |
+  'pointerover' |
+  'pointerup' |
   'popstate' |
   'progress' |
   'ratechange' |
