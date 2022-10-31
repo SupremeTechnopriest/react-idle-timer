@@ -66,7 +66,7 @@ export function useIdleTimer ({
   const tId = useRef<number>(null)
 
   // Tab manager
-  const manager = useRef(null)
+  const manager = useRef<TabManager | null>(null)
 
   // Prop references
   const timeoutRef = useRefEffect<number>(timeout)
@@ -139,7 +139,12 @@ export function useIdleTimer ({
   const createTimeout = (time?: number, setLastActive: boolean = true): void => {
     destroyTimeout()
     tId.current = timer.setTimeout(toggleIdleState, time || timeoutRef.current)
-    if (setLastActive) lastActive.current = now()
+    if (setLastActive) {
+      lastActive.current = now()
+      if (manager.current) {
+        manager.current.lastActive(lastActive.current)
+      }
+    }
     lastActiveTimestamp.current = Date.now()
   }
 
@@ -540,6 +545,16 @@ export function useIdleTimer ({
   }, [manager])
 
   /**
+   * Returns whether or not this is the most recently active tab
+   */
+  const isLastActiveTab = useCallback<() => boolean>((): boolean => {
+    if (!manager.current) {
+      throw new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
+    }
+    return manager.current.isLastActiveTab
+  }, [manager])
+
+  /**
    * Returns the current tabs id
    */
   const getTabId = useCallback<() => string>((): string => {
@@ -771,6 +786,7 @@ export function useIdleTimer ({
     getLastIdleTime,
     getLastActiveTime,
     getTotalIdleTime,
-    getTotalActiveTime
+    getTotalActiveTime,
+    isLastActiveTab
   }
 }

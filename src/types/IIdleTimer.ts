@@ -110,4 +110,11 @@ export interface IIdleTimer {
    * @returns Time in milliseconds the user has been active.
    */
   getTotalActiveTime(): number
+
+  /**
+   * Returns whether or not the current tab is the most recently active.
+   *
+   * @returns Last Active State.
+   */
+  isLastActiveTab(): boolean
 }

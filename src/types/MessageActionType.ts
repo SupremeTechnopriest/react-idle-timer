@@ -12,5 +12,6 @@ export enum MessageActionType {
   ACTIVATE,
   PAUSE,
   RESUME,
-  MESSAGE
+  MESSAGE,
+  LAST_ACTIVE
 }

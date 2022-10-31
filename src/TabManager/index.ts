@@ -27,6 +27,7 @@ interface IMessage {
   action: MessageActionType
   token: string
   data?: any
+  dateNow?: number
 }
 
 export class TabManager {
@@ -36,6 +37,7 @@ export class TabManager {
 
   public token: string = createToken()
   public registry: Map<string, RegistryState> = new Map()
+  public lastActiveRegistry: Map<string, number> = new Map()
   public allIdle: boolean = false
 
   constructor (options: ITabManagerOptions) {
@@ -45,25 +47,28 @@ export class TabManager {
     this.channel = new BroadcastChannel(channelName)
 
     this.registry.set(this.token, RegistryState.ACTIVE)
+    this.lastActiveRegistry.set(this.token, Date.now())
 
     if (options.leaderElection) {
       const electorOptions = {
         fallbackInterval: 2000,
-        responseTime: 100
+        responseTime: 100,
       }
       this.elector = new LeaderElector(this.channel, electorOptions)
       this.elector.waitForLeadership()
     }
 
     this.channel.addEventListener('message', (message: MessageEvent<IMessage>) => {
-      const { action, token, data } = message.data
+        const { action, token, data, dateNow } = message.data
 
       switch (action) {
         case MessageActionType.REGISTER:
           this.registry.set(token, RegistryState.IDLE)
+          this.lastActiveRegistry.set(this.token, Date.now())
           break
         case MessageActionType.DEREGISTER:
           this.registry.delete(token)
+          this.lastActiveRegistry.delete(token)
           break
         case MessageActionType.IDLE:
           this.idle(token)
@@ -92,6 +97,9 @@ export class TabManager {
         case MessageActionType.MESSAGE:
           this.options.onMessage(data)
           break
+        case MessageActionType.LAST_ACTIVE:
+          this.lastActive(dateNow, token)
+          break
       }
     })
 
@@ -101,6 +109,14 @@ export class TabManager {
   get isLeader () {
     if (!this.elector) throw new Error('❌ Leader election is not enabled. To Enable it set the "leaderElection" property to true.')
     return this.elector.isLeader
+  }
+
+  get isLastActiveTab() {
+    if (!this.lastActiveRegistry.has(this.token))  
+      return false
+
+    const currTabLastActive = this.lastActiveRegistry.get(this.token)
+    return [...this.lastActiveRegistry.values()].some(v => v > currTabLastActive)
   }
 
   prompt (token: string = this.token) {
@@ -195,7 +211,22 @@ export class TabManager {
       this.channel.postMessage({
         action: MessageActionType.MESSAGE,
         token: this.token,
-        data
+        data,
+      })
+    } catch {}
+  }
+
+  lastActive (dateNow: number, token: string = this.token) {
+    this.lastActiveRegistry.set(this.token, dateNow)
+    
+    if (token !== this.token)
+      return
+    
+    try {
+      this.channel.postMessage({
+        action: MessageActionType.LAST_ACTIVE,
+        token: this.token,
+        dateNow,
       })
     } catch {}
   }
