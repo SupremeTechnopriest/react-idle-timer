@@ -141,9 +141,6 @@ export function useIdleTimer ({
     tId.current = timer.setTimeout(toggleIdleState, time || timeoutRef.current)
     if (setLastActive) {
       lastActive.current = now()
-      if (manager.current) {
-        manager.current.lastActive(lastActive.current)
-      }
     }
     lastActiveTimestamp.current = Date.now()
   }
@@ -248,6 +245,11 @@ export function useIdleTimer ({
   const eventHandler = (event: EventType): void => {
     // Fire onAction event
     callOnAction(event)
+
+    // Update Last active
+    if (manager.current) {
+      manager.current.lastActive(Date.now())
+    }
 
     // If the prompt is open, only emit onAction
     if (prompted.current) return

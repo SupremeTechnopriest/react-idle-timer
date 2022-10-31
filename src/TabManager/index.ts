@@ -64,7 +64,7 @@ export class TabManager {
       switch (action) {
         case MessageActionType.REGISTER:
           this.registry.set(token, RegistryState.IDLE)
-          this.lastActiveRegistry.set(this.token, Date.now())
+          this.lastActive(Date.now())
           break
         case MessageActionType.DEREGISTER:
           this.registry.delete(token)
@@ -116,7 +116,8 @@ export class TabManager {
       return false
 
     const currTabLastActive = this.lastActiveRegistry.get(this.token)
-    return [...this.lastActiveRegistry.values()].some(v => v > currTabLastActive)
+    console.log('currTabLastActive', currTabLastActive, [...this.lastActiveRegistry.values()])
+    return ![...this.lastActiveRegistry.values()].some(v => v > currTabLastActive)
   }
 
   prompt (token: string = this.token) {
@@ -217,7 +218,8 @@ export class TabManager {
   }
 
   lastActive (dateNow: number, token: string = this.token) {
-    this.lastActiveRegistry.set(this.token, dateNow)
+    console.info('lastActive', dateNow, token, this.token)
+    this.lastActiveRegistry.set(token, dateNow)
     
     if (token !== this.token)
       return
