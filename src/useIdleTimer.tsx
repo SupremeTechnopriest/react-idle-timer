@@ -558,6 +558,13 @@ export function useIdleTimer ({
     // If paused, return the current remaining time
     if (paused.current) return remaining.current
 
+    // If prompt is opened, it starts its own timer
+    if (promptTime.current) {
+      const promptLifetime = Math.floor(now() - promptTime.current);
+      const timeLeft = promptTimeoutRef.current - promptLifetime;
+      return Math.max(0, timeLeft);
+    }
+
     // Get how long the timer was set for
     const timeoutTotal = remaining.current
       ? remaining.current
@@ -569,7 +576,7 @@ export function useIdleTimer ({
       : 0
 
     const timeLeft = Math.floor(timeoutTotal - timeSinceLastActive)
-    return timeLeft < 0 ? 0 : Math.abs(timeLeft)
+    return Math.max(0, timeLeft);
   }, [timeoutRef, promptTimeoutRef, prompted, remaining, lastActive])
 
   /**
