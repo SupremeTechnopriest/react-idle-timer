@@ -34,6 +34,6 @@ jobs:
       - name: Run Tests
         run: npm t
       - name: Upload Coverage
-        uses: paambaati/codeclimate-action@v2.7.4
+        uses: paambaati/codeclimate-action@v3.2.0
         env:
           CC_TEST_REPORTER_ID: fff55059c877f2d5091c8a89cb5bebd3bcf12811355ce9e109e35f78c4bef96c
