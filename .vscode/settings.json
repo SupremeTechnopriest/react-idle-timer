@@ -15,6 +15,7 @@
     "leaderelection",
     "oneline",
     "outfile",
+    "paambaati",
     "preconnect",
     "rehype",
     "resizer",
