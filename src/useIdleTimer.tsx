@@ -52,7 +52,6 @@ export function useIdleTimer ({
   const lastReset = useRef<number>(now())
   const lastIdle = useRef<number>(null)
   const lastActive = useRef<number>(null)
-  const lastActiveTimestamp = useRef<number>(null)
   const idleTime = useRef<number>(0)
 
   // State References
@@ -140,7 +139,6 @@ export function useIdleTimer ({
     destroyTimeout()
     tId.current = timer.setTimeout(toggleIdleState, time || timeoutRef.current)
     if (setLastActive) lastActive.current = now()
-    lastActiveTimestamp.current = Date.now()
   }
 
   /**
@@ -254,15 +252,6 @@ export function useIdleTimer ({
     if (
       !idle.current &&
       immediateEventsRef.current.includes(event.type as EventsType)
-    ) {
-      toggleIdleState(event)
-      return
-    }
-
-    // Sanity check with a timestamp to protect against performance.now epoch changes
-    if (
-      !idle.current &&
-      Date.now() - lastActiveTimestamp.current >= timeoutRef.current
     ) {
       toggleIdleState(event)
       return
