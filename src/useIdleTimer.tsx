@@ -55,7 +55,7 @@ export function useIdleTimer ({
   const idleTime = useRef<number>(0)
 
   // State References
-  const idle = useRef<boolean>(true)
+  const idle = useRef<boolean>(false)
   const paused = useRef<boolean>(false)
   const firstLoad = useRef<boolean>(true)
   const eventsBound = useRef<boolean>(false)
