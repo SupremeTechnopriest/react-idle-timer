@@ -26,7 +26,7 @@ describe('withIdleTimer', () => {
     const Instance = withIdleTimer<IProps>(Root)
     const { rerender } = render(<Instance timeout={1000} required />)
     expect(screen.getByTestId('remaining')).toHaveTextContent('1000')
-    expect(screen.getByTestId('isIdle')).toHaveTextContent('true')
+    expect(screen.getByTestId('isIdle')).toHaveTextContent('false')
     fireEvent.mouseDown(document)
     rerender(<Instance required />)
     expect(screen.getByTestId('isIdle')).toHaveTextContent('false')
