@@ -318,7 +318,7 @@ describe('useIdleTimer', () => {
           props.stopOnIdle = true
           const { result, rerender } = idleTimer()
           result.current.pause()
-          expect(result.current.isIdle()).toBe(true)
+          expect(result.current.isIdle()).toBe(false)
           props.timeout = 200
           rerender(props)
           result.current.start()
@@ -397,7 +397,7 @@ describe('useIdleTimer', () => {
         it('Should not start when startOnMount not set', () => {
           props.startOnMount = false
           const { result } = idleTimer()
-          expect(result.current.isIdle()).toBe(true)
+          expect(result.current.isIdle()).toBe(false)
         })
 
         it('Should start on first event', async () => {
@@ -405,9 +405,8 @@ describe('useIdleTimer', () => {
           props.onActive = jest.fn()
           const { result } = idleTimer()
           expect(props.onActive).toHaveBeenCalledTimes(0)
-          expect(result.current.isIdle()).toBe(true)
+          expect(result.current.isIdle()).toBe(false)
           fireEvent.mouseDown(document)
-          await waitFor(() => result.current.isIdle() === false)
           expect(props.onActive).toHaveBeenCalledTimes(1)
         })
 
@@ -418,7 +417,7 @@ describe('useIdleTimer', () => {
           props.onActive = jest.fn()
 
           const { result, rerender } = idleTimer()
-          expect(result.current.isIdle()).toBe(true)
+          expect(result.current.isIdle()).toBe(false)
           expect(props.onIdle).toHaveBeenCalledTimes(0)
           expect(props.onActive).toHaveBeenCalledTimes(0)
 
@@ -446,10 +445,10 @@ describe('useIdleTimer', () => {
           props.onActive = jest.fn()
 
           const { result } = idleTimer()
-          expect(result.current.isIdle()).toBe(true)
+          expect(result.current.isIdle()).toBe(false)
           fireEvent.mouseDown(document)
 
-          expect(result.current.isIdle()).toBe(true)
+          expect(result.current.isIdle()).toBe(false)
           expect(props.onIdle).toHaveBeenCalledTimes(0)
           expect(props.onActive).toHaveBeenCalledTimes(0)
         })
@@ -488,7 +487,7 @@ describe('useIdleTimer', () => {
           props.startManually = true
           rerender()
 
-          expect(result.current.isIdle()).toBe(true)
+          expect(result.current.isIdle()).toBe(false)
           expect(props.onIdle).toHaveBeenCalledTimes(0)
           expect(props.onActive).toHaveBeenCalledTimes(0)
 
@@ -1739,7 +1738,7 @@ describe('useIdleTimer', () => {
           props.timeout = 200
           props.startManually = true
           const { result } = idleTimer()
-          expect(result.current.getTotalActiveTime()).toBe(0)
+          expect(result.current.getTotalActiveTime()).toBeAround(0, 5)
           result.current.start()
           expect(result.current.getTotalActiveTime()).toBeAround(0, 20)
           await waitFor(() => result.current.isIdle())

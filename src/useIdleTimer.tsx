@@ -239,6 +239,11 @@ export function useIdleTimer ({
    * @private
    */
   const eventHandler = (event: EventType): void => {
+    if (!startOnMount && !lastActive.current) {
+      lastActive.current = now()
+      emitOnActive.current()
+    }
+
     // Fire onAction event
     callOnAction(event)
 
@@ -685,18 +690,24 @@ export function useIdleTimer ({
     } else {
       manager.current = null
     }
-  }, [crossTab, name, leaderElection, emitOnPrompt, emitOnIdle, emitOnActive, emitOnMessage, start, reset, pause, resume])
+  }, [
+    crossTab,
+    name,
+    leaderElection,
+    emitOnPrompt,
+    emitOnIdle,
+    emitOnActive,
+    emitOnMessage,
+    start,
+    reset,
+    pause,
+    resume
+  ])
 
   // Dynamic Start
   useEffect(() => {
     destroyTimeout()
     unbindEvents(true)
-
-    if (!firstLoad.current) {
-      paused.current = true
-      idle.current = true
-      remaining.current = 0
-    }
 
     if (startManually) return
     if (startOnMount) {
@@ -723,7 +734,14 @@ export function useIdleTimer ({
         bindEvents()
       }
     }
-  }, [element, JSON.stringify(events), JSON.stringify(immediateEvents), firstLoad, startManually, startOnMount])
+  }, [
+    element,
+    JSON.stringify(events),
+    JSON.stringify(immediateEvents),
+    firstLoad,
+    startManually,
+    startOnMount
+  ])
 
   // Dynamic timeout
   useEffect(() => {

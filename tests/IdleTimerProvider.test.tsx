@@ -38,7 +38,7 @@ describe('IdleTimerProvider', () => {
 
     render(<Root />)
     expect(screen.getByTestId('remaining')).toHaveTextContent('1000')
-    expect(screen.getByTestId('isIdle')).toHaveTextContent('true')
+    expect(screen.getByTestId('isIdle')).toHaveTextContent('false')
   })
 
   it('Should expose the API to nested class components via consumer', () => {
@@ -69,7 +69,7 @@ describe('IdleTimerProvider', () => {
 
     render(<Root />)
     expect(screen.getByTestId('remaining')).toHaveTextContent('1000')
-    expect(screen.getByTestId('isIdle')).toHaveTextContent('true')
+    expect(screen.getByTestId('isIdle')).toHaveTextContent('false')
   })
 
   it('Should expose the API via useIdleTimerContext hook', () => {
@@ -93,6 +93,6 @@ describe('IdleTimerProvider', () => {
 
     render(<Root />)
     expect(screen.getByTestId('remaining')).toHaveTextContent('1000')
-    expect(screen.getByTestId('isIdle')).toHaveTextContent('true')
+    expect(screen.getByTestId('isIdle')).toHaveTextContent('false')
   })
 })
