@@ -23,15 +23,6 @@ export function withIdleTimer<T extends IIdleTimer> (Component: ComponentType<T>
       ref.current = idleTimer
     }
 
-    const componentDidMount = Component.prototype.componentDidMount
-    if (componentDidMount) {
-      Component.prototype.componentDidMount = function () {
-        setTimeout(() => {
-          componentDidMount.apply(this, arguments)
-        })
-      }
-    }
-
     return <Component {...(props as unknown as T)} {...idleTimer} />
   })
 }
