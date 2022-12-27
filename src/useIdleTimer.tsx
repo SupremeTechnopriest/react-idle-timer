@@ -311,7 +311,7 @@ export function useIdleTimer ({
    *
    * @private
    */
-  const handleEvent = useRef<IEventHandler>()
+  const handleEvent = useRef<IEventHandler>(eventHandler)
   useEffect(() => {
     const eventsWereBound = eventsBound.current
     if (eventsWereBound) unbindEvents()
@@ -371,6 +371,8 @@ export function useIdleTimer ({
   const start = useCallback<(remote?: boolean) => void>((remote?: boolean): void => {
     // Clear timeout
     destroyTimeout()
+
+    // console.log('here')
 
     // Bind the events
     bindEvents()
@@ -721,9 +723,10 @@ export function useIdleTimer ({
 
   // Dynamic Start
   useEffect(() => {
-    destroyTimeout()
-    unbindEvents(true)
-
+    if (!firstLoad.current) {
+      destroyTimeout()
+      unbindEvents(true)
+    }
     if (startManually) return
     if (startOnMount) {
       start()
@@ -760,9 +763,7 @@ export function useIdleTimer ({
 
   // Dynamic timeout
   useEffect(() => {
-    if (firstLoad.current) {
-      firstLoad.current = false
-    } else {
+    if (!firstLoad.current) {
       timeoutRef.current = timeout
       if (startManually) return
       if (idle.current) {
@@ -774,6 +775,10 @@ export function useIdleTimer ({
       start()
     }
   }, [timeout, manager, startManually, firstLoad, idle])
+
+  useEffect(() => {
+    if (firstLoad.current) firstLoad.current = false
+  }, [firstLoad])
 
   // Return API
   return {

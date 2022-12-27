@@ -64,6 +64,7 @@ describe('withIdleTimer', () => {
       }
 
       componentDidMount () {
+        this.props.start()
         this.props.message('foo', true)
       }
 
@@ -79,6 +80,7 @@ describe('withIdleTimer', () => {
       <Instance
         timeout={200}
         promptTimeout={200}
+        startManually
         required
       />
     )
@@ -189,7 +191,7 @@ describe('withIdleTimer', () => {
     rerender(<Instance required />)
   })
 
-  it('Should should start manually on mount lifecycle', async () => {
+  it('Should start manually on mount lifecycle', async () => {
     class Root extends Component<IProps, {}> {
       componentDidMount () {
         this.props.start()
