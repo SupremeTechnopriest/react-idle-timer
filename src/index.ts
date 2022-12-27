@@ -1,4 +1,4 @@
-export { withIdleTimer } from './withIdleTimer'
+export { withIdleTimer, IdleTimerComponent } from './withIdleTimer'
 export { useIdleTimer } from './useIdleTimer'
 export {
   IIdleTimerContext,

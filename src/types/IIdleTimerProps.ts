@@ -74,7 +74,8 @@ export interface IIdleTimerProps {
   onActive?: (event?: Event) => void
 
   /**
-   * Function to call on user activity.
+   * Function to call on user activity. Can be throttled or debounced using the
+   * `throttle` and `debounce` props.
    *
    * @default () -> {}
    */

@@ -48,7 +48,6 @@ export function useIdleTimer ({
 }: IIdleTimerProps = {}): IIdleTimer {
   // Time References
   const startTime = useRef<number>(now())
-  const startDate = useRef<number>(Date.now())
   const lastReset = useRef<number>(now())
   const lastIdle = useRef<number>(null)
   const lastActive = useRef<number>(null)
@@ -79,20 +78,36 @@ export function useIdleTimer ({
     [...new Set([...events, ...immediateEvents]).values()]
   )
 
+  // On Prompt Emitter
+  const emitOnPrompt = useRef<IEventHandler>(onPrompt)
+  useEffect(() => {
+    emitOnPrompt.current = onPrompt
+  }, [onPrompt])
+
   // On Idle Emitter
-  const emitOnIdle = useRefEffect<IEventHandler>(onIdle)
+  const emitOnIdle = useRef<IEventHandler>(onIdle)
+  useEffect(() => {
+    emitOnIdle.current = onIdle
+  }, [onIdle])
 
   // On Active Emitter
-  const emitOnActive = useRefEffect<IEventHandler>(onActive)
-
-  // On Prompt Emitter
-  const emitOnPrompt = useRefEffect<IEventHandler>(onPrompt)
-
-  // On Message Emitter
-  const emitOnMessage = useRefEffect<(data: string | number | object) => void>(onMessage)
+  const emitOnActive = useRef<IEventHandler>(onActive)
+  useEffect(() => {
+    emitOnActive.current = onActive
+  }, [onActive])
 
   // On Action Emitter
-  const emitOnAction = useRefEffect<IEventHandler>(onAction)
+  const emitOnAction = useRef<IEventHandler>(onAction)
+  useEffect(() => {
+    emitOnAction.current = onAction
+  }, [onAction])
+
+  // On Message Emitter
+  const emitOnMessage = useRef<(data: string | number | object) => void>(onMessage)
+  useEffect(() => {
+    emitOnMessage.current = onMessage
+  }, [onMessage])
+
   const callOnAction = useMemo<IEventHandler>(() => {
     const call: IEventHandler = (event: EventType) => emitOnAction.current(event)
 
@@ -351,8 +366,8 @@ export function useIdleTimer ({
   }
 
   /**
-  * Set initial state and start timer.
-  */
+   * Set initial state and start timer.
+   */
   const start = useCallback<(remote?: boolean) => void>((remote?: boolean): void => {
     // Clear timeout
     destroyTimeout()
@@ -592,7 +607,7 @@ export function useIdleTimer ({
    */
   const getLastIdleTime = useCallback<() => Date | null>((): Date | null => {
     if (!lastIdle.current) return null
-    return new Date((startDate.current - startTime.current) + lastIdle.current)
+    return new Date(lastIdle.current)
   }, [lastIdle])
 
   /**
@@ -602,7 +617,7 @@ export function useIdleTimer ({
    */
   const getLastActiveTime = useCallback<() => Date | null>((): Date | null => {
     if (!lastActive.current) return null
-    return new Date((startDate.current - startTime.current) + lastActive.current)
+    return new Date(lastActive.current)
   }, [lastActive])
 
   /**
@@ -778,6 +793,27 @@ export function useIdleTimer ({
     getLastIdleTime,
     getLastActiveTime,
     getTotalIdleTime,
-    getTotalActiveTime
+    getTotalActiveTime,
+    // @ts-ignore
+    setOnPrompt: (fn: IEventHandler) => {
+      onPrompt = fn
+      emitOnPrompt.current = fn
+    },
+    setOnIdle: (fn: IEventHandler) => {
+      onIdle = fn
+      emitOnIdle.current = fn
+    },
+    setOnActive: (fn: IEventHandler) => {
+      onActive = fn
+      emitOnActive.current = fn
+    },
+    setOnAction: (fn: IEventHandler) => {
+      onAction = fn
+      emitOnAction.current = fn
+    },
+    setOnMessage: (fn: IEventHandler) => {
+      onMessage = fn
+      emitOnMessage.current = fn
+    }
   }
 }
