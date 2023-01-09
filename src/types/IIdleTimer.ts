@@ -98,14 +98,28 @@ export interface IIdleTimer {
   getLastActiveTime(): Date | null
 
   /**
-   * Total time in milliseconds user has been idle.
+   * Time in milliseconds user has been idle since last reset.
+   *
+   * @returns Time in milliseconds the user has been idle.
+   */
+  getIdleTime(): number
+
+  /**
+   * Total time in milliseconds user has been idle since the hook mounted.
    *
    * @returns Time in milliseconds the user has been idle.
    */
   getTotalIdleTime(): number
 
   /**
-   * Total time in milliseconds user has been active.
+   * Total time in milliseconds user has been active since last reset.
+   *
+   * @returns Time in milliseconds the user has been active.
+   */
+  getActiveTime(): number
+
+  /**
+   * Total time in milliseconds user has been active since the hook mounted.
    *
    * @returns Time in milliseconds the user has been active.
    */

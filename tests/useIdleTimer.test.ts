@@ -1124,6 +1124,27 @@ describe('useIdleTimer', () => {
           fireEvent.mouseDown(document)
           expect(props.onAction).toHaveBeenCalledTimes(1)
         })
+
+        it('Should reset all ref values', async () => {
+          props.timeout = 200
+          const { result } = idleTimer()
+          await sleep(200)
+          expect(result.current.getTotalActiveTime()).toBeAround(200, 10)
+          expect(result.current.getActiveTime()).toBeAround(200, 10)
+          await sleep(100)
+          expect(result.current.getTotalIdleTime()).toBeAround(100, 10)
+          expect(result.current.getIdleTime()).toBeAround(100, 10)
+          expect(result.current.getElapsedTime()).toBeAround(300, 20)
+          result.current.reset()
+          expect(result.current.getTotalIdleTime()).toBeAround(100, 20)
+          expect(result.current.getTotalActiveTime()).toBeAround(200, 20)
+          expect(result.current.getTotalElapsedTime()).toBeAround(300, 20)
+          expect(result.current.getElapsedTime()).toBeAround(0, 1)
+          expect(result.current.getIdleTime()).toBeAround(0, 1)
+          expect(result.current.getActiveTime()).toBeAround(0, 1)
+          expect(result.current.getLastIdleTime()).toBeDefined()
+          expect(result.current.getLastActiveTime()).toBeDefined()
+        })
       })
 
       describe('.active()', () => {
@@ -1645,6 +1666,60 @@ describe('useIdleTimer', () => {
         })
       })
 
+      describe('.getIdleTime()', () => {
+        it('Should get the idle time', async () => {
+          props.timeout = 200
+          const { result } = idleTimer()
+
+          await sleep(300)
+          expect(result.current.getIdleTime()).toBeAround(100, 10)
+          fireEvent.mouseDown(document)
+
+          await sleep(100)
+          expect(result.current.getIdleTime()).toBeAround(100, 15)
+
+          await sleep(300)
+          expect(result.current.getIdleTime()).toBeAround(300, 20)
+        })
+
+        it('Should return 0 when it has not been idle', async () => {
+          props.timeout = 200
+          props.startManually = false
+          const { result } = idleTimer()
+          expect(result.current.getIdleTime()).toBe(0)
+          result.current.start()
+          expect(result.current.getIdleTime()).toBe(0)
+        })
+
+        it('Should recalculate when lastIdle changes', async () => {
+          props.timeout = 200
+          const { result } = idleTimer()
+
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getIdleTime()).toBeAround(0, 20)
+
+          fireEvent.mouseDown(document)
+          await waitFor(() => result.current.isIdle())
+          await sleep(200)
+          expect(result.current.getIdleTime()).toBeAround(200, 30)
+        })
+
+        it('Should reset when reset is called', async () => {
+          props.timeout = 200
+          const { result } = idleTimer()
+
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getIdleTime()).toBeAround(0, 20)
+
+          fireEvent.mouseDown(document)
+          await waitFor(() => result.current.isIdle())
+          await sleep(200)
+          expect(result.current.getIdleTime()).toBeAround(200, 30)
+          result.current.reset()
+          expect(result.current.getIdleTime()).toBe(0)
+        })
+      })
+
       describe('.getTotalIdleTime()', () => {
         it('Should get the total idle time', async () => {
           props.timeout = 200
@@ -1708,6 +1783,72 @@ describe('useIdleTimer', () => {
         })
       })
 
+      describe('.getActiveTime()', () => {
+        it('Should get the active time', async () => {
+          props.timeout = 300
+          const { result } = idleTimer()
+
+          // Test during active
+          await sleep(100)
+          expect(result.current.getActiveTime()).toBeAround(100, 20)
+
+          // Test after idle
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getActiveTime()).toBeAround(300, 25)
+
+          // Activate
+          fireEvent.mouseDown(document)
+          await sleep(100)
+
+          fireEvent.mouseDown(document)
+          await sleep(100)
+
+          fireEvent.mouseDown(document)
+          await sleep(100)
+
+          expect(result.current.getActiveTime()).toBeAround(600, 20)
+        })
+
+        it('Should return 0 when it has not been active', async () => {
+          props.timeout = 200
+          props.startManually = true
+          const { result } = idleTimer()
+          expect(result.current.getActiveTime()).toBeAround(0, 5)
+          result.current.start()
+          expect(result.current.getActiveTime()).toBeAround(0, 20)
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getActiveTime()).toBeAround(200, 20)
+        })
+
+        it('Should recalculate when lastActive changes', async () => {
+          props.timeout = 200
+          const { result } = idleTimer()
+
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getActiveTime()).toBeAround(200, 20)
+
+          fireEvent.mouseDown(document)
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getActiveTime()).toBeAround(400, 20)
+        })
+
+        it('Should start over when reset is called', async () => {
+          props.timeout = 200
+          const { result } = idleTimer()
+
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getActiveTime()).toBeAround(200, 20)
+
+          fireEvent.mouseDown(document)
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getActiveTime()).toBeAround(400, 20)
+
+          result.current.reset()
+          await waitFor(() => result.current.isIdle())
+          expect(result.current.getActiveTime()).toBeAround(200, 20)
+        })
+      })
+
       describe('.getTotalActiveTime()', () => {
         it('Should get the total active time', async () => {
           props.timeout = 300
@@ -1757,7 +1898,7 @@ describe('useIdleTimer', () => {
           expect(result.current.getTotalActiveTime()).toBeAround(400, 20)
         })
 
-        it('Should start over when reset is called', async () => {
+        it('Should not start over when reset is called', async () => {
           props.timeout = 200
           const { result } = idleTimer()
 
@@ -1770,7 +1911,7 @@ describe('useIdleTimer', () => {
 
           result.current.reset()
           await waitFor(() => result.current.isIdle())
-          expect(result.current.getTotalActiveTime()).toBeAround(200, 20)
+          expect(result.current.getTotalActiveTime()).toBeAround(600, 20)
         })
       })
     })
