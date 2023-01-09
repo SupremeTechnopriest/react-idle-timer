@@ -52,15 +52,16 @@ export function useIdleTimer ({
   const lastIdle = useRef<number>(null)
   const lastActive = useRef<number>(null)
   const idleTime = useRef<number>(0)
+  const totalIdleTime = useRef<number>(0)
+  const promptTime = useRef<number>(0)
+  const remaining = useRef<number>(0)
 
   // State References
   const idle = useRef<boolean>(false)
+  const prompted = useRef<boolean>(false)
   const paused = useRef<boolean>(false)
   const firstLoad = useRef<boolean>(true)
   const eventsBound = useRef<boolean>(false)
-  const prompted = useRef<boolean>(false)
-  const remaining = useRef<number>(0)
-  const promptTime = useRef<number>(0)
   const tId = useRef<number>(null)
 
   // Tab manager
@@ -201,6 +202,7 @@ export function useIdleTimer ({
     promptTime.current = 0
     idle.current = false
     idleTime.current += now() - lastIdle.current
+    totalIdleTime.current += now() - lastIdle.current
     bindEvents()
     createTimeout()
     emitOnActive.current(event)
@@ -403,13 +405,15 @@ export function useIdleTimer ({
     bindEvents()
 
     // Reset state
+    lastReset.current = now()
+    idleTime.current += now() - lastIdle.current
+    totalIdleTime.current += now() - lastIdle.current
+    idleTime.current = 0
     idle.current = false
     prompted.current = false
     paused.current = false
     remaining.current = 0
     promptTime.current = 0
-    startTime.current = now()
-    lastReset.current = now()
 
     if (manager.current && !remote) {
       manager.current.reset()
@@ -623,11 +627,11 @@ export function useIdleTimer ({
   }, [lastActive])
 
   /**
-   * Get the total time user is idle in milliseconds.
+   * Get the total time user is idle in milliseconds since the last reset.
    *
    * @return Milliseconds idle.
    */
-  const getTotalIdleTime = useCallback<() => number>((): number => {
+  const getIdleTime = useCallback<() => number>((): number => {
     if (idle.current) {
       return Math.round((now() - lastIdle.current) + idleTime.current)
     }
@@ -635,14 +639,36 @@ export function useIdleTimer ({
   }, [lastIdle, idleTime])
 
   /**
-   * Get the total time user is active in milliseconds.
+   * Get the total time user is idle in milliseconds since the hook mounted.
+   *
+   * @return Milliseconds idle.
+   */
+  const getTotalIdleTime = useCallback<() => number>((): number => {
+    if (idle.current) {
+      return Math.round((now() - lastIdle.current) + totalIdleTime.current)
+    }
+    return Math.round(totalIdleTime.current)
+  }, [lastIdle, totalIdleTime])
+
+  /**
+   * Get the total time user is active in milliseconds since the last reset.
+   *
+   * @return Milliseconds active
+   */
+  const getActiveTime = useCallback<() => number>((): number => {
+    const total = Math.round(getElapsedTime() - getIdleTime())
+    return total >= 0 ? total : 0
+  }, [lastIdle, idleTime])
+
+  /**
+   * Get the total time user is active in milliseconds since the hook mounted.
    *
    * @return Milliseconds active
    */
   const getTotalActiveTime = useCallback<() => number>((): number => {
     const total = Math.round(getTotalElapsedTime() - getTotalIdleTime())
     return total >= 0 ? total : 0
-  }, [startTime, lastIdle, idleTime])
+  }, [lastIdle, idleTime])
 
   // On Mount
   useEffect(() => {
@@ -797,7 +823,9 @@ export function useIdleTimer ({
     getTotalElapsedTime,
     getLastIdleTime,
     getLastActiveTime,
+    getIdleTime,
     getTotalIdleTime,
+    getActiveTime,
     getTotalActiveTime,
     // @ts-ignore
     setOnPrompt: (fn: IEventHandler) => {
