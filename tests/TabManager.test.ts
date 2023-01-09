@@ -100,6 +100,18 @@ describe('TabManager', () => {
     expect(options.onActive).toHaveBeenCalledTimes(1)
   })
 
+  it('Should set last active when tab is active', async () => {
+    const manager = createTabManager()
+    manager.active()
+    const manager2 = createTabManager()
+    manager2.active()
+
+    await waitFor(() => manager.isLastActive === false)
+
+    expect(manager.isLastActive).toBe(false)
+    expect(manager2.isLastActive).toBe(true)
+  })
+
   it('Should deregister when tab closes', async () => {
     const options = {
       onIdle: jest.fn(),

@@ -37,6 +37,7 @@ export class TabManager {
   public token: string = createToken()
   public registry: Map<string, RegistryState> = new Map()
   public allIdle: boolean = false
+  public isLastActive: boolean = false
 
   constructor (options: ITabManagerOptions) {
     const { channelName } = options
@@ -142,6 +143,9 @@ export class TabManager {
     if (isActive) {
       this.options.onActive()
     }
+
+    // Set last active
+    this.isLastActive = token === this.token
   }
 
   start (token = this.token) {
@@ -152,6 +156,8 @@ export class TabManager {
     } else {
       this.options.start(true)
     }
+    // Set last active
+    this.isLastActive = token === this.token
   }
 
   reset (token = this.token) {
@@ -162,6 +168,8 @@ export class TabManager {
     } else {
       this.options.reset(true)
     }
+    // Set last active
+    this.isLastActive = token === this.token
   }
 
   activate (token = this.token) {
@@ -172,6 +180,8 @@ export class TabManager {
     } else {
       this.options.activate(true)
     }
+    // Set last active
+    this.isLastActive = token === this.token
   }
 
   pause (token = this.token) {

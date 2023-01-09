@@ -58,6 +58,13 @@ export interface IIdleTimer {
   isPrompted(): boolean
 
   /**
+   * Returns whether or not this is the last active tab.
+   *
+   * @returns Last active state.
+   */
+  isLastActiveTab(): boolean
+
+  /**
    * Returns the current tabs id.
    */
   getTabId(): string
