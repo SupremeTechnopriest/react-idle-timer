@@ -1477,6 +1477,48 @@ describe('useIdleTimer', () => {
         })
       })
 
+      describe('.isLastActiveTab', () => {
+        it('Should throw when crossTab is not enabled', () => {
+          const { result } = idleTimer()
+          expect(() => result.current.isLastActiveTab()).toThrow(
+            new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
+          )
+        })
+
+        it('Should have only one active tab', async () => {
+          props.crossTab = true
+          props.timeout = 200
+          const timer1 = idleTimer()
+          const timer2 = idleTimer()
+          await waitFor(timer1.result.current.isIdle)
+          timer2.result.current.activate()
+          expect(timer1.result.current.isLastActiveTab()).toBe(false)
+          expect(timer2.result.current.isLastActiveTab()).toBe(true)
+        })
+
+        it('Should work with all activations', async () => {
+          props.crossTab = true
+          props.timeout = 200
+          const timer1 = idleTimer()
+          const timer2 = idleTimer()
+          await waitFor(timer1.result.current.isIdle)
+
+          timer2.result.current.activate()
+          expect(timer1.result.current.isLastActiveTab()).toBe(false)
+          expect(timer2.result.current.isLastActiveTab()).toBe(true)
+
+          timer1.result.current.start()
+          expect(timer1.result.current.isLastActiveTab()).toBe(true)
+          await waitFor(timer1.result.current.isIdle)
+          expect(timer2.result.current.isLastActiveTab()).toBe(false)
+
+          timer2.result.current.reset()
+          await waitFor(timer1.result.current.isIdle)
+          expect(timer1.result.current.isLastActiveTab()).toBe(false)
+          expect(timer2.result.current.isLastActiveTab()).toBe(true)
+        })
+      })
+
       describe('.getTabId', () => {
         it('Should throw when crossTab is not enabled', () => {
           const { result } = idleTimer()
