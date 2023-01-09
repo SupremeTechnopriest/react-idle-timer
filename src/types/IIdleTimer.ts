@@ -10,7 +10,7 @@ export interface IIdleTimer {
   reset(): void
 
   /**
-   * Restore initial state and emit onActive is user was idle.
+   * Restore initial state and emit onActive if the user was prompted or idle.
    */
   activate(): void
 
