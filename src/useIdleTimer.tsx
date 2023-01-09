@@ -454,7 +454,7 @@ export function useIdleTimer ({
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeoutRef, manager])
+  }, [tId, idle, prompted, timeoutRef, manager])
 
   /**
    * Pause a running timer.

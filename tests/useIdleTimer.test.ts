@@ -1147,7 +1147,7 @@ describe('useIdleTimer', () => {
         })
       })
 
-      describe('.active()', () => {
+      describe('.activate()', () => {
         it('Should start timer when activate() is called', () => {
           props.startOnMount = false
           const { result } = idleTimer()
