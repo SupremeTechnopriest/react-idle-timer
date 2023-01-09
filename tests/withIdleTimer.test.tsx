@@ -43,6 +43,13 @@ describe('withIdleTimer', () => {
     const onMessage = jest.fn()
 
     class Root extends IdleTimerComponent<IProps, {}> {
+      foo: string
+
+      constructor (props) {
+        super(props)
+        this.foo = 'bar'
+      }
+
       onPrompt () {
         onPrompt()
       }
