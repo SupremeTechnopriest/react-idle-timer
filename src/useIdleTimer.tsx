@@ -162,11 +162,13 @@ export function useIdleTimer ({
    * @private
    */
   const togglePrompted = (event?: EventType): void => {
+    if (!prompted.current && !idle.current) {
+      emitOnPrompt.current(event)
+    }
     remaining.current = 0
     promptTime.current = now()
     prompted.current = true
     createTimeout(promptTimeoutRef.current, false)
-    emitOnPrompt.current(event)
   }
 
   /**
@@ -175,6 +177,9 @@ export function useIdleTimer ({
    */
   const toggleIdle = () => {
     destroyTimeout()
+    if (!idle.current) {
+      emitOnIdle.current()
+    }
 
     // Flip idle
     idle.current = true
@@ -187,8 +192,6 @@ export function useIdleTimer ({
       promptTime.current = 0
       prompted.current = false
     }
-
-    emitOnIdle.current()
   }
 
   /**
