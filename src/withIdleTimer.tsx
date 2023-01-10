@@ -28,11 +28,11 @@ export function withIdleTimer<T extends IIdleTimer> (Component: ComponentType<T>
 }
 
 interface IIdleTimerComponentProps extends IIdleTimerProps {
-  setOnPrompt: (fn: IEventHandler) => void
-  setOnIdle: (fn: IEventHandler) => void
-  setOnActive: (fn: IEventHandler) => void
-  setOnAction: (fn: IEventHandler) => void
-  setOnMessage: (fn: IEventHandler) => void
+  setOnPrompt?: (fn: IEventHandler) => void
+  setOnIdle?: (fn: IEventHandler) => void
+  setOnActive?: (fn: IEventHandler) => void
+  setOnAction?: (fn: IEventHandler) => void
+  setOnMessage?: (fn: IEventHandler) => void
 }
 
 abstract class IIdleTimerComponent<P, S> extends Component<P, S> {

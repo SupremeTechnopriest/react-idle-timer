@@ -15,6 +15,7 @@ import { IIdleTimer } from './types/IIdleTimer'
 import { IIdleTimerProps } from './types/IIdleTimerProps'
 import { EventsType } from './types/EventsType'
 import { MessageType } from './types/MessageType'
+import { PresenceType } from './types/PresenceType'
 
 const MAX_TIMEOUT = 2147483647
 
@@ -32,6 +33,7 @@ export function useIdleTimer ({
   events = DEFAULT_EVENTS,
   timers = undefined,
   immediateEvents = [],
+  onPresenceChange = () => {},
   onPrompt = () => {},
   onIdle = () => {},
   onActive = () => {},
@@ -121,6 +123,12 @@ export function useIdleTimer ({
     [...new Set([...events, ...immediateEvents]).values()]
   )
 
+  // On Presence Change Emitter
+  const emitOnPresenceChange = useRef<(presence: PresenceType) => void>(onPresenceChange)
+  useEffect(() => {
+    emitOnPresenceChange.current = onPresenceChange
+  }, [onPresenceChange])
+
   // On Prompt Emitter
   const emitOnPrompt = useRef<IEventHandler>(onPrompt)
   useEffect(() => {
@@ -206,6 +214,7 @@ export function useIdleTimer ({
   const togglePrompted = (event?: EventType): void => {
     if (!prompted.current && !idle.current) {
       emitOnPrompt.current(event)
+      emitOnPresenceChange.current({ type: 'active', prompted: true })
     }
     remaining.current = 0
     promptTime.current = now()
@@ -221,6 +230,7 @@ export function useIdleTimer ({
     destroyTimeout()
     if (!idle.current) {
       emitOnIdle.current()
+      emitOnPresenceChange.current({ type: 'idle' })
     }
 
     // Flip idle
@@ -243,8 +253,9 @@ export function useIdleTimer ({
    */
   const toggleActive = (event?: EventType) => {
     destroyTimeout()
-    if (idle.current) {
+    if (idle.current || prompted.current) {
       emitOnActive.current(event)
+      emitOnPresenceChange.current({ type: 'active', prompted: false })
     }
     prompted.current = false
     promptTime.current = 0
