@@ -276,6 +276,15 @@ describe('useIdleTimer', () => {
       })
 
       describe('.timeout', () => {
+        it('Should not allow an overflowed value', () => {
+          props.timeout = 2147483648
+
+          const { result } = idleTimer()
+          expect(result.error.message).toBe(
+            '❌ The value for the timeout property must fit in a 32 bit signed integer, 2147483647.'
+          )
+        })
+
         it('Should update timeout dynamically', async () => {
           props.onIdle = jest.fn()
           props.timeout = 200
@@ -357,6 +366,15 @@ describe('useIdleTimer', () => {
       })
 
       describe('.promptTimeout', () => {
+        it('Should not allow an overflowed value', () => {
+          props.promptTimeout = 2147483648
+
+          const { result } = idleTimer()
+          expect(result.error.message).toBe(
+            '❌ The value for the promptTimeout property must fit in a 32 bit signed integer, 2147483647.'
+          )
+        })
+
         it('Should call idle after prompt duration', async () => {
           props.timeout = 200
           props.promptTimeout = 200
@@ -382,6 +400,60 @@ describe('useIdleTimer', () => {
 
           await sleep(200)
           expect(props.onPrompt).toHaveBeenCalledTimes(1)
+          await sleep(200)
+          expect(props.onIdle).toHaveBeenCalledTimes(1)
+        })
+      })
+
+      describe('.promptBeforeIdle', () => {
+        it('Should not allow promptTimeout to be set', () => {
+          props.timeout = 400
+          props.promptTimeout = 100
+          props.promptBeforeIdle = 100
+
+          const { result } = idleTimer()
+          expect(result.error.message).toBe(
+            '❌ Both promptTimeout and promptBeforeIdle can not be set. The promptTimeout property will be deprecated in a future version.'
+          )
+        })
+
+        it('Should not allow an overflowed value', () => {
+          props.promptBeforeIdle = 2147483648
+
+          const { result } = idleTimer()
+          expect(result.error.message).toBe(
+            '❌ The value for the promptBeforeIdle property must fit in a 32 bit signed integer, 2147483647.'
+          )
+        })
+
+        it('Should call idle after prompt duration', async () => {
+          props.timeout = 400
+          props.promptBeforeIdle = 100
+          props.onPrompt = jest.fn()
+          props.onIdle = jest.fn()
+
+          const { result } = idleTimer()
+          await sleep(300)
+          expect(props.onPrompt).toHaveBeenCalledTimes(1)
+          await waitFor(() => result.current.isIdle())
+          expect(props.onIdle).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should update dynamically', async () => {
+          props.timeout = 600
+          props.promptBeforeIdle = 300
+          props.onPrompt = jest.fn()
+          props.onIdle = jest.fn()
+
+          const { rerender } = idleTimer()
+          await sleep(300)
+          expect(props.onPrompt).toHaveBeenCalledTimes(1)
+
+          props.promptBeforeIdle = 200
+          rerender()
+
+          await sleep(400)
+          expect(props.onPrompt).toHaveBeenCalledTimes(2)
           await sleep(200)
           expect(props.onIdle).toHaveBeenCalledTimes(1)
         })

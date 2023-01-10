@@ -4,7 +4,6 @@ import { TabManager } from './TabManager'
 
 import { DEFAULT_ELEMENT, DEFAULT_EVENTS } from './utils/defaults'
 import { IS_BROWSER } from './utils/isBrowser'
-import { useRefEffect } from './utils/useRefEffect'
 import { debounceFn } from './utils/debounce'
 import { throttleFn } from './utils/throttle'
 import { setTimers, timers as timer } from './utils/timers'
@@ -17,6 +16,8 @@ import { IIdleTimerProps } from './types/IIdleTimerProps'
 import { EventsType } from './types/EventsType'
 import { MessageType } from './types/MessageType'
 
+const MAX_TIMEOUT = 2147483647
+
 /**
  * Creates an IdleTimer instance.
  *
@@ -26,6 +27,7 @@ import { MessageType } from './types/MessageType'
 export function useIdleTimer ({
   timeout = 1000 * 60 * 20,
   promptTimeout = 0,
+  promptBeforeIdle = 0,
   element = DEFAULT_ELEMENT,
   events = DEFAULT_EVENTS,
   timers = undefined,
@@ -65,12 +67,52 @@ export function useIdleTimer ({
   const tId = useRef<number>(null)
 
   // Tab manager
-  const manager = useRef(null)
+  const manager = useRef<TabManager>(null)
 
   // Prop references
-  const timeoutRef = useRefEffect<number>(timeout)
-  const promptTimeoutRef = useRefEffect<number>(promptTimeout)
-  const stopOnIdleRef = useRefEffect<boolean>(stopOnIdle)
+  const timeoutRef = useRef<number>(timeout)
+  const promptTimeoutRef = useRef<number>(0)
+  useEffect(() => {
+    if (promptBeforeIdle && promptTimeout) {
+      throw new Error('❌ Both promptTimeout and promptBeforeIdle can not be set. The promptTimeout property will be deprecated in a future version.')
+    }
+
+    if (timeout >= MAX_TIMEOUT) {
+      throw new Error(`❌ The value for the timeout property must fit in a 32 bit signed integer, ${MAX_TIMEOUT}.`)
+    }
+
+    if (promptTimeout >= MAX_TIMEOUT) {
+      throw new Error(`❌ The value for the promptTimeout property must fit in a 32 bit signed integer, ${MAX_TIMEOUT}.`)
+    }
+
+    if (promptBeforeIdle >= MAX_TIMEOUT) {
+      throw new Error(`❌ The value for the promptBeforeIdle property must fit in a 32 bit signed integer, ${MAX_TIMEOUT}.`)
+    }
+
+    if (promptBeforeIdle) {
+      timeoutRef.current = timeout - promptBeforeIdle
+      promptTimeoutRef.current = promptBeforeIdle
+    } else {
+      timeoutRef.current = timeout
+      promptTimeoutRef.current = promptTimeout
+    }
+
+    if (!firstLoad.current) {
+      if (startManually) return
+      if (idle.current) {
+        emitOnActive.current()
+        if (manager.current) {
+          manager.current.active()
+        }
+      }
+      start()
+    }
+  }, [timeout, promptTimeout, promptBeforeIdle, startManually])
+
+  const stopOnIdleRef = useRef<boolean>(stopOnIdle)
+  useEffect(() => {
+    stopOnIdleRef.current = stopOnIdle
+  }, [stopOnIdle])
 
   // Events and element references
   const immediateEventsRef = useRef<EventsType[]>(immediateEvents)
@@ -802,20 +844,20 @@ export function useIdleTimer ({
     startOnMount
   ])
 
-  // Dynamic timeout
-  useEffect(() => {
-    if (!firstLoad.current) {
-      timeoutRef.current = timeout
-      if (startManually) return
-      if (idle.current) {
-        emitOnActive.current()
-        if (manager.current) {
-          manager.current.active()
-        }
-      }
-      start()
-    }
-  }, [timeout, manager, startManually, firstLoad, idle])
+  // // Dynamic timeout
+  // useEffect(() => {
+  //   if (!firstLoad.current) {
+  //     timeoutRef.current = timeout
+  //     if (startManually) return
+  //     if (idle.current) {
+  //       emitOnActive.current()
+  //       if (manager.current) {
+  //         manager.current.active()
+  //       }
+  //     }
+  //     start()
+  //   }
+  // }, [timeout, manager, startManually, firstLoad, idle])
 
   useEffect(() => {
     if (firstLoad.current) firstLoad.current = false

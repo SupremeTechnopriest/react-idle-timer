@@ -24,8 +24,16 @@ export interface IIdleTimerProps {
    * is called.
    *
    * @default 0
+   * @deprecated use promptBeforeIdle
    */
   promptTimeout?: number
+
+  /**
+   * The amount of milliseconds before timeout to call the onPrompt event handler.
+   *
+   * @default 0
+   */
+  promptBeforeIdle?: number
 
   /**
    * Element to bind activity listeners to.
