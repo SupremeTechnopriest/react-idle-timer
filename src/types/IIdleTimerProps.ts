@@ -1,5 +1,6 @@
 import { RefObject } from 'react'
 import { EventsType } from './EventsType'
+import { PresenceType } from './PresenceType'
 import { IIdleTimer } from './IIdleTimer'
 import { ITimers } from './ITimers'
 
@@ -9,7 +10,7 @@ export interface IIdleTimerProps {
    *
    * @default undefined
    */
-  ref?: RefObject<IIdleTimer>;
+  ref?: RefObject<IIdleTimer>
 
   /**
    * Activity Timeout in milliseconds.
@@ -59,25 +60,32 @@ export interface IIdleTimerProps {
   immediateEvents?: EventsType[]
 
   /**
+   * Function to call when the users presence state changes.
+   *
+   * @default () => {}
+   */
+  onPresenceChange?: (presence: PresenceType) => void
+
+  /**
    * When promptTimeout is set, this function is called after the user becomes
    * idle. This is useful for displaying a confirm prompt. If the prompt timeout
    * is reached, onIdle is then called.
    *
-   * @default () -> {}
+   * @default () => {}
    */
   onPrompt?: () => void
 
   /**
    * Function to call when user is idle.
    *
-   * @default () -> {}
+   * @default () => {}
    */
   onIdle?: () => void
 
   /**
    * Function to call when user becomes active.
    *
-   * @default () -> {}
+   * @default () => {}
    */
   onActive?: (event?: Event) => void
 
@@ -85,7 +93,7 @@ export interface IIdleTimerProps {
    * Function to call on user activity. Can be throttled or debounced using the
    * `throttle` and `debounce` props.
    *
-   * @default () -> {}
+   * @default () => {}
    */
   onAction?: (event?: Event) => void
 

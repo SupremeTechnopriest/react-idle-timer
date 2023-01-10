@@ -20,6 +20,7 @@ describe('useIdleTimer', () => {
       events: undefined,
       timers: undefined,
       immediateEvents: undefined,
+      onPresenceChange: undefined,
       onPrompt: undefined,
       onIdle: undefined,
       onActive: undefined,
@@ -660,6 +661,57 @@ describe('useIdleTimer', () => {
         })
       })
 
+      describe('.onPresenceChange', () => {
+        it('Should call presence change when idle', async () => {
+          props.timeout = 200
+          props.onPresenceChange = jest.fn()
+
+          const { result } = idleTimer()
+          await waitFor(result.current.isIdle)
+          expect(props.onPresenceChange).toHaveBeenCalledWith({ type: 'idle' })
+        })
+
+        it('Should call presence change when prompted', async () => {
+          props.timeout = 200
+          props.promptBeforeIdle = 100
+          props.onPresenceChange = jest.fn()
+
+          const { result } = idleTimer()
+          await waitFor(result.current.isPrompted)
+          expect(props.onPresenceChange).toHaveBeenCalledWith({ type: 'active', prompted: true })
+        })
+
+        it('Should call presence change when active', async () => {
+          props.timeout = 200
+          props.promptBeforeIdle = 100
+          props.onPresenceChange = jest.fn()
+
+          const { result } = idleTimer()
+          await waitFor(result.current.isIdle)
+          result.current.activate()
+          expect(props.onPresenceChange).toHaveBeenCalledWith({ type: 'active', prompted: false })
+        })
+
+        it('Should reassign event handler', async () => {
+          const fn1 = jest.fn()
+          const fn2 = jest.fn()
+          props.timeout = 200
+          props.onPresenceChange = fn1
+
+          const { rerender, result } = idleTimer()
+          await waitFor(result.current.isIdle)
+
+          expect(fn1).toHaveBeenCalledTimes(1)
+          props.onPresenceChange = fn2
+          rerender()
+
+          result.current.reset()
+          await waitFor(result.current.isIdle)
+          expect(fn1).toHaveBeenCalledTimes(1)
+          expect(fn2).toHaveBeenCalledTimes(1)
+        })
+      })
+
       describe('.onPrompt', () => {
         it('Should reset on start and reset', async () => {
           props.timeout = 200
@@ -738,6 +790,18 @@ describe('useIdleTimer', () => {
       })
 
       describe('.onActive', () => {
+        it('Should call onActive when calling activate() from prompted state', async () => {
+          props.timeout = 200
+          props.promptTimeout = 400
+          props.onActive = jest.fn()
+
+          const { result } = idleTimer()
+          await waitFor(() => result.current.isPrompted())
+
+          result.current.activate()
+          expect(props.onActive).toHaveBeenCalledTimes(1) // fails
+        })
+
         it('Should call onActive on user input when user is idle', async () => {
           props.onActive = jest.fn()
           props.timeout = 200
