@@ -675,6 +675,16 @@ describe('useIdleTimer', () => {
           expect(props.onActive).toHaveBeenCalledTimes(1)
         })
 
+        it('Should not call onActive if the state was not previously idle when syncTimers is set', async () => {
+          props.timeout = 200
+          props.crossTab = true
+          props.syncTimers = 500
+          props.onActive = jest.fn()
+          idleTimer()
+          fireEvent.mouseDown(document, props.element)
+          expect(props.onActive).not.toHaveBeenCalled()
+        })
+
         it('Should not call onActive on user input when user is not idle', async () => {
           props.onActive = jest.fn()
           props.timeout = 400

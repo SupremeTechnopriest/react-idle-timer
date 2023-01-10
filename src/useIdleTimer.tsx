@@ -198,6 +198,9 @@ export function useIdleTimer ({
    */
   const toggleActive = (event?: EventType) => {
     destroyTimeout()
+    if (idle.current) {
+      emitOnActive.current(event)
+    }
     prompted.current = false
     promptTime.current = 0
     idle.current = false
@@ -205,7 +208,6 @@ export function useIdleTimer ({
     totalIdleTime.current += now() - lastIdle.current
     bindEvents()
     createTimeout()
-    emitOnActive.current(event)
   }
 
   /**
