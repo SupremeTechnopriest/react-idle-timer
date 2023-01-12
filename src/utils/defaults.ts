@@ -24,5 +24,6 @@ export const DEFAULT_EVENTS: EventsType[] = [
   'touchmove',
   'MSPointerDown',
   'MSPointerMove',
-  'visibilitychange'
+  'visibilitychange',
+  'focus'
 ]

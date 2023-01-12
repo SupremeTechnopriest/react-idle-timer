@@ -762,7 +762,9 @@ export function useIdleTimer ({
 
     // Clear and unbind on unmount
     return () => {
-      if (IS_BROWSER) window.removeEventListener('beforeunload', beforeunload)
+      if (IS_BROWSER) {
+        window.removeEventListener('beforeunload', beforeunload)
+      }
       if (manager.current) manager.current.close()
       if (callOnAction.cancel) callOnAction.cancel()
       destroyTimeout()
@@ -854,21 +856,6 @@ export function useIdleTimer ({
     startManually,
     startOnMount
   ])
-
-  // // Dynamic timeout
-  // useEffect(() => {
-  //   if (!firstLoad.current) {
-  //     timeoutRef.current = timeout
-  //     if (startManually) return
-  //     if (idle.current) {
-  //       emitOnActive.current()
-  //       if (manager.current) {
-  //         manager.current.active()
-  //       }
-  //     }
-  //     start()
-  //   }
-  // }, [timeout, manager, startManually, firstLoad, idle])
 
   useEffect(() => {
     if (firstLoad.current) firstLoad.current = false

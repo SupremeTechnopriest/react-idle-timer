@@ -66,7 +66,7 @@ describe('useIdleTimer', () => {
 
         expect(result.current.isIdle()).toBe(false)
         jest.setSystemTime(start + props.timeout)
-        fireEvent.mouseDown(document)
+        fireEvent.focus(document)
 
         expect(result.current.isIdle()).toBe(true)
         expect(props.onIdle).toHaveBeenCalledTimes(1)
