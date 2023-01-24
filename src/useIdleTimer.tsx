@@ -610,9 +610,7 @@ export function useIdleTimer ({
    * Returns whether or not this is the leader tab.
    */
   const isLeader = useCallback<() => boolean>((): boolean => {
-    if (!manager.current) {
-      throw new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
-    }
+    if (!manager.current) return null
     return manager.current.isLeader
   }, [manager])
 
@@ -620,9 +618,7 @@ export function useIdleTimer ({
    * Returns whether or not this is the last active tab.
    */
   const isLastActiveTab = useCallback<() => boolean>((): boolean => {
-    if (!manager.current) {
-      throw new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
-    }
+    if (!manager.current) return null
     return manager.current.isLastActive
   }, [manager])
 
@@ -630,9 +626,7 @@ export function useIdleTimer ({
    * Returns the current tabs id
    */
   const getTabId = useCallback<() => string>((): string => {
-    if (!manager.current) {
-      throw new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
-    }
+    if (!manager.current) return null
     return manager.current.token
   }, [manager])
 
