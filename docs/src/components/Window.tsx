@@ -29,7 +29,8 @@ export const Window = forwardRef(function Window (props: IWindowProps, ref: Ref<
       <Box
         bg={useColorModeValue('gray.100', 'gray.700')}
         borderBottomRadius={8}
-        h={props.height || 500}
+        overflow='hidden'
+        h={props.height || 'calc(100% - 32px)'}
       >
         <iframe ref={ref} src={props.url} style={{
           width: '100%',

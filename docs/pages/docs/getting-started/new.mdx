@@ -3,56 +3,40 @@ title: What's New in v5
 description: What's new in the latest IdleTimer release
 ---
 
-> Version 5 is a from scratch rewrite. A lot of effort went
-> into this release. If you find this package useful and have the means, please 
-> consider a small [donation](https://github.com/sponsors/supremetechnopriest) 🙂
+> Version 5 is a from-scratch rewrite. A lot of effort went into this release. If you find this package useful and have the means, please consider a small [donation](https://github.com/sponsors/supremetechnopriest) 🙂
 
-The entire project has been rewritten in typescript for a more robust typescript
-experience. New issue and pull request templates have been added along
-with a [contributing](/docs/about/contributing) guide for anyone who would like 
-to contribute to the project. Lastly this documentation site has been created 
-to serve as a knowledge base for all things related to the IdleTimer project.
-If you have any ideas for sections, demos or tutorials to add feel free to start a 
-[discussion](https://github.com/supremetechnopriest/react-idle-timer/discussions) 
-or open an [issue](https://github.com/supremetechnopriest/react-idle-timer/issues/new/choose).
+The entire project has been rewritten in typescript for a more robust typescript experience. New issue and pull request templates have been added along with a [contributing](/docs/about/contributing) guide for anyone who would like to contribute to the project. Lastly, this documentation site has been created to serve as a knowledge base for all things related to the IdleTimer project. If you have any ideas for sections, demos or tutorials to add feel free to start a [discussion](https://github.com/supremetechnopriest/react-idle-timer/discussions) or open an [issue](https://github.com/supremetechnopriest/react-idle-timer/issues/new/choose).
 
-If you are upgrading from v4 there are a few breaking changes that you should
-take into account. The rest of the API has not changed. Only new features
-and improvements to existing ones.
+## Deprecations in v5.5.0
 
-## Breaking Changes
+The [promptTimeout](/docs/api/props#prompttimeout) property has been deprecated in favor of the [promptBeforeIdle](/docs/api/props#promptbeforeidle). Both properties will continue to work until version `6.0.0`, but it is encouraged to use the new [promptBeforeIdle](/docs/api/props#promptbeforeidle) property. It is easier to reason about one timeout rather than two. The [timeout](/docs/api/props#timeout) property becomes the time until idle and the [promptBeforeIdle](/docs/api/props#promptbeforeidle) property becomes how many milliseconds before idle to emit the [onPrompt](/docs/api/props@onprompt) event. For example, if you want a 30 minute time to idle and a 30 second prompt:
+
+```js
+const idleTimer = useIdleTimer({
+  timeout: 1000 * 60 * 30,
+  promptBeforeIdle: 1000 * 30
+})
+```
+
+## Migrating from v4
+
+If you are upgrading from v4 there are a few breaking changes that you should take into account. The rest of the API has not changed. Only new features and improvements to existing ones.
+
+### Breaking Changes
 
 #### Removal of `<IdleTimer />` Component
 
-The major change in v5 is the removal of the `IdleTimer` component. It has been
-replaced with the [withIdleTimer](/docs/api/withIdleTimer) higher order component.
-You can use the higher order component to create the `IdleTimer` component if you
-wish and it would be a drop in replacement for the v4 component. A guide on how
-to do that can be found [here](/docs/api/with-idle-timer#idletimer-component).
+The major change in v5 is the removal of the `IdleTimer` component. It has been replaced with the [withIdleTimer](/docs/api/withIdleTimer) higher-order component. You can use the higher order component to create the `IdleTimer` component if you wish and it would be a drop-in replacement for the v4 component. A guide on how to do that can be found [here](/docs/api/with-idle-timer#idletimer-component).
 
 #### Simplified Cross Tab API
 
-The Cross Tab feature has been rewritten from the ground up. It is now much smaller
-and more specialized for this particular use case. All the edge cases have been
-solved and the API surface has been reduced to the essentials. 
+The Cross Tab feature has been rewritten from the ground up. It is now much smaller and more specialized for this particular use case. All the edge cases have been solved and the API surface has been reduced to the essentials. 
 
-In v4, the `crossTab` prop used to take a `boolean` or an `object` of configuration
-options. Now in v5, the `crossTab` prop only takes a `boolean`. This is how you
-enable or disable the Cross Tab Reconciliation feature. It is disabled by default.
+In v4, the `crossTab` prop use to take a `boolean` or an `object` of configuration options. Now in v5, the `crossTab` prop only takes a `boolean`. This is how you enable or disable the Cross Tab Reconciliation feature. It is disabled by default.
 
-All of the rest of the options from v4 have been set to sane defaults. 
-This results in a more simple API surface and less type ambiguity.
-Events are emitted on all tabs by default and leader election has been reduced
-down to the `leaderElection` prop and the `isLeader` method. See more about leader
-election in the [next section](/docs/getting-started/new#leader-election).
+All of the rest of the options from v4 have been set to sane defaults. This results in a more simple API surface and less type ambiguity. Events are emitted on all tabs by default and leader election has been reduced down to the `leaderElection` prop and the `isLeader` method. See more about leader election in the [next section](/docs/getting-started/new#leader-election).
 
-A new property has been added called `syncTimers`. It takes a `number` that
-represents the throttle value in milliseconds for the sync function. Every user
-action that is defined in the `events` array will be replicated to all tabs, thus
-keeping the timeouts across tabs roughly in sync. By default this property has
-a value of 0 which is equivalent to disabled. Set it to the maximum amount of
-drift between timeouts that is tolerable for you project. Setting it too low will
-cause a lot of messaging between tabs. A good place to start is around `200`. 
+A new property has been added called `syncTimers`. It takes a `number` that represents the throttle value in milliseconds for the sync function. Every user action that is defined in the `events` array will be replicated to all tabs, thus keeping the timeouts across tabs roughly in sync. By default, this property has a value of 0 which is equivalent to disabled. Set it to the maximum amount of drift between timeouts that is tolerable for your project. Setting it too low will cause a lot of messaging between tabs. A good place to start is around `200`. 
 
 In v4 the following code...
 ```jsx
@@ -128,15 +112,10 @@ const activityTimer = useIdleTimer({
 <IdleTimer crossTab timeout={1000 * 60 * 5} syncTimers={200} name='activity-timer' />
 ```
 
-There is also a new method [getTabId()](/docs/api/methods#gettabid) that will 
-return the current tabs id that is used internally by IdleTimer's `crossTab` feature.
+There is also a new method [getTabId()](/docs/api/methods#gettabid) that will return the current tab's id that is used internally by IdleTimer's `crossTab` feature.
 
 #### Leader Election
-In v4 Leader Election was enabled by default and would automatically emit events
-on only the leader tab. In v5, leader election has to be enabled manually by
-setting the [leaderElection](/docs/api/props#leaderelection) property. In order
-to emit events only on the leader, you can use the [isLeader](/docs/api/methods#isleader)
-method inside your event handlers.
+In v4 Leader Election was enabled by default and would automatically emit events on only the leader tab. In v5, leader election has to be enabled manually by setting the [leaderElection](/docs/api/props#leaderelection) property. To emit events only on the leader, you can use the [isLeader](/docs/api/methods#isleader) method inside your event handlers.
 
 ```js
 import { useIdleTimer } from 'react-idle-timer'
@@ -159,40 +138,19 @@ const App = () => {
 ```
 
 #### Last Active and Idle Times
-The `getLastActiveTime()` and `getLastIdleTime()` methods now return 
-[Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) 
-objects instead of a timestamp. This will eliminate the need to cast to a Date 
-before formatting. If you want to get the old timestamp you can just call 
-`getLastActiveTime().getTime()` and `getLastIdleTime().getTime()`.
+The `getLastActiveTime()` and `getLastIdleTime()` methods now return [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) objects instead of a timestamp. This will eliminate the need to cast to a Date before formatting. If you want to get the old timestamp you can just call `getLastActiveTime().getTime()` and `getLastIdleTime().getTime()`.
 
-## Non Breaking Changes
+### Non-Breaking Changes
 
 #### Removal of `passive` and `capture` Props
 
-The `passive` and `capture` props have been removed and are automatically set to
-true. There is no good reason a user would want to set either of them to `false`
-and as such, they have been removed to reduce complexity and API surface. If you 
-were to leave these props set in your `useIdleTimer` hook or `withIdleTimer` 
-higher order component, they wouldn't do anything. This is not necessarily a 
-breaking change but something that is good to be aware of while migrating.
+The `passive` and `capture` props have been removed and are automatically set to true. There is no good reason a user would want to set either of them to `false` and as such, they have been removed to reduce complexity and API surface. If you were to leave these props set in your `useIdleTimer` hook or `withIdleTimer` higher-order component, they wouldn't do anything. This is not necessarily a breaking change but good to be aware of while migrating.
 
 ## New Features
 
 ### Web Worker Timers
 
-When a window is backgrounded, the browser will throttle timers in an attempt to 
-save on CPU cycles. This can cause IdleTimer to produce delayed and inaccurate 
-results. To combat this, the timers interface has been exposed as a property and
-an implementation of WebWorker thread timers are exposed in order to keep them 
-alive when a window is throttled by the browser. The worker is provided via a 
-blob URL and this can cause strict CSP rules to be violated. It is strongly 
-suggested that you update your rule to allow the worker to run so the timers are 
-accurate. If this is not an option, you can omit the `timers` property and use
-the default main thread timers. Main thread timers are the default in order to 
-allow projects that wish to omit worker thread timers to tree shake out the
-worker code. If you decide to enable worker timers, take a look at 
-[Testing Considerations](/docs/getting-started/testing) for information on how 
-to mock these timers for your test suites.
+When a window is backgrounded, the browser will throttle timers in an attempt to save CPU cycles. This can cause IdleTimer to produce delayed and/or inaccurate results. To combat this, the [timers interface](/docs/api/types#itimers) has been exposed as a property. In addition, an implementation of Web Worker thread timers has been exported to keep timers alive when a window is throttled by the browser. The worker is provided via a blob URL and this can cause strict CSP rules to be violated. It is strongly suggested that you update your rule to allow the worker to run so the timers are accurate. If this is not an option, you can omit the `timers` property and use the default main thread timers. Main thread timers are the default to allow projects that wish to omit worker thread timers to tree shake out the worker code. If you decide to enable worker timers, take a look at [Testing Considerations](/docs/getting-started/testing) for information on how to mock these timers for your test suites.
 
 ```js
 import { useIdleTimer, workerTimers } from 'react-idle-timer'
@@ -208,22 +166,17 @@ export const App = () => {
 
 ### Integrated Prompting
 
-A common use case for IdleTimer is to detect when your user is idle and then 
-open a modal to ask the user if they are still there. There have been a lot of 
-questions about how to do this, so in v5, the IdleTimer will handle it for you.
+A common use case for IdleTimer is to detect when your user is idle and then open a modal to ask the user if they are still there. There have been a lot of questions about how to do this, so in v5, IdleTimer will handle it for you.
 
-The new `promptTimeout` configuration option along with the `onPrompt` callback
-and `isPrompted()` state getter is all you need to prompt your user before going 
-idle. 
+The new [promptBeforeIdle](/docs/api/props@promptbeforeidle) property along with the `onPrompt()` event handler and the `isPrompted()` state getter is all you need to prompt your user before they go idle. 
 
-Here is a minimal example. More complete examples can be found in the 
-[features](/docs/features/confirm-prompt) section.
+Here is a minimal example. More complete examples can be found in the [features](/docs/features/confirm-prompt) section.
 
 ```jsx
 export function App () {
   // Set timeout values
   const timeout = 1000 * 60 * 30
-  const promptTimeout = 1000 * 30
+  const promptBeforeIdle = 1000 * 30
 
   // Modal open state
   const [open, setOpen] = useState(false)
@@ -232,26 +185,27 @@ export function App () {
   const [remaining, setRemaining] = useState(0)
 
   const onPrompt = () => {
-    // onPrompt will be called after the timeout value is reached
-    // In this case 30 minutes. Here you can open your prompt. 
+    // onPrompt will be called `promptBeforeIdle` milliseconds before `timeout`.
+    // In this case 29 minutes and 30 seconds or 30 seconds before idle. 
+    // Here you can open your prompt. 
     // All events are disabled while the prompt is active. 
-    // If the user wishes to stay active, call the `reset()` method.
+    // If the user wishes to stay active, call the `activate()` method.
     // You can get the remaining prompt time with the `getRemainingTime()` method,
     setOpen(true)
     setRemaining(promptTimeout)
   }
   
   const onIdle = () => {
-    // onIdle will be called after the promptTimeout is reached.
-    // In this case 30 seconds. Here you can close your prompt and 
-    // perform what ever idle action you want such as log out your user.
+    // onIdle will be called after the timeout is reached.
+    // In this case 30 minutes. Here you can close your prompt and 
+    // perform whatever idle action you want such as logging out your user.
     // Events will be rebound as long as `stopOnMount` is not set.
     setOpen(false)
     setRemaining(0)
   }
   
   const onActive = () => {
-    // onActive will only be called if `reset()` is called while `isPrompted()` 
+    // onActive will only be called if `activate()` is called while `isPrompted()` 
     // is true. Here you will also want to close your modal and perform
     // any active actions. 
     setOpen(false)
@@ -260,7 +214,7 @@ export function App () {
 
   const { getRemainingTime, isPrompted, activate } = useIdleTimer({
     timeout,
-    promptTimeout,
+    promptBeforeIdle,
     onPrompt,
     onIdle,
     onActive
@@ -283,7 +237,7 @@ export function App () {
   }, [getRemainingTime, isPrompted])
 
   return (
-    <div className='modal' style={{ display: open ? 'block' : 'none' }}>
+    <div className='modal' style={{ display: open ? 'block': 'none' }}>
       <p>Logging you out in {remaining} seconds</p>
       <button onClick={handleStillHere}>Im Still Here</button>
     </div>
@@ -293,9 +247,7 @@ export function App () {
 
 ### Cross Tab Messaging
 
-IdleTimer now exposes its cross tab messaging layer so you can easily broadcast
-arbitrary messages to all instances of your page running in all tabs. This is 
-exposed by two new APIs...
+IdleTimer now exposes its cross-tab messaging layer so you can easily broadcast arbitrary messages to all instances of your page running in all tabs. This is exposed by two new APIs...
 
 a message callback:
 ```ts
@@ -307,8 +259,7 @@ and a message emitter:
 message (data: string | number | object, emitOnSelf?: boolean): void
 ```
 
-Using these mechanisms, you can use IdleTimer to send messages to all instances
-of your application. Here is a basic example with redux.
+Using these mechanisms, you can use IdleTimer to send messages to all instances of your application. Here is a basic example with redux.
 
 ```jsx
 import { useIdleTimer } from 'react-idle-timer'
@@ -348,8 +299,7 @@ export function App () {
 }
 ```
 
-More complete examples can be found in the [features](/docs/features/cross-tab)
-section.
+More complete examples can be found in the [features](/docs/features/cross-tab) section.
 
 ### Immediate Events
 
@@ -359,29 +309,39 @@ A new configuration option called `immediateEvents` has been added.
 immediateEvents?: IEventsType[]
 ```
 
-Any events added to `immediateEvents` will immediately switch the user into an 
-idle or prompted state, calling `onIdle` or `onPrompt` respectively. This is
-useful for events such as `pagehide`, where you want to bypass the timeout and
-go directly to an idle state. 
+Any events added to `immediateEvents` will immediately switch the user into an idle or prompted state, calling `onIdle` or `onPrompt` respectively. This is useful for events such as `pagehide`, where you want to bypass the timeout and go directly to an idle state. 
 
-If an event is set in both `events` and `immediateEvents`, the immediate event
-will take precedence allowing you to override the default events if you like.
+If an event is set in both `events` and `immediateEvents`, the immediate event will take precedence allowing you to override the default events if you like.
 
 ### Higher Order Component
 
-With the removal of the `IdleTimer` component, the `withIdleTimer` higher order 
-component is now the default way to add IdleTimer to class components. More about
-the higher order component [here](/docs/api/with-idle-timer).
+With the removal of the `IdleTimer` component, the `withIdleTimer` higher order component is now the default way to add IdleTimer to class components. More about the higher order component [here](/docs/api/with-idle-timer).
 
 ### Provider
 
-If you need to access the IdleTimer API in nested children, you can opt to use 
-the `IdleTimerProvider` rather than drilling props through your App's hierarchy.
-More about the Provider and related exports [here](/docs/api/idle-timer-provider).
+If you need to access the IdleTimer API in nested children, you can opt to use the `IdleTimerProvider` rather than drilling props through your App's hierarchy. More about the Provider and related exports [here](/docs/api/idle-timer-provider).
 
 ### Activate Method
-The `reset` method will now reset IdleTimer to it's initial state only. It will no
-longer call `onActive` if the user was idle. This functionality has been replaced
-by the [activate()](/docs/api/methods#active) method. You can call `activate()` to
-manually activate a user, resetting the timer and calling `onActive` if the user
-was idle. 
+The [reset()](/docs/api/methods#reset) method will now reset IdleTimer to its initial state only. It will no longer call [onActive](/docs/api/props#onactive) if the user was idle. This functionality has been replaced by the [activate()](/docs/api/methods#activate) method. You can call `activate()` to manually activate a user, which will reset the timer and emit the [onActive](/docs/api/props#onactive) event if the user was idle or prompted. 
+
+### Unified Event Handler
+The [onPresenceChange](/docs/api/props@onpresencechange) event handler provides a way to define a single event handler to handle all presence state changes. This can be used in place of [onActive](/docs/api/props@onActive), [onIdle](/docs/api/props@onidle), and [onPrompt](/docs/api/props@onprompt) to handle all state changes in one function. If you opt to use both the [onPresenceChange](/docs/api/props@onpresencechange) generic handler and the specific handlers, make note that the generic handler will be called first. 
+
+```ts
+// The presence type definition
+type PresenceType = { type: 'idle' } | { type: 'active', prompted: boolean }
+```
+
+```ts
+// Example onPresenceChange implementation
+import type { PresenceType } from 'react-idle-timer'
+
+const onPresenceChange = (presence: PresenceType) => {
+  const isIdle = presence.type === 'idle'
+  const isActive = presence.type === 'active' && !presence.prompted
+  const isPrompted = presence.type === 'active' && presence.prompted
+} 
+```
+
+### Resettable Time Getters
+Added [getIdleTime](/docs/api/methods#getidletime) and [getActiveTime](/docs/api/methods#getactivetime) to differentiate [getTotalIdleTime](/docs/api/methods#gettotalidletime) and [getTotalActiveTime](/docs/api/methods#gettotalactivetime) methods. The new methods are reset by calling the [reset](/docs/api/methods#reset) method. The existing `getTotal*Time` methods will return the time since the host component was mounted and is not resettable. This addition adds clarity and control to the activity time getter methods.

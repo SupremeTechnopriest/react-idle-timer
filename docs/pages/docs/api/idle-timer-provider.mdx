@@ -38,6 +38,10 @@ export function Child (props) => {
 }
 
 export function App () {
+  const onPresenceChange = (presence) => {
+    // Handle state changes in one function
+  }
+
   const onPrompt = () => {
     // Fire a Modal Prompt
   }
@@ -59,6 +63,7 @@ export function App () {
   return (
     <IdleTimerProvider
       timeout={1000 * 60}
+      onPresenceChange={onPresenceChange}
       onPrompt={onPrompt}
       onIdle={onIdle} 
       onActive={onActive}
@@ -93,6 +98,10 @@ export class Child extends Component {
 }
 
 export class App extends Component {
+  onPresenceChange (presence) {
+    // Handle state changes in one function
+  }
+
   onPrompt () {
     // Fire a Modal Prompt
   }
@@ -115,6 +124,7 @@ export class App extends Component {
     return (
       <IdleTimerProvider
         timeout={1000 * 60}
+        onPresenceChange={this.onPresenceChange}
         onPrompt={this.onPrompt}
         onIdle={this.onIdle} 
         onActive={this.onActive}
@@ -150,6 +160,10 @@ export class Child extends Component {
 }
 
 export class App extends Component {
+  onPresenceChange (presence) {
+    // Handle state changes in one function
+  }
+
   onPrompt () {
     // Fire a Modal Prompt
   }
@@ -172,6 +186,7 @@ export class App extends Component {
     return (
       <IdleTimerProvider
         timeout={1000 * 60 * 30}
+        onPresenceChange={this.onPresenceChange}
         onPrompt={this.onPrompt}
         onIdle={this.onIdle} 
         onActive={this.onActive}
