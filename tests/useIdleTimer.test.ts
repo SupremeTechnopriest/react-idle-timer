@@ -367,6 +367,14 @@ describe('useIdleTimer', () => {
       })
 
       describe('.promptTimeout', () => {
+        it('Should throw a deprecation warning to the console', () => {
+          const warn = jest.spyOn(console, 'warn')
+          props.promptTimeout = 200
+
+          idleTimer()
+          expect(warn).toHaveBeenCalledWith('⚠️ IdleTimer -- The `promptTimeout` property has been deprecated in favor of `promptBeforeIdle`. It will be removed in the next major release.')
+        })
+
         it('Should not allow an overflowed value', () => {
           props.promptTimeout = 2147483648
 
@@ -844,6 +852,20 @@ describe('useIdleTimer', () => {
           await waitFor(() => result.current.isIdle())
           fireEvent.mouseDown(document)
           expect(fn2).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should be called when onActive is set', async () => {
+          props.timeout = 200
+          props.onActive = jest.fn()
+          props.onAction = jest.fn()
+          props.throttle = 200
+          const { result } = idleTimer()
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(1)
+          await waitFor(result.current.isIdle)
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(2)
+          expect(props.onActive).toHaveBeenCalledTimes(1)
         })
       })
 
