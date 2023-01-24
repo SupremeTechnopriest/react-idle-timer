@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { IIdleTimer } from '../src'
+import type { IIdleTimer, PresenceType } from '../src'
 
 import { Component, createRef } from 'react'
 import { render, fireEvent, screen } from '@testing-library/react'
@@ -41,6 +41,7 @@ describe('withIdleTimer', () => {
     const onAction = jest.fn()
     const onActive = jest.fn()
     const onMessage = jest.fn()
+    const onPresenceChange = jest.fn()
 
     class Root extends IdleTimerComponent<IProps, {}> {
       foo: string
@@ -48,6 +49,10 @@ describe('withIdleTimer', () => {
       constructor (props) {
         super(props)
         this.foo = 'bar'
+      }
+
+      onPresenceChange (presence: PresenceType): void {
+        onPresenceChange(presence)
       }
 
       onPrompt () {
@@ -93,15 +98,18 @@ describe('withIdleTimer', () => {
     )
 
     await sleep(200)
+    expect(onPresenceChange).toHaveBeenCalledWith({ type: 'active', prompted: true })
     expect(onPrompt).toHaveBeenCalledTimes(1)
     expect(onIdle).toHaveBeenCalledTimes(0)
     expect(onAction).toHaveBeenCalledTimes(0)
     expect(onActive).toHaveBeenCalledTimes(0)
     await sleep(200)
+    expect(onPresenceChange).toHaveBeenCalledWith({ type: 'idle' })
     expect(onIdle).toHaveBeenCalledTimes(1)
     expect(onAction).toHaveBeenCalledTimes(0)
     expect(onActive).toHaveBeenCalledTimes(0)
     fireEvent.mouseDown(document)
+    expect(onPresenceChange).toHaveBeenCalledWith({ type: 'active', prompted: false })
     expect(onActive).toHaveBeenCalledTimes(1)
     expect(onAction).toHaveBeenCalledTimes(1)
     expect(onMessage).toHaveBeenCalledTimes(1)
