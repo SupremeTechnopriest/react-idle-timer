@@ -1621,9 +1621,7 @@ describe('useIdleTimer', () => {
         it('Should throw error when crossTab is not set', async () => {
           props.crossTab = false
           const { result } = idleTimer()
-          expect(() => result.current.isLeader()).toThrow(
-            new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
-          )
+          expect(result.current.isLeader()).toBe(null)
         })
 
         it('Should throw error when leaderElection is not set', async () => {
@@ -1646,11 +1644,9 @@ describe('useIdleTimer', () => {
       })
 
       describe('.isLastActiveTab', () => {
-        it('Should throw when crossTab is not enabled', () => {
+        it('Should be null crossTab is not enabled', () => {
           const { result } = idleTimer()
-          expect(() => result.current.isLastActiveTab()).toThrow(
-            new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
-          )
+          expect(result.current.isLastActiveTab()).toBe(null)
         })
 
         it('Should have only one active tab', async () => {
@@ -1690,9 +1686,7 @@ describe('useIdleTimer', () => {
       describe('.getTabId', () => {
         it('Should throw when crossTab is not enabled', () => {
           const { result } = idleTimer()
-          expect(() => result.current.getTabId()).toThrow(
-            new Error('❌ Cross Tab feature is not enabled. To enable it set the "crossTab" property to true.')
-          )
+          expect(result.current.getTabId()).toBe(null)
         })
 
         it('Should return unique ids', () => {
