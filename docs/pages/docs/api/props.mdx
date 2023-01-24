@@ -17,9 +17,20 @@ set of properties. Examples of how they are used can be found in the
   defaultValue='1200000'
 />
 
-### promptTimeout
+<Flex justify='space-between' align='flex-end'>
+  ### promptTimeout
+  <Box><Tag colorScheme='yellow'>Deprecated</Tag></Box>
+</Flex>
 <Property 
-  description='When the user becomes idle, the `onPrompt` function is called and after the prompt timeout in milliseconds is reached, the onIdle function is called.'
+  description='When the user becomes idle, the `onPrompt` and `onPresenceChange` event handlers are called. After the prompt timeout in milliseconds is reached, the `onIdle` and `onPresenceChange` event handlers are called.'
+  type='number'
+  defaultValue='0'
+  deprecated='Deprecated in favor of `promptBeforeIdle`.'
+/>
+
+### promptBeforeIdle
+<Property 
+  description='The amount of milliseconds before idle timeout to call the onPrompt and onPresenceChange event handlers.'
   type='number'
   defaultValue='0'
 />
@@ -49,6 +60,29 @@ set of properties. Examples of how they are used can be found in the
   type='EventsType[]'
   defaultValue='[]'
 />
+
+### onPresenceChange
+<Property
+  description='Function to call when the users presence state changes. This provides a single function to handle all state changes.'
+  type='(presence: PresenceType) => void'
+  defaultValue='() => {}'
+>
+  ```ts
+  // The presence type definition
+  type PresenceType = { type: 'idle' } | { type: 'active', prompted: boolean }
+  ```
+
+  ```ts
+  // Example onPresenceChange implementation
+  import type { PresenceType } from 'react-idle-timer'
+
+  const onPresenceChange = (presence: PresenceType) => {
+    const isIdle = presence.type === 'idle'
+    const isActive = presence.type === 'active' && !presence.prompted
+    const isPrompted = presence.type === 'active' && presence.prompted
+  } 
+  ```
+</Property>
 
 ### onPrompt
 <Property 

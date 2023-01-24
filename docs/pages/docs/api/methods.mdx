@@ -22,7 +22,7 @@ and [higher order component](/docs/api/with-idle-timer) docs.
 
 ### activate
 <Property
-  description='Resets the IdleTimer instance to its initial state, starts the timer and emits `onActive` if the user was idle.'
+  description='Resets the IdleTimer instance to its initial state, restarting the timer, and emitting the `onActive` event if the user was idle or prompted.'
   type='() => void'
 />
 
@@ -58,7 +58,13 @@ and [higher order component](/docs/api/with-idle-timer) docs.
 
 ### isLeader
 <Property
-  description='Returns whether or not current tab is the leader.'
+  description='Returns whether or not the current tab is the leader.'
+  type='() => boolean'
+/>
+
+### isLastActiveTab
+<Property
+  description='Returns whether or not the current tab is the last active tab.'
   type='() => boolean'
 />
 
@@ -98,14 +104,26 @@ and [higher order component](/docs/api/with-idle-timer) docs.
   type='() => Date | null'
 />
 
+### getIdleTime
+<Property
+  description='Returns the total time in milliseconds user has been idle since the last reset.'
+  type='() => number'
+/>
+
 ### getTotalIdleTime
 <Property
-  description='Returns the total time in milliseconds user has been idle.'
+  description='Returns the total time in milliseconds user has been idle since the component mounted.'
+  type='() => number'
+/>
+
+### getActiveTime
+<Property
+  description='Returns the total time in milliseconds user has been active since the last reset.'
   type='() => number'
 />
 
 ### getTotalActiveTime
 <Property
-  description='Returns the total time in milliseconds user has been active.'
+  description='Returns the total time in milliseconds user has been active since the component mounted.'
   type='() => number'
 />

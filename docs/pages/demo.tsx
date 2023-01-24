@@ -24,7 +24,7 @@ import { ControlDrawer } from '@components/ControlDrawer'
 interface IMotionProps {
   isOpen: boolean
   timeout: number
-  promptTimeout: number
+  promptBeforeIdle: number
   getRemainingTime: () => number
 }
 
@@ -33,24 +33,28 @@ function Motion (props: IMotionProps) {
   const shouldAnimate = useRef<boolean>(true)
 
   const tick = useCallback(() => {
-    const time = props.isOpen ? props.promptTimeout : props.timeout
+    const time = props.isOpen ? props.promptBeforeIdle : props.timeout - props.promptBeforeIdle
     const left = props.isOpen
       ? props.getRemainingTime()
-      : props.getRemainingTime() - props.promptTimeout
+      : props.getRemainingTime() - props.promptBeforeIdle
 
     height.set(left / time)
     if (shouldAnimate) {
       window.requestAnimationFrame(tick)
     }
-  }, [props.timeout, props.promptTimeout, props.isOpen])
+  }, [props.timeout, props.promptBeforeIdle, props.isOpen])
 
   useEffect(() => {
     shouldAnimate.current = false
-    setTimeout(() => {
+    const tid = setTimeout(() => {
       shouldAnimate.current = true
       tick()
     })
-  }, [props.timeout, props.promptTimeout, props.isOpen])
+
+    return () => {
+      clearTimeout(tid)
+    }
+  }, [props.timeout, props.promptBeforeIdle, props.isOpen])
 
   return (
     <motion.div
@@ -69,7 +73,7 @@ export default function Demo () {
   const { query } = useRouter()
 
   const [timeout, setTimeoutValue] = useState<number>(2000)
-  const [promptTimeout, setPromptTimeoutValue] = useState<number>(0)
+  const [promptBeforeIdle, setPromptBeforeIdle] = useState<number>(0)
   const [startOnMount, setStartOnMount] = useState<boolean>(false)
   const [startManually, setStartManually] = useState<boolean>(false)
   const [stopOnIdle, setStopOnIdle] = useState<boolean>(false)
@@ -83,7 +87,7 @@ export default function Demo () {
 
   useEffect(() => {
     if (query.timeout) setTimeoutValue(parseInt(query.timeout as string, 10))
-    if (query.promptTimeout) setPromptTimeoutValue(parseInt(query.promptTimeout as string, 10))
+    if (query.promptBeforeIdle) setPromptBeforeIdle(parseInt(query.promptBeforeIdle as string, 10))
     if (query.debounce) setDebounce(parseInt(query.debounce as string, 10))
     if (query.throttle) setThrottle(parseInt(query.throttle as string, 10))
     if (query.eventsThrottle) setEventsThrottle(parseInt(query.eventsThrottle as string, 10))
@@ -161,13 +165,16 @@ export default function Demo () {
     isIdle,
     isPrompted,
     isLeader,
+    isLastActiveTab,
     getTabId,
     getRemainingTime,
     getElapsedTime,
     getTotalElapsedTime,
     getLastActiveTime,
     getLastIdleTime,
+    getIdleTime,
     getTotalActiveTime,
+    getActiveTime,
     getTotalIdleTime
   } = useIdleTimer({
     element: elementRef.current,
@@ -176,7 +183,7 @@ export default function Demo () {
     startManually,
     stopOnIdle,
     timeout,
-    promptTimeout,
+    promptBeforeIdle,
     debounce,
     throttle,
     eventsThrottle,
@@ -198,16 +205,16 @@ export default function Demo () {
   }
 
   const intervalId = useRef(null)
-  const [remaining, setRemaining] = useState<number>(promptTimeout)
+  const [remaining, setRemaining] = useState<number>(promptBeforeIdle)
 
   const tick = useCallback(() => {
     setRemaining(Math.ceil(getRemainingTime() / 1000))
-  }, [timeout, promptTimeout, isOpen])
+  }, [timeout, promptBeforeIdle, isOpen])
 
   useEffect(() => {
     clearInterval(intervalId.current)
     setInterval(tick, 1000)
-  }, [timeout, promptTimeout, isOpen])
+  }, [timeout, promptBeforeIdle, isOpen])
 
   const handler = useCallback((event: string, data?: any): any => {
     switch (event) {
@@ -257,6 +264,16 @@ export default function Demo () {
           return err.message
         }
       }
+      case 'isLastActiveTab': {
+        try {
+          const result = isLastActiveTab()
+          alert('isLastActiveTab', result)
+          return result
+        } catch (err) {
+          alert('isLastActiveTab', err.message)
+          return err.message
+        }
+      }
       case 'getTabId': {
         const result = getTabId()
         alert('getTabId', result)
@@ -287,6 +304,11 @@ export default function Demo () {
         alert('getLastIdleTime', `${formatDistanceToNowStrict(result)} ago`)
         return result
       }
+      case 'getActiveTime': {
+        const result = getActiveTime()
+        alert('getActiveTime', result)
+        return result
+      }
       case 'getTotalActiveTime': {
         const result = getTotalActiveTime()
         alert('getTotalActiveTime', result)
@@ -297,13 +319,20 @@ export default function Demo () {
         alert('getTotalIdleTime', result)
         return result
       }
+      case 'getIdleTime': {
+        const result = getIdleTime()
+        alert('getIdleTime', result)
+        return result
+      }
       case 'timeout': {
-        setTimeoutValue(parseInt(data, 10))
+        const value = parseInt(data, 10)
+        setTimeoutValue(value)
+        setRemaining(Math.ceil(value / 1000))
         break
       }
-      case 'promptTimeout': {
+      case 'promptBeforeIdle': {
         const value = parseInt(data, 10)
-        setPromptTimeoutValue(value)
+        setPromptBeforeIdle(value)
         setRemaining(Math.ceil(value / 1000))
         break
       }
@@ -380,8 +409,8 @@ export default function Demo () {
         <ControlDrawer
           timeout={timeout}
           setTimeout={data => handler('timeout', data)}
-          promptTimeout={promptTimeout}
-          setPromptTimeout={data => handler('promptTimeout', data)}
+          promptBeforeIdle={promptBeforeIdle}
+          setPromptBeforeIdle={data => handler('promptBeforeIdle', data)}
           debounce={debounce}
           setDebounce={data => handler('debounce', data)}
           throttle={throttle}
@@ -411,13 +440,16 @@ export default function Demo () {
           isIdle={() => handler('isIdle')}
           isPrompted={() => handler('isPrompted')}
           isLeader={() => handler('isLeader')}
+          isLastActiveTab={() => handler('isLastActiveTab')}
           getTabId={() => handler('getTabId')}
           getRemainingTime={() => handler('getRemainingTime')}
           getElapsedTime={() => handler('getElapsedTime')}
           getTotalElapsedTime={() => handler('getTotalElapsedTime')}
           getLastActiveTime={() => handler('getLastActiveTime')}
           getLastIdleTime={() => handler('getLastIdleTime')}
+          getActiveTime={() => handler('getActiveTime')}
           getTotalActiveTime={() => handler('getTotalActiveTime')}
+          getIdleTime={() => handler('getIdleTime')}
           getTotalIdleTime={() => handler('getTotalIdleTime')}
         />
       )}
@@ -451,7 +483,7 @@ export default function Demo () {
           </Flex>
           <Motion
             timeout={timeout}
-            promptTimeout={promptTimeout}
+            promptBeforeIdle={promptBeforeIdle}
             isOpen={isOpen}
             getRemainingTime={getRemainingTime}
           />

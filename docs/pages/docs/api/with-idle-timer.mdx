@@ -1,9 +1,9 @@
 ---
 title: withIdleTimer
-description: Higher order component for class based React applications
+description: Higher order component for class-based React applications
 ---
 
-Higher order component for class based React applications. The `withIdleTimer` 
+Higher order component for class-based React applications. The `withIdleTimer` 
 HOC takes [IIdleTimerProps](/docs/api/props) as configuration options and exposes
 [IIdleTimer](/docs/api/methods) as props to the wrapped component.
 
@@ -15,8 +15,8 @@ import { withIdleTimer } from 'react-idle-timer'
 
 ## Usage
 
-There are a few ways to use the higher order component, but at its core, component
-passed into `withIdleTimer` is enhanced and enriched with the [IIdleTimer](/docs/api/methods) interface. 
+There are a few ways to use the higher-order component, but at its core, the component
+passed into `withIdleTimer` is enriched with the [IIdleTimer](/docs/api/methods) interface. 
 The most common use cases are outlined below.
 
 ### IdleTimer Component
@@ -24,7 +24,7 @@ The most common use cases are outlined below.
 The first way is to create your own IdleTimer component and use it just like the 
 v4 component.
 
-Create the `IdleTimer` component.
+Create the `IdleTimer` component that extends `IdleTimerComponent` instead of `Component`.
 
 ```js
 import { Component } from 'react'
@@ -45,15 +45,19 @@ Use the `IdleTimer` component.
 import { Component } from 'react'
 import { IdleTimer } from './IdleTimer'
 
-export class App {
-
+export class App extends Component {
   constructor (props) {
     super(props)
     this.idleTimer = null
+    this.onPresenceChange = this.onPresenceChange.bind(this)
     this.onPrompt = this.onPrompt.bind(this)
     this.onIdle = this.onIdle.bind(this)
     this.onAction = this.onAction.bind(this)
     this.onActive = this.onActive.bind(this)
+  }
+
+  onPresenceChange (presence) {
+    // Handle state changes in one function
   }
 
   onPrompt () {
@@ -62,7 +66,7 @@ export class App {
 
   onIdle () {
     // Close Modal Prompt
-    // Do some idle action like log out your user
+    // Do some idle action like logging out your user
   }
 
   onActive (event) {
@@ -87,6 +91,7 @@ export class App {
           ref={ref => { this.idleTimer = ref }}
           timeout={1000 * 60 * 15}
           promptTimeout={1000 * 30}
+          onPresenceChange={this.onPresenceChange}
           onPrompt={this.onPrompt}
           onIdle={this.onIdle}
           onAction={this.onAction}
@@ -102,19 +107,17 @@ export class App {
 
 ### IdleTimer Injector
 
-A better way would be to use the higher order component to inject `IdleTimer` in
-to your component. The event callbacks can be defined in your component scope and
-all the rest of the properties can be passed to your component. If a callback
-prop is passed to the component it will take precedence over the locally defined
-callback method.
+A better way would be to use the higher-order component to inject `IdleTimer` into your component. The event callbacks can be defined in your component scope and all the rest of the properties can be passed to your component.
 
 Create the `IdleTimer` wrapped component.
 
 ```js
-import { Component } from 'react'
-import { withIdleTimer } from 'react-idle-timer'
+import { withIdleTimer, IdleTimerComponent } from 'react-idle-timer'
 
-class AppComponent extends Component {
+class AppComponent extends IdleTimerComponent {
+  onPresenceChange (presence) {
+    // Handle state changes in one function
+  }
   
   onPrompt () {
     // Fire a Modal Prompt
@@ -122,7 +125,7 @@ class AppComponent extends Component {
 
   onIdle () {
     // Close Modal Prompt
-    // Do some idle action like log out your user
+    // Do some idle action like logging out your user
   }
 
   onActive (event) {
@@ -196,12 +199,12 @@ export class Root extends Component {
 
 ## Typescript
 
-You can preserve your typescript types by utilizing `withIdleTimer`'s generics.
+You can preserve your typescript types by utilizing the `withIdleTimer` generics.
 Just make sure your props interface extends [IIdleTimer](/docs/api/types#IIdleTimer).
 
 ```tsx
 import { Component, ReactNode } from 'react'
-import { withIdleTimer, IIdleTimer } from 'react-idle-timer'
+import { withIdleTimer, IdleTimerComponent, IIdleTimer } from 'react-idle-timer'
 
 interface IAppProps extends IIdleTimer {
   foo: string
@@ -211,7 +214,10 @@ interface IAppState {
   bar: string
 }
 
-class AppComponent extends Component<IAppProps, IAppState> {
+class AppComponent extends IdleTimerComponent<IAppProps, IAppState> {
+  onPresenceChange (presence) {
+    // Handle state changes in one function
+  }
   
   onPrompt (): void {
     // Fire a Modal Prompt
@@ -219,7 +225,7 @@ class AppComponent extends Component<IAppProps, IAppState> {
 
   onIdle (): void {
     // Close Modal Prompt
-    // Do some idle action like log out your user
+    // Do some idle action like logging out your user
   }
 
   onActive (event: Event): void {
@@ -246,7 +252,7 @@ class AppComponent extends Component<IAppProps, IAppState> {
 export const IdleTimer = withIdleTimer<IAppProps>(AppComponent)
 ```
 
-Else where in your app, render the typescript component. Your custom props will
+Elsewhere in your app, render the typescript component. Your custom props will
 be merged with the [IIdleTimer](/docs/api/methods) interface.
 
 ```tsx

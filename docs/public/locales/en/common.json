@@ -1,6 +1,6 @@
 {
   "announcement": {
-    "message": "⚡️ Version 5 is now released!",
+    "message": "⚡️ Version 5.5 is now released!",
     "link": {
       "href": "/docs/getting-started/new",
       "title": "Find out whats new"
@@ -101,11 +101,12 @@
     "required": "required",
     "description": "description",
     "type": "type",
-    "default": "default"
+    "default": "default",
+    "deprecated": "deprecated"
   },
   "props": {
     "timeout": "Activity Timeout in milliseconds.",
-    "promptTimeout": "When the user becomes idle, the onPrompt function is called. After the prompt timeout in milliseconds is reached, the onIdle function is called.",
+    "promptBeforeIdle": "The amount of milliseconds before timeout to call the onPrompt event handler.",
     "events": "DOM events to watch for activity on.",
     "immediateEvents": "DOM events that will immediately call onIdle",
     "onPrompt": "When promptTimeout is set, this function is called after the user becomes idle. This is useful for displaying a confirm prompt. If the prompt timeout is reached, onIdle is then called.",
@@ -132,14 +133,17 @@
     "isIdle": "Returns whether or not the user is idle.",
     "isPrompted": "Returns whether or not this tab is in the prompted state.",
     "isLeader": "Returns whether or not current tab is the leader.",
+    "isLastActiveTab": "Returns whether or not this is the last active tab.",
     "getTabId": "Returns the current tab's id.",
     "getRemainingTime": "Time remaining before idle in milliseconds.",
     "getElapsedTime": "How much time has elapsed in milliseconds since last reset.",
     "getTotalElapsedTime": "How much time has elapsed in milliseconds since hook mounts.",
     "getLastIdleTime": "Last time the user was idle.",
     "getLastActiveTime": "Last time the user was active.",
-    "getTotalIdleTime": "Total time the user has been idle in milliseconds.",
-    "getTotalActiveTime": "Total time the user has been active in milliseconds.",
+    "getIdleTime": "Time in milliseconds user has been idle since last reset.",
+    "getTotalIdleTime": "Total time in milliseconds user has been idle since the hook mounted.",
+    "getActiveTime": "Time in milliseconds user has been active since last reset.",
+    "getTotalActiveTime": "Total time in milliseconds user has been active since the hook mounted.",
     "message": "Broadcast a message to all tabs.",
     "emitOnSelf": "Emits the onMessage callback on the instance sending the message."
   }

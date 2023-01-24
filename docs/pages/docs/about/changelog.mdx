@@ -2,15 +2,36 @@
 title: Changelog
 description: IdleTimer Changelog
 ---
+## 5.5.0
+<Divider />
+
+#### ⚡️ Features
+- Add [isLastActiveTab](/docs/api/methods#islastactivetab) method.
+- Add [getActiveTime](/docs/api/methods#getactivetime) and [getIdleTime](/docs/api/methods#getidletime) methods.
+- Add [onPresenceChange](/docs/api/props#onpresencechange) event handler.
+
+#### ✨ Enhancements
+- Idle state now defaults to false.
+- Add checks on max timeout values.
+- Deprecate [promptTimeout](/docs/api/props#prompttimeout)` in favor of [promptBeforeIdle](/docs/api/props#promptbeforeidle).
+- Better typescript docs for [activate](/docs/api/methods#activate) method.
+- Improve Higher Order Component and class component support.
+
+#### 🐞 Bug Fixes
+- Use date timestamps everywhere to prevent issues when devices sleep.
+- Fix a bug where class components would not preserve this context in IdleTimer methods.
+- Fix a bug where [onActive](/docs/api/methods#onactive) was called on every action when [syncTimers](/docs/api/props@synctimers) was set.
+- Fix a bug where the mounting of the IdleTimer hook was delayed.
+
 ### 5.4.2
 <Divider />
 
 #### ✨ Enhancements
-- Add a clock based sanity check as a backup for the more precise performance timing. #281
+- Add a date based sanity check as a backup for the more precise performance timing.
 
 #### 🐞 Bug Fixes
-- Fix `componentDidMount` on withIdleTimer higher order component. #276
-- Fix regression of memoized `onAction` callbacks. #127
+- Fix `componentDidMount` on withIdleTimer higher order component.
+- Fix regression of memoized `onAction` callbacks.
 - Fix rounding error on `getRemainingTime()`.
 
 ### 5.4.1
@@ -18,9 +39,9 @@ description: IdleTimer Changelog
 
 #### 🐞 Bug Fixes
 - Fix a bug where workerTimers were not mocked by `createMocks()`.
-- Fix a bug where `reset` was not resetting the start time affecting `getTotalActiveTime()`. #272
+- Fix a bug where `reset` was not resetting the start time affecting `getTotalActiveTime()`.
 
-### 5.4.0
+## 5.4.0
 <Divider />
 
 #### ⚡️ Features
@@ -30,7 +51,7 @@ description: IdleTimer Changelog
 #### 🐞 Bug Fixes
 - Fix a bug where events would leak when `crossTab` is enabled causing bad performance when many tabs are open.
 
-### 5.3.0
+## 5.3.0
 <Divider />
 
 #### ✨ Enhancements
@@ -41,7 +62,7 @@ description: IdleTimer Changelog
 - The `getRemainingTime` method now always returns the time to idle instead of time to prompt and then time to idle.
 - Debounced `onAction` callbacks will automatically be cancelled on idle.
 
-### 5.2.0
+## 5.2.0
 <Divider />
 
 #### ✨ Enhancements
@@ -65,7 +86,7 @@ description: IdleTimer Changelog
 #### 🐞 Bug Fixes
 - Add missing React import in `withIdleTimer`.
 
-### 5.1.0
+## 5.1.0
 <Divider />
 
 #### ⚡️ Features

@@ -17,6 +17,7 @@ The properties associated with idle detection are:
 - [element](/docs/api/props#element): The DOM element to bind event listeners to.
 - [events](/docs/api/props#events): The events to listen for activity on.
 - [immediateEvents](/docs/api/props#immediateevents): The events that will immediately trigger an idle event (bypassing timeout).
+- [onPresenceChange](/docs/api/props#onpresencechange): Function called when a user's presence state changes.
 - [onIdle](/docs/api/props#onidle): Function called when a user becomes idle from an active state.
 - [onActive](/docs/api/props#onactive): Function called when a user becomes active from an idle state.
 - [eventsThrottle](/docs/api/props#eventsthrottle): Throttle for the events bound. Saves on CPU if you are using repeated events.
@@ -38,9 +39,11 @@ The methods associated with idle detection are:
 - [getElapsedTime](/docs/api/methods#getelapsedtime): Returns the time in milliseconds since the host component was mounted.
 - [getRemainingTime](/docs/api/methods#getremainingtime): Returns the time remaining in milliseconds until idle.
 - [getLastActiveTime](/docs/api/methods#getlastactivetime): Returns a Date of the last time the user was active.
-- [getTotalActiveTime](/docs/api/methods#gettotalactivetime): Returns time in milliseconds the user was active.
+- [getActiveTime](/docs/api/methods#getactivetime): Returns time in milliseconds the user was active since the last reset.
+- [getTotalActiveTime](/docs/api/methods#gettotalactivetime): Returns time in milliseconds the user was active since the component mounted.
 - [getLastIdleTime](/docs/api/methods#getlastidletime): Returns a Date of the last time the user was idle.
-- [getTotalIdleTime](/docs/api/methods#gettotalidletime): Returns time in milliseconds the user was idle.
+- [getIdleTime](/docs/api/methods#getidletime): Returns time in milliseconds the user was idle since the last reset.
+- [getTotalIdleTime](/docs/api/methods#gettotalidletime): Returns time in milliseconds the user was idle since the component mounted.
 {/* cspell:enable */}
 
 ### Examples

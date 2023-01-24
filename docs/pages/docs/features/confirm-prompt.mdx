@@ -12,8 +12,9 @@ now built in to IdleTimer.
 The properties associated with the confirm prompt feature are:
 
 {/* cspell:disable */}
-- [timeout](/docs/api/props#timeout): The time before the `onPrompt` callback will be fired.
-- [promptTimeout](/docs/api/props#prompttimeout): How long the prompt should last before going idle in milliseconds.
+- [timeout](/docs/api/props#timeout): The time before the `onIdle` event will be emitted.
+- [promptBeforeIdle](/docs/api/props#promptbeforeidle): How long before idle to emit the `onPrompt` event.
+- [onPresenceChange](/docs/api/props#onpresencechange): Function called when a user's presence state changes.
 - [onPrompt](/docs/api/props#onprompt): Function called after the idle timeout is reached.
 {/* cspell:enable */}
 

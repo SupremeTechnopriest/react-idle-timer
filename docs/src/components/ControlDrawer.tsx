@@ -160,6 +160,7 @@ function ButtonWithLabel (props: IButtonWithLabelProps) {
   return (
     <Button
       w='full'
+      fontSize='14'
       _hover={{
         bg: 'red.400',
         color: 'white'
@@ -177,7 +178,7 @@ type IdleTimerType = IIdleTimer & IIdleTimerProps
 
 interface IControlDrawerProps extends IdleTimerType {
   setTimeout: (value: number) => void
-  setPromptTimeout: (value: number) => void
+  setPromptBeforeIdle: (value: number) => void
   setThrottle: (value: number) => void
   setDebounce: (value: number) => void
   setEventsThrottle: (value: number) => void
@@ -230,7 +231,7 @@ export function ControlDrawer (props: IControlDrawerProps) {
                 <TabPanel>
                   <VStack>
                     <NumberInputWithLabel label='timeout' defaultValue={props.timeout} onChange={props.setTimeout} />
-                    <NumberInputWithLabel label='promptTimeout' defaultValue={props.promptTimeout} onChange={props.setPromptTimeout} />
+                    <NumberInputWithLabel label='promptBeforeIdle' defaultValue={props.promptBeforeIdle} onChange={props.setPromptBeforeIdle} />
                     <NumberInputWithLabel label='debounce' defaultValue={props.debounce} onChange={props.setDebounce} />
                     <NumberInputWithLabel label='throttle' defaultValue={props.throttle} onChange={props.setThrottle} />
                     <NumberInputWithLabel label='eventsThrottle' defaultValue={props.eventsThrottle} onChange={props.setEventsThrottle} />
@@ -259,6 +260,8 @@ export function ControlDrawer (props: IControlDrawerProps) {
                         <ButtonWithLabel label='isIdle' onClick={() => props.isIdle()} />
                         <ButtonWithLabel label='isPrompted' onClick={() => props.isPrompted()} />
                         <ButtonWithLabel label='isLeader' onClick={() => props.isLeader()} />
+                        <ButtonWithLabel label='isLastActiveTab' onClick={() => props.isLastActiveTab()} />
+                        <Button w='full' disabled />
                       </VStack>
                       <VStack width='60%'>
                         <ButtonWithLabel label='getTabId' onClick={() => props.getTabId()} />
@@ -267,7 +270,9 @@ export function ControlDrawer (props: IControlDrawerProps) {
                         <ButtonWithLabel label='getTotalElapsedTime' onClick={() => props.getTotalElapsedTime()} />
                         <ButtonWithLabel label='getLastActiveTime' onClick={() => props.getLastActiveTime()} />
                         <ButtonWithLabel label='getLastIdleTime' onClick={() => props.getLastIdleTime()} />
+                        <ButtonWithLabel label='getActiveTime' onClick={() => props.getActiveTime()} />
                         <ButtonWithLabel label='getTotalActiveTime' onClick={() => props.getTotalActiveTime()} />
+                        <ButtonWithLabel label='getIdleTime' onClick={() => props.getIdleTime()} />
                         <ButtonWithLabel label='getTotalIdleTime' onClick={() => props.getTotalIdleTime()} />
                       </VStack>
                     </HStack>

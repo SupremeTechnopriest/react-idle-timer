@@ -20,17 +20,11 @@ A minimal example with the bare essential configuration.
 import { useIdleTimer } from 'react-idle-timer'
 
 export const App = () => {
-  const onIdle = () => {
-    // Close Modal Prompt
-    // Do some idle action like log out your user
+  const onPresenceChange = (presence) => {
+    // Handle state changes in one function
   }
 
-  const onActive = (event) => {
-    // Close Modal Prompt
-    // Do some active action
-  }
-
-  const idleTimer = useIdleTimer({ onIdle, onActive })
+  const idleTimer = useIdleTimer({ onPresenceChange })
 
   return (
     <HomePage />
@@ -45,6 +39,10 @@ default value.
 import { useIdleTimer } from 'react-idle-timer' 
 
 export const App = () => {
+  const onPresenceChange = (presence) => {
+    // Handle state changes in one function
+  }
+
   const onPrompt = () => {
     // Fire a Modal Prompt
   }
@@ -72,20 +70,24 @@ export const App = () => {
     isIdle,
     isPrompted,
     isLeader,
+    isLastActiveTab,
     getTabId,
     getRemainingTime,
     getElapsedTime,
     getLastIdleTime,
     getLastActiveTime,
+    getIdleTime,
     getTotalIdleTime,
+    getActiveTime,
     getTotalActiveTime
   } = useIdleTimer({
+    onPresenceChange,
     onPrompt,
     onIdle,
     onActive,
     onAction,
     timeout: 1000 * 60 * 20,
-    promptTimeout: 0,
+    promptBeforeIdle: 0,
     events: [
       'mousemove',
       'keydown',
@@ -97,7 +99,8 @@ export const App = () => {
       'touchmove',
       'MSPointerDown',
       'MSPointerMove',
-      'visibilitychange'
+      'visibilitychange',
+      'focus'
     ],
     immediateEvents: [],
     debounce: 0,

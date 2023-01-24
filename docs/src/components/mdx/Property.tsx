@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from 'react'
 import { useTranslation } from 'next-i18next'
 import { chakra, Flex, Divider } from '@chakra-ui/react'
 import theme from 'prism-react-renderer/themes/nightOwl'
@@ -8,9 +9,10 @@ interface IPropertyProps {
   description: string
   type: string
   defaultValue: string
+  deprecated: string
 }
 
-export function Property (props: IPropertyProps) {
+export function Property (props: PropsWithChildren<IPropertyProps>) {
   const { t } = useTranslation('common')
   return (
     <chakra.div
@@ -72,7 +74,16 @@ export function Property (props: IPropertyProps) {
             </div>
           </Flex>
         )}
+        {props.deprecated && (
+          <Flex>
+            <div className='row'>{t('propsTable.deprecated')}</div>
+            <div className='cell'>
+              {convertBackticks(props.deprecated)}
+            </div>
+          </Flex>
+        )}
       </div>
+      {props.children}
     </chakra.div>
   )
 }

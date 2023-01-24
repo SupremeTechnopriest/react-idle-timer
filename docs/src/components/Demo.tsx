@@ -68,6 +68,7 @@ function ButtonWithEvent (props: IButtonWithEventProps) {
   return (
     <Button
       w='full'
+      fontSize='14'
       _hover={{
         bg: 'red.400',
         color: 'white'
@@ -232,7 +233,7 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
         <TabPanel>
           <VStack>
             <NumberInputWithEvent event='timeout' defaultValue={2000} frames={[frameA, frameB]} setDescription={setDescription} description={t('props.timeout')} />
-            <NumberInputWithEvent event='promptTimeout' defaultValue={0} frames={[frameA, frameB]} setDescription={setDescription} description={t('props.promptTimeout')} />
+            <NumberInputWithEvent event='promptBeforeIdle' defaultValue={0} frames={[frameA, frameB]} setDescription={setDescription} description={t('props.promptBeforeIdle')} />
             <NumberInputWithEvent event='debounce' defaultValue={0} frames={[frameA, frameB]} setDescription={setDescription} description={t('props.debounce')} />
             <NumberInputWithEvent event='throttle' defaultValue={0} frames={[frameA, frameB]} setDescription={setDescription} description={t('props.throttle')} />
             <NumberInputWithEvent event='eventsThrottle' defaultValue={0} frames={[frameA, frameB]} setDescription={setDescription} description={t('props.eventsThrottle')} />
@@ -252,7 +253,7 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
         <TabPanel>
           <VStack>
             <HStack width='full'>
-              <VStack width='40%'>
+              <VStack width='45%'>
                 <ButtonWithEvent event='start' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.start')} />
                 <ButtonWithEvent event='reset' frames={[frameA]} setDescription={setDescription} description={t('methods.reset')} />
                 <ButtonWithEvent event='activate' frames={[frameA]} setDescription={setDescription} description={t('methods.activate')} />
@@ -261,15 +262,19 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
                 <ButtonWithEvent event='isIdle' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isIdle')} />
                 <ButtonWithEvent event='isPrompted' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isPrompted')} />
                 <ButtonWithEvent event='isLeader' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isLeader')} />
+                <ButtonWithEvent event='isLastActiveTab' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.isLastActiveTab')} />
+                <Button w='full' disabled />
               </VStack>
-              <VStack width='60%'>
+              <VStack width='55%'>
                 <ButtonWithEvent event='getTabId' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTabId')} />
                 <ButtonWithEvent event='getRemainingTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getRemainingTime')} />
                 <ButtonWithEvent event='getElapsedTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getElapsedTime')} />
                 <ButtonWithEvent event='getTotalElapsedTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTotalElapsedTime')} />
                 <ButtonWithEvent event='getLastActiveTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getLastActiveTime')} />
-                <ButtonWithEvent event='getTotalActiveTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTotalActiveTime')} />
                 <ButtonWithEvent event='getLastIdleTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getLastIdleTime')} />
+                <ButtonWithEvent event='getActiveTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getActiveTime')} />
+                <ButtonWithEvent event='getTotalActiveTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTotalActiveTime')} />
+                <ButtonWithEvent event='getIdleTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getIdleTime')} />
                 <ButtonWithEvent event='getTotalIdleTime' frames={[frameA, frameB]} setDescription={setDescription} description={t('methods.getTotalIdleTime')} />
               </VStack>
             </HStack>

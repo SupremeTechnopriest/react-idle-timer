@@ -1,5 +1,25 @@
 # Changelog
 
+### 5.5.0
+
+#### ⚡️ Features
+- Add `isLastActiveTab` method. #294
+- Add `getActiveTime` and `getIdleTime` methods. #301
+- Add `onPresenceChange` event handler. #319
+
+#### ✨ Enhancements
+- Idle state now defaults to false. #304
+- Add checks on max timeout values. #316
+- Deprecate `promptTimeout` in favor of `promptBeforeIdle`. #318
+- Better typescript docs for `activate` method. #319
+- Improve Higher Order Component and class component support.
+
+#### 🐞 Bug Fixes
+- Use date timestamps everywhere to prevent issues when devices sleep. #281
+- Fix a bug where class components would not preserve this context in IdleTimer methods. #309
+- Fix a bug where `onActive` was called on every action when `syncTimers` was set. #320
+- Fix a bug where the mounting of the IdleTimer hook was delayed. 
+
 ### 5.4.2
 
 #### ✨ Enhancements

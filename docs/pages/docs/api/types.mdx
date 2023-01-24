@@ -3,17 +3,14 @@ title: Types
 description: Typescript types included with IdleTimer package
 ---
 
-IdleTimer exports its internal types for working in Typescript projects.
-All the types you will need are outlined below. Examples of how to use them 
-can be found in the [hook](/docs/api/use-idle-timer) 
-and [higher order component](/docs/api/with-idle-timer) docs.
+IdleTimer exports its internal types for working in Typescript projects. All the types you will need are outlined below. Examples of how to use them can be found in the [hook](/docs/api/use-idle-timer) and [higher order component](/docs/api/with-idle-timer) docs.
 
 ## IIdleTimerProps
 
 This is the interface of the available properties IdleTimer accepts.
 
 ```js
-import { IIdleTimerProps } from 'react-idle-timer'
+import type { IIdleTimerProps } from 'react-idle-timer'
 ```
 
 <ButtonGroup>
@@ -23,11 +20,10 @@ import { IIdleTimerProps } from 'react-idle-timer'
 
 ## IIdleTimer
 
-This is the interface that IdleTimer exports. It consists of the methods that 
-can be called after instantiating an IdleTimer instance.
+This is the interface that IdleTimer exports. It consists of the methods that can be called after instantiating an IdleTimer instance.
 
 ```js
-import { IIdleTimer } from 'react-idle-timer'
+import type { IIdleTimer } from 'react-idle-timer'
 ```
 
 <ButtonGroup>
@@ -35,12 +31,25 @@ import { IIdleTimer } from 'react-idle-timer'
   <Button href='https://github.com/supremetechnopriest/react-idle-timer/blob/master/src/types/IIdleTimer.ts'>Source</Button>
 </ButtonGroup>
 
+## ITimers
+
+The interface that is accepted by the `timers` property.
+
+```js
+import type { ITimers } from 'react-idle-timer'
+```
+
+<ButtonGroup>
+  <Button href='/docs/api/props#timers'>Docs</Button>
+  <Button href='https://github.com/supremetechnopriest/react-idle-timer/blob/master/src/types/ITimers.ts'>Source</Button>
+</ButtonGroup>
+
 ## EventsType
 
 The events type contains all the valid DOM Event values that can be passed to `events` and `immediateEvents`.
 
 ```js
-import { EventsType } from 'react-idle-timer'
+import type { EventsType } from 'react-idle-timer'
 ```
 
 <ButtonGroup>
@@ -52,6 +61,15 @@ import { EventsType } from 'react-idle-timer'
 The type for messages sent through the `message()` method.
 
 <ButtonGroup>
-  <Button href='/docs/api/methods'>Docs</Button>
+  <Button href='/docs/api/methods#message'>Docs</Button>
   <Button href='https://github.com/supremetechnopriest/react-idle-timer/blob/master/src/types/MessageType.ts'>Source</Button>
+</ButtonGroup>
+
+## PresenceType
+
+The type for `onPresenceChange` state changes.
+
+<ButtonGroup>
+  <Button href='/docs/api/props#onPresenceChange'>Docs</Button>
+  <Button href='https://github.com/supremetechnopriest/react-idle-timer/blob/master/src/types/PresenceType.ts'>Source</Button>
 </ButtonGroup>
