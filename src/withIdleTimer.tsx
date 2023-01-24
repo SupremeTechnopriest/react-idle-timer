@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import type { IIdleTimer, IIdleTimerProps } from '.'
 import type { IEventHandler } from './types/IEventHandler'
+import type { PresenceType } from './types/PresenceType'
 
 import React, { Component, forwardRef } from 'react'
 import { useIdleTimer } from '.'
@@ -28,6 +29,7 @@ export function withIdleTimer<T extends IIdleTimer> (Component: ComponentType<T>
 }
 
 interface IIdleTimerComponentProps extends IIdleTimerProps {
+  setOnPresenceChange?: (fn: (presence: PresenceType) => void) => void
   setOnPrompt?: (fn: IEventHandler) => void
   setOnIdle?: (fn: IEventHandler) => void
   setOnActive?: (fn: IEventHandler) => void
@@ -36,6 +38,10 @@ interface IIdleTimerComponentProps extends IIdleTimerProps {
 }
 
 abstract class IIdleTimerComponent<P, S> extends Component<P, S> {
+  /**
+   * Function to call when the users presence state changes.
+   */
+  onPresenceChange? (presence: PresenceType): void
   /**
    * When promptTimeout is set, this function is called after the user becomes
    * idle. This is useful for displaying a confirm prompt. If the prompt timeout
@@ -64,6 +70,7 @@ abstract class IIdleTimerComponent<P, S> extends Component<P, S> {
 export class IdleTimerComponent<P, S> extends IIdleTimerComponent<P, S> {
   constructor (props: P & IIdleTimerComponentProps) {
     super(props)
+    if (this.onPresenceChange) props.setOnPresenceChange(this.onPresenceChange.bind(this))
     if (this.onPrompt) props.setOnPrompt(this.onPrompt.bind(this))
     if (this.onIdle) props.setOnIdle(this.onIdle.bind(this))
     if (this.onActive) props.setOnActive(this.onActive.bind(this))
