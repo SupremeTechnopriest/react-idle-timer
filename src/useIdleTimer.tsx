@@ -75,6 +75,10 @@ export function useIdleTimer ({
   const timeoutRef = useRef<number>(timeout)
   const promptTimeoutRef = useRef<number>(0)
   useEffect(() => {
+    if (promptTimeout) {
+      console.warn('⚠️ IdleTimer -- The `promptTimeout` property has been deprecated in favor of `promptBeforeIdle`. It will be removed in the next major release.')
+    }
+
     if (promptBeforeIdle && promptTimeout) {
       throw new Error('❌ Both promptTimeout and promptBeforeIdle can not be set. The promptTimeout property will be deprecated in a future version.')
     }
@@ -884,6 +888,10 @@ export function useIdleTimer ({
     getActiveTime,
     getTotalActiveTime,
     // @ts-ignore
+    setOnPresenceChange: (fn: (presence: PresenceType) => void) => {
+      onPresenceChange = fn
+      emitOnPresenceChange.current = fn
+    },
     setOnPrompt: (fn: IEventHandler) => {
       onPrompt = fn
       emitOnPrompt.current = fn
