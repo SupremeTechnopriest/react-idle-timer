@@ -67,7 +67,7 @@ abstract class IIdleTimerComponent<P, S> extends Component<P, S> {
   onMessage? (data: any): void
 }
 
-export class IdleTimerComponent<P, S> extends IIdleTimerComponent<P, S> {
+export class IdleTimerComponent<P = IIdleTimer, S = {}> extends IIdleTimerComponent<P, S> {
   constructor (props: P & IIdleTimerComponentProps) {
     super(props)
     if (this.onPresenceChange) props.setOnPresenceChange(this.onPresenceChange.bind(this))
