@@ -1,5 +1,15 @@
 # Changelog
 
+### 5.5.2
+
+#### ✨ Enhancements
+- Add defaults to `IdleTimerComponent` generic typescript types.
+
+### 5.5.1
+
+#### ✨ Enhancements
+- Cross-tab related methods will no longer throw an error if the manager is not ready yet. It will instead return `null`.
+
 ### 5.5.0
 
 #### ⚡️ Features
