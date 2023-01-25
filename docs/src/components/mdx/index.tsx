@@ -5,6 +5,8 @@ import { Anchor } from '@components/mdx/Anchor'
 import { Pre } from '@components/mdx/Pre'
 import { CodeBlock } from '@components/mdx/CodeBlock'
 import { Property } from '@components/mdx/Property'
+import { CodeSandbox } from '@components/mdx/CodeSandbox'
+import { CodeSandboxButton } from '@components/mdx/CodeSandboxButton'
 
 const { Alert, Box, chakra } = Chakra
 
@@ -46,5 +48,7 @@ export const MDXComponents = {
       my='1.5rem'
       {...props}
     />
-  )
+  ),
+  CodeSandbox,
+  CodeSandboxButton
 }

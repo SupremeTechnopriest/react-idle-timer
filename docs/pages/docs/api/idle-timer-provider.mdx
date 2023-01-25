@@ -30,7 +30,7 @@ and the `useIdleTimerContext` hook.
 ```jsx
 import { IdleTimerProvider, useIdleTimerContext } from 'react-idle-timer'
 
-export function Child (props) => {
+export function Child () {
   const idleTimer = useIdleTimerContext()
   return (
     <h1>{idleTimer.isIdle()}</h1>
@@ -203,7 +203,7 @@ To preserve types for your component's context, declare the type for the
 component's context property.
 
 ```tsx
-import { Component, ContextTypes } from 'react'
+import { Component, ContextType } from 'react'
 import { IIdleTimerContext, IdleTimerContext } from 'react-idle-timer'
 
 export class Child extends Component<{}, {}> {
@@ -212,7 +212,7 @@ export class Child extends Component<{}, {}> {
   static contextType = IdleTimerContext
 
   // Declare a type for context to preserve typescript types
-  declare context: ContextType<IIdleTimerContext>
+  context!: ContextType<typeof IIdleTimerContext>
   
   render () {
     return (
@@ -221,3 +221,10 @@ export class Child extends Component<{}, {}> {
   }
 }
 ```
+
+## Examples
+
+<Flex direction='column' mt={8}>
+  <CodeSandboxButton name='functional-context-provider-jz4y77'>Functional Context Provider</CodeSandboxButton>
+  <CodeSandboxButton name='class-context-provider-mfujuj'>Class Context Provider</CodeSandboxButton>
+</Flex>
