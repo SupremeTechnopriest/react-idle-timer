@@ -926,6 +926,30 @@ describe('useIdleTimer', () => {
           expect(props.onMessage).toHaveBeenCalledTimes(1)
           expect(props.onMessage).toHaveBeenCalledWith(data)
         })
+        it('Should only run the last onmessage callback (on crossTab=true)', async () => {
+          const emitted1 = []
+          const emitted2 = []
+          const firstOnMessage = (data) => emitted1.push(data)
+          const secondOnMessage = (data) => emitted2.push(data)
+
+          props.crossTab = true
+          const { result: leader } = idleTimer()
+
+          props.onMessage = firstOnMessage
+          const { rerender } = idleTimer()
+
+          props.onMessage = secondOnMessage
+          rerender(props);
+
+          const data = 'foo'
+          leader.current.message(data)
+
+          await waitFor(() => emitted2.length >= 1)
+          await sleep(100)
+
+          expect(emitted1).toEqual([])
+          expect(emitted2).toEqual([data])
+        })
       })
 
       describe('.debounce', () => {
