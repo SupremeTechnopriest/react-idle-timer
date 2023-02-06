@@ -791,7 +791,7 @@ export function useIdleTimer ({
         onActive: () => {
           toggleActive()
         },
-        onMessage: emitOnMessage.current,
+        onMessage: (args) => emitOnMessage.current(args),
         start,
         reset,
         activate,
