@@ -283,8 +283,12 @@ export function useIdleTimer ({
       // Cancel onAction callbacks
       if (callOnAction.cancel) callOnAction.cancel()
 
+      // Handle slept device
+      const elapsed = now() - lastActive.current
+      const skipPrompt = (timeoutRef.current + promptTimeoutRef.current) < elapsed
+
       // Handle prompt
-      if (promptTimeoutRef.current > 0 && !prompted.current) {
+      if (!skipPrompt && promptTimeoutRef.current > 0 && !prompted.current) {
         if (manager.current) {
           manager.current.prompt()
         } else {
@@ -791,7 +795,9 @@ export function useIdleTimer ({
         onActive: () => {
           toggleActive()
         },
-        onMessage: (args) => emitOnMessage.current(args),
+        onMessage: (...args) => {
+          emitOnMessage.current(...args)
+        },
         start,
         reset,
         activate,

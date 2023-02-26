@@ -795,6 +795,28 @@ describe('useIdleTimer', () => {
           await waitFor(() => result.current.isIdle())
           expect(fn2).toHaveBeenCalledTimes(1)
         })
+
+        it('Should call on idle when device sleep time exceeds timeout', async () => {
+          jest.useFakeTimers()
+          const now = Date.now()
+          props.onIdle = jest.fn()
+          props.onPrompt = jest.fn()
+          props.onActive = jest.fn()
+          props.timeout = 10_000
+          props.promptBeforeIdle = 1_000
+          const { result } = idleTimer()
+
+          const elapsed = props.timeout * 2
+          jest.setSystemTime(now + elapsed)
+          jest.advanceTimersByTime(elapsed)
+
+          fireEvent.mouseDown(document)
+          expect(props.onPrompt).toHaveBeenCalledTimes(0)
+          expect(props.onActive).toHaveBeenCalledTimes(0)
+          expect(props.onIdle).toHaveBeenCalledTimes(1)
+          expect(result.current.isIdle()).toBe(true)
+          jest.useRealTimers()
+        })
       })
 
       describe('.onActive', () => {
@@ -926,11 +948,10 @@ describe('useIdleTimer', () => {
           expect(props.onMessage).toHaveBeenCalledTimes(1)
           expect(props.onMessage).toHaveBeenCalledWith(data)
         })
+
         it('Should only run the last onmessage callback (on crossTab=true)', async () => {
-          const emitted1 = []
-          const emitted2 = []
-          const firstOnMessage = (data) => emitted1.push(data)
-          const secondOnMessage = (data) => emitted2.push(data)
+          const firstOnMessage = jest.fn()
+          const secondOnMessage = jest.fn()
 
           props.crossTab = true
           const { result: leader } = idleTimer()
@@ -939,16 +960,15 @@ describe('useIdleTimer', () => {
           const { rerender } = idleTimer()
 
           props.onMessage = secondOnMessage
-          rerender(props);
+          rerender(props)
 
           const data = 'foo'
           leader.current.message(data)
 
-          await waitFor(() => emitted2.length >= 1)
-          await sleep(100)
+          await waitFor(() => secondOnMessage.mock.calls.length >= 1)
 
-          expect(emitted1).toEqual([])
-          expect(emitted2).toEqual([data])
+          expect(firstOnMessage).toHaveBeenCalledTimes(0)
+          expect(secondOnMessage).toHaveBeenCalledWith(data)
         })
       })
 
