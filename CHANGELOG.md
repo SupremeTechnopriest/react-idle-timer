@@ -1,5 +1,11 @@
 # Changelog
 
+### 5.3.3
+
+#### 🐞 Bug Fixes
+- Fix a bug where `onPrompt` would be emitted instead of `onIdle` after `timeout` is exceeded when devices wake from sleep. #172
+- Fix a bug where `onMessage` was being called with old function reference. #328
+
 ### 5.5.2
 
 #### ✨ Enhancements
