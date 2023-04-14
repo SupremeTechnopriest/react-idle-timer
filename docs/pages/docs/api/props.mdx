@@ -63,8 +63,8 @@ set of properties. Examples of how they are used can be found in the
 
 ### onPresenceChange
 <Property
-  description='Function to call when the users presence state changes. This provides a single function to handle all state changes.'
-  type='(presence: PresenceType) => void'
+  description="Function to call when the user's presence state changes. This provides a single function to handle all state changes."
+  type='(presence: PresenceType, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 >
   ```ts
@@ -86,56 +86,56 @@ set of properties. Examples of how they are used can be found in the
 
 ### onPrompt
 <Property 
-  description='When `promptTimeout` is set, this function is called after the user becomes idle. This is useful for displaying a confirm prompt. If the prompt timeout is reached, `onIdle` is then called.'
-  type='() => void'
+  description='When `promptTimeout` is set, this function is called after the user becomes idle. This is useful for displaying a confirmation prompt. If the prompt timeout is reached, `onIdle` is then called.'
+  type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onIdle
 <Property 
-  description='Function to call when user is idle.'
-  type='() => void'
+  description='Function to call when the user is idle.'
+  type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onActive
 <Property 
-  description='Function to call when user becomes active.'
-  type='(event: Event) => void'
+  description='Function to call when the user becomes active.'
+  type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onMessage
 <Property 
   description='Function to call when a `message` event is received.'
-  type='(data: string | number | object) => void'
+  type='(data: any, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onAction
 <Property 
   description='Function to call on user activity.'
-  type='(event: Event) => void'
+  type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### debounce
 <Property 
-  description='Debounce the onAction function by setting delay in milliseconds.'
+  description='Debounce the `onAction` function by setting delay in milliseconds.'
   type='number'
   defaultValue='0'
 />
 
 ### throttle
 <Property 
-  description='Throttle the onAction function by setting delay in milliseconds.'
+  description='Throttle the `onAction` function by setting delay in milliseconds.'
   type='number'
   defaultValue='0'
 />
 
 ### eventsThrottle
 <Property 
-  description='Throttle the activity events. Useful if you are listening to mouse events. Helps to cut down on cpu usage.'
+  description='Throttle the activity events. Useful if you are listening to mouse events. Helps to cut down on CPU usage.'
   type='number'
   defaultValue='200'
 />
