@@ -119,9 +119,7 @@ export class LeaderElector {
         resolved = true
         try { timers.clearInterval(interval) } catch {}
         const index = this.intervals.indexOf(interval)
-        if (index && index >= 1) {
-          this.intervals.splice(index, 1)
-        }
+        if (index >= 0) this.intervals.splice(index, 1)
         this.channel.removeEventListener('message', onClose)
         resolve()
       }
