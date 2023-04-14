@@ -63,7 +63,7 @@ set of properties. Examples of how they are used can be found in the
 
 ### onPresenceChange
 <Property
-  description="Function to call when the user's presence state changes. This provides a single function to handle all state changes."
+  description="Function to call when the user's presence state changes. This provides a single function to handle all state changes. The IIdleTimer API is passed in as the second parameter."
   type='(presence: PresenceType, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 >
@@ -86,36 +86,36 @@ set of properties. Examples of how they are used can be found in the
 
 ### onPrompt
 <Property 
-  description='When `promptTimeout` is set, this function is called after the user becomes idle. This is useful for displaying a confirmation prompt. If the prompt timeout is reached, `onIdle` is then called.'
+  description='When `promptTimeout` is set, this function is called after the user becomes idle. This is useful for displaying a confirmation prompt. If the prompt timeout is reached, `onIdle` is then called. The IIdleTimer API is passed in as the second parameter.'
   type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onIdle
 <Property 
-  description='Function to call when the user is idle.'
+  description='Function to call when the user is idle. The IIdleTimer API is passed in as the second parameter.'
   type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onActive
 <Property 
-  description='Function to call when the user becomes active.'
+  description='Function to call when the user becomes active. The IIdleTimer API is passed in as the second parameter.'
+  type='(event?: Event, idleTimer?: IIdleTimer) => void'
+  defaultValue='() => {}'
+/>
+
+### onAction
+<Property 
+  description='Function to call on user activity. The IIdleTimer API is passed in as the second parameter.'
   type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onMessage
 <Property 
-  description='Function to call when a `message` event is received.'
+  description='Function to call when a `message` event is received. The IIdleTimer API is passed in as the second parameter.'
   type='(data: any, idleTimer?: IIdleTimer) => void'
-  defaultValue='() => {}'
-/>
-
-### onAction
-<Property 
-  description='Function to call on user activity.'
-  type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 

@@ -7,6 +7,44 @@ description: What's new in the latest IdleTimer release
 
 The entire project has been rewritten in typescript for a more robust typescript experience. New issue and pull request templates have been added along with a [contributing](/docs/about/contributing) guide for anyone who would like to contribute to the project. Lastly, this documentation site has been created to serve as a knowledge base for all things related to the IdleTimer project. If you have any ideas for sections, demos or tutorials to add feel free to start a [discussion](https://github.com/supremetechnopriest/react-idle-timer/discussions) or open an [issue](https://github.com/supremetechnopriest/react-idle-timer/issues/new/choose).
 
+## Additions in v5.6.0
+
+All callback functions now pass the `IIdleTimer` interface as the second parameter. This will make it easier to interface with your timer during events. You won't have to rely on hoisting to access the API.
+
+Here is an example using the new callback parameters to close a prompt on user activity:
+
+```ts
+const onAction = (event: Event, idleTimer: IIdleTimer) => {
+  if (idleTimer.isPrompted()) {
+    idleTimer.activate()
+  }
+}
+
+const onActive = (event: Event, idleTimer: IIdleTimer) => {
+  if (idleTimer.isPrompted()) {
+    setOpen(false)
+  }
+}
+
+const onPrompt = () => {
+  setOpen(true)
+}
+
+const onIdle = () => {
+  setOpen(false)
+  history.replace('/logout')
+}
+
+useIdleTimer({
+  timeout: 1000 * 60 * 5,
+  promptBeforeIdle: 1000 * 30,
+  onAction,
+  onActive,
+  onPrompt,
+  onIdle
+})
+```
+
 ## Deprecations in v5.5.0
 
 The [promptTimeout](/docs/api/props#prompttimeout) property has been deprecated in favor of the [promptBeforeIdle](/docs/api/props#promptbeforeidle). Both properties will continue to work until version `6.0.0`, but it is encouraged to use the new [promptBeforeIdle](/docs/api/props#promptbeforeidle) property. It is easier to reason about one timeout rather than two. The [timeout](/docs/api/props#timeout) property becomes the time until idle and the [promptBeforeIdle](/docs/api/props#promptbeforeidle) property becomes how many milliseconds before idle to emit the [onPrompt](/docs/api/props@onprompt) event. For example, if you want a 30 minute time to idle and a 30 second prompt:
