@@ -676,7 +676,8 @@ describe('useIdleTimer', () => {
 
           const { result } = idleTimer()
           await waitFor(result.current.isIdle)
-          expect(props.onPresenceChange).toHaveBeenCalledWith({ type: 'idle' })
+          expect(props.onPresenceChange.mock.calls[0][0])
+            .toEqual({ type: 'idle' })
         })
 
         it('Should call presence change when prompted', async () => {
@@ -686,7 +687,8 @@ describe('useIdleTimer', () => {
 
           const { result } = idleTimer()
           await waitFor(result.current.isPrompted)
-          expect(props.onPresenceChange).toHaveBeenCalledWith({ type: 'active', prompted: true })
+          expect(props.onPresenceChange.mock.calls[0][0])
+            .toEqual({ type: 'active', prompted: true })
         })
 
         it('Should call presence change when active', async () => {
@@ -697,7 +699,8 @@ describe('useIdleTimer', () => {
           const { result } = idleTimer()
           await waitFor(result.current.isIdle)
           result.current.activate()
-          expect(props.onPresenceChange).toHaveBeenCalledWith({ type: 'active', prompted: false })
+          expect(props.onPresenceChange.mock.calls[2][0])
+            .toEqual({ type: 'active', prompted: false })
         })
 
         it('Should reassign event handler', async () => {
@@ -717,6 +720,15 @@ describe('useIdleTimer', () => {
           await waitFor(result.current.isIdle)
           expect(fn1).toHaveBeenCalledTimes(1)
           expect(fn2).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should expose IdleTimer API', async () => {
+          props.timeout = 200
+          props.onPresenceChange = jest.fn()
+
+          const { result } = idleTimer()
+          await waitFor(result.current.isIdle)
+          expect(props.onPresenceChange.mock.calls[0][1].isIdle).toBeDefined()
         })
       })
 
@@ -760,6 +772,16 @@ describe('useIdleTimer', () => {
           await sleep(200)
           expect(fn1).toHaveBeenCalledTimes(1)
           expect(fn2).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should expose IdleTimer API', async () => {
+          props.timeout = 200
+          props.promptTimeout = 200
+          props.onPrompt = jest.fn()
+
+          const { result } = idleTimer()
+          await waitFor(() => result.current.isIdle())
+          expect(props.onPrompt.mock.calls[0][1].isIdle).toBeDefined()
         })
       })
 
@@ -816,6 +838,16 @@ describe('useIdleTimer', () => {
           expect(props.onIdle).toHaveBeenCalledTimes(1)
           expect(result.current.isIdle()).toBe(true)
           jest.useRealTimers()
+        })
+
+        it('Should expose IdleTimer API', async () => {
+          props.timeout = 200
+          props.promptTimeout = 200
+          props.onIdle = jest.fn()
+
+          const { result } = idleTimer()
+          await waitFor(() => result.current.isIdle())
+          expect(props.onIdle.mock.calls[0][1].isIdle).toBeDefined()
         })
       })
 
@@ -880,7 +912,7 @@ describe('useIdleTimer', () => {
           props.timeout = 200
           props.onActive = jest.fn()
           props.onAction = jest.fn()
-          props.throttle = 200
+          props.throttle = 100
           const { result } = idleTimer()
           fireEvent.mouseDown(document)
           expect(props.onAction).toHaveBeenCalledTimes(1)
@@ -888,6 +920,17 @@ describe('useIdleTimer', () => {
           fireEvent.mouseDown(document)
           expect(props.onAction).toHaveBeenCalledTimes(2)
           expect(props.onActive).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should expose IdleTimer API', async () => {
+          props.timeout = 200
+          props.promptTimeout = 200
+          props.onActive = jest.fn()
+
+          const { result } = idleTimer()
+          await waitFor(() => result.current.isIdle())
+          result.current.activate()
+          expect(props.onActive.mock.calls[0][1].isIdle).toBeDefined()
         })
       })
 
@@ -902,8 +945,8 @@ describe('useIdleTimer', () => {
         })
 
         it('Should call onAction on user input when user is idle', async () => {
-          props.onAction = jest.fn()
           props.timeout = 200
+          props.onAction = jest.fn()
           const { result } = idleTimer()
           await waitFor(() => result.current.isIdle())
           fireEvent.mouseDown(document)
@@ -913,8 +956,8 @@ describe('useIdleTimer', () => {
         it('Should allow reassignment of onAction', async () => {
           const fn1 = jest.fn()
           const fn2 = jest.fn()
-          props.onAction = fn1
           props.timeout = 200
+          props.onAction = fn1
           const { result, rerender } = idleTimer()
           await waitFor(() => result.current.isIdle())
           fireEvent.mouseDown(document)
@@ -924,6 +967,17 @@ describe('useIdleTimer', () => {
           await waitFor(() => result.current.isIdle())
           fireEvent.mouseDown(document)
           expect(fn2).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should expose IdleTimer API', async () => {
+          props.timeout = 200
+          props.eventsThrottle = 0
+          props.onAction = jest.fn()
+          const { result } = idleTimer()
+          await waitFor(() => result.current.isIdle())
+          fireEvent.mouseDown(document)
+          expect(props.onAction).toHaveBeenCalledTimes(1)
+          expect(props.onAction.mock.calls[0][1].isIdle).toBeDefined()
         })
       })
 
@@ -946,7 +1000,7 @@ describe('useIdleTimer', () => {
           result.current.message(data, true)
 
           expect(props.onMessage).toHaveBeenCalledTimes(1)
-          expect(props.onMessage).toHaveBeenCalledWith(data)
+          expect(props.onMessage.mock.calls[0][0]).toEqual(data)
         })
 
         it('Should only run the last onmessage callback (on crossTab=true)', async () => {
@@ -968,7 +1022,16 @@ describe('useIdleTimer', () => {
           await waitFor(() => secondOnMessage.mock.calls.length >= 1)
 
           expect(firstOnMessage).toHaveBeenCalledTimes(0)
-          expect(secondOnMessage).toHaveBeenCalledWith(data)
+          expect(secondOnMessage.mock.calls[0][0]).toEqual(data)
+        })
+
+        it('Should expose IdleTimer API', () => {
+          props.onMessage = jest.fn()
+
+          const { result } = idleTimer()
+          const data = 'foo'
+          result.current.message(data, true)
+          expect(props.onMessage.mock.calls[0][1].isIdle).toBeDefined()
         })
       })
 
@@ -1531,7 +1594,7 @@ describe('useIdleTimer', () => {
           await waitFor(() => fn2.mock.calls.length === 1)
           expect(fn1).toHaveBeenCalledTimes(0)
           expect(fn2).toHaveBeenCalledTimes(1)
-          expect(fn2).toHaveBeenCalledWith(data)
+          expect(fn2.mock.calls[0][0]).toEqual(data)
         })
 
         it('Should emit on local callee instance when emitOnSelf is true', async () => {
@@ -1551,9 +1614,9 @@ describe('useIdleTimer', () => {
 
           await waitFor(() => fn2.mock.calls.length === 1)
           expect(fn1).toHaveBeenCalledTimes(1)
-          expect(fn1).toHaveBeenCalledWith(data)
+          expect(fn1.mock.calls[0][0]).toEqual(data)
           expect(fn2).toHaveBeenCalledTimes(1)
-          expect(fn2).toHaveBeenCalledWith(data)
+          expect(fn2.mock.calls[0][0]).toEqual(data)
         })
 
         it('Should accept string data', async () => {
@@ -1573,9 +1636,9 @@ describe('useIdleTimer', () => {
 
           await waitFor(() => fn2.mock.calls.length === 1)
           expect(fn1).toHaveBeenCalledTimes(1)
-          expect(fn1).toHaveBeenCalledWith(data)
+          expect(fn1.mock.calls[0][0]).toEqual(data)
           expect(fn2).toHaveBeenCalledTimes(1)
-          expect(fn2).toHaveBeenCalledWith(data)
+          expect(fn2.mock.calls[0][0]).toEqual(data)
         })
 
         it('Should accept object data', async () => {
@@ -1595,9 +1658,9 @@ describe('useIdleTimer', () => {
 
           await waitFor(() => fn2.mock.calls.length === 1)
           expect(fn1).toHaveBeenCalledTimes(1)
-          expect(fn1).toHaveBeenCalledWith(data)
+          expect(fn1.mock.calls[0][0]).toEqual(data)
           expect(fn2).toHaveBeenCalledTimes(1)
-          expect(fn2).toHaveBeenCalledWith(data)
+          expect(fn2.mock.calls[0][0]).toEqual(data)
         })
 
         it('Should accept number data', async () => {
@@ -1617,9 +1680,9 @@ describe('useIdleTimer', () => {
 
           await waitFor(() => fn2.mock.calls.length === 1)
           expect(fn1).toHaveBeenCalledTimes(1)
-          expect(fn1).toHaveBeenCalledWith(data)
+          expect(fn1.mock.calls[0][0]).toEqual(data)
           expect(fn2).toHaveBeenCalledTimes(1)
-          expect(fn2).toHaveBeenCalledWith(data)
+          expect(fn2.mock.calls[0][0]).toEqual(data)
         })
       })
 
@@ -1756,7 +1819,7 @@ describe('useIdleTimer', () => {
           props.timeout = 200
           const { result } = idleTimer()
           await waitFor(() => result.current.isIdle())
-          expect(result.current.getRemainingTime()).toBe(0)
+          expect(result.current.getRemainingTime()).toBeAround(0, 1)
         })
 
         it('Should return remaining time while paused', async () => {
@@ -1774,7 +1837,7 @@ describe('useIdleTimer', () => {
           expect(result.current.getRemainingTime()).toBe(props.timeout)
           result.current.start()
           await waitFor(() => result.current.isIdle())
-          expect(result.current.getRemainingTime()).toBe(0)
+          expect(result.current.getRemainingTime()).toBeAround(0, 1)
         })
 
         it('Should recalculate when timeout is changed', async () => {

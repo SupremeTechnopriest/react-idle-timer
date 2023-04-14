@@ -1,5 +1,7 @@
-import { EventType } from './EventType'
+import type { EventType } from './EventType'
+import type { IIdleTimer } from './IIdleTimer'
+
 export interface IEventHandler {
-  (event?: EventType): void
+  (event?: EventType, idleTimer?: IIdleTimer): void
   cancel?: () => void
 }

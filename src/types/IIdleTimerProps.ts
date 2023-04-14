@@ -64,7 +64,7 @@ export interface IIdleTimerProps {
    *
    * @default () => {}
    */
-  onPresenceChange?: (presence: PresenceType) => void
+  onPresenceChange?: (presence: PresenceType, idleTimer?: IIdleTimer) => void
 
   /**
    * When promptTimeout is set, this function is called after the user becomes
@@ -73,21 +73,21 @@ export interface IIdleTimerProps {
    *
    * @default () => {}
    */
-  onPrompt?: () => void
+  onPrompt?: (event?: Event, idleTimer?: IIdleTimer) => void
 
   /**
    * Function to call when user is idle.
    *
    * @default () => {}
    */
-  onIdle?: () => void
+  onIdle?: (event?: Event, idleTimer?: IIdleTimer) => void
 
   /**
    * Function to call when user becomes active.
    *
    * @default () => {}
    */
-  onActive?: (event?: Event) => void
+  onActive?: (event?: Event, idleTimer?: IIdleTimer) => void
 
   /**
    * Function to call on user activity. Can be throttled or debounced using the
@@ -95,14 +95,14 @@ export interface IIdleTimerProps {
    *
    * @default () => {}
    */
-  onAction?: (event?: Event) => void
+  onAction?: (event?: Event, idleTimer?: IIdleTimer) => void
 
   /**
    * Function to call when message is has been emitted.
    *
    * @default () => {}
    */
-  onMessage?: (data: any) => void
+  onMessage?: (data: any, idleTimer?: IIdleTimer) => void
 
   /**
    * Debounce the onAction function by setting delay in milliseconds.

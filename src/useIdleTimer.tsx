@@ -9,13 +9,14 @@ import { throttleFn } from './utils/throttle'
 import { setTimers, timers as timer } from './utils/timers'
 import { now } from './utils/now'
 
-import { EventType } from './types/EventType'
-import { IEventHandler } from './types/IEventHandler'
-import { IIdleTimer } from './types/IIdleTimer'
-import { IIdleTimerProps } from './types/IIdleTimerProps'
-import { EventsType } from './types/EventsType'
-import { MessageType } from './types/MessageType'
-import { PresenceType } from './types/PresenceType'
+import type { EventType } from './types/EventType'
+import type { IEventHandler } from './types/IEventHandler'
+import type { IIdleTimer } from './types/IIdleTimer'
+import type { IIdleTimerProps } from './types/IIdleTimerProps'
+import type { IPresenceChangeHandler } from './types/IPresenceChangeHandler'
+import type { IMessageHandler } from './types/IMessageHandler'
+import type { EventsType } from './types/EventsType'
+import type { MessageType } from './types/MessageType'
 
 const MAX_TIMEOUT = 2147483647
 
@@ -106,7 +107,7 @@ export function useIdleTimer ({
     if (!firstLoad.current) {
       if (startManually) return
       if (idle.current) {
-        emitOnActive.current()
+        emitOnActive.current(null, idleTimer)
         if (manager.current) {
           manager.current.active()
         }
@@ -128,7 +129,7 @@ export function useIdleTimer ({
   )
 
   // On Presence Change Emitter
-  const emitOnPresenceChange = useRef<(presence: PresenceType) => void>(onPresenceChange)
+  const emitOnPresenceChange = useRef<IPresenceChangeHandler>(onPresenceChange)
   useEffect(() => {
     emitOnPresenceChange.current = onPresenceChange
   }, [onPresenceChange])
@@ -158,13 +159,13 @@ export function useIdleTimer ({
   }, [onAction])
 
   // On Message Emitter
-  const emitOnMessage = useRef<(data: string | number | object) => void>(onMessage)
+  const emitOnMessage = useRef<IMessageHandler>(onMessage)
   useEffect(() => {
     emitOnMessage.current = onMessage
   }, [onMessage])
 
   const callOnAction = useMemo<IEventHandler>(() => {
-    const call: IEventHandler = (event: EventType) => emitOnAction.current(event)
+    const call: IEventHandler = (event: EventType, idleTimer: IIdleTimer) => emitOnAction.current(event, idleTimer)
 
     // Create debounced action if applicable
     if (debounce > 0) {
@@ -217,8 +218,8 @@ export function useIdleTimer ({
    */
   const togglePrompted = (event?: EventType): void => {
     if (!prompted.current && !idle.current) {
-      emitOnPrompt.current(event)
-      emitOnPresenceChange.current({ type: 'active', prompted: true })
+      emitOnPrompt.current(event, idleTimer)
+      emitOnPresenceChange.current({ type: 'active', prompted: true }, idleTimer)
     }
     remaining.current = 0
     promptTime.current = now()
@@ -233,8 +234,8 @@ export function useIdleTimer ({
   const toggleIdle = () => {
     destroyTimeout()
     if (!idle.current) {
-      emitOnIdle.current()
-      emitOnPresenceChange.current({ type: 'idle' })
+      emitOnIdle.current(null, idleTimer)
+      emitOnPresenceChange.current({ type: 'idle' }, idleTimer)
     }
 
     // Flip idle
@@ -258,8 +259,8 @@ export function useIdleTimer ({
   const toggleActive = (event?: EventType) => {
     destroyTimeout()
     if (idle.current || prompted.current) {
-      emitOnActive.current(event)
-      emitOnPresenceChange.current({ type: 'active', prompted: false })
+      emitOnActive.current(event, idleTimer)
+      emitOnPresenceChange.current({ type: 'active', prompted: false }, idleTimer)
     }
     prompted.current = false
     promptTime.current = 0
@@ -324,11 +325,11 @@ export function useIdleTimer ({
   const eventHandler = (event: EventType): void => {
     if (!startOnMount && !lastActive.current) {
       lastActive.current = now()
-      emitOnActive.current()
+      emitOnActive.current(null, idleTimer)
     }
 
     // Fire onAction event
-    callOnAction(event)
+    callOnAction(event, idleTimer)
 
     // If the prompt is open, only emit onAction
     if (prompted.current) return
@@ -585,10 +586,10 @@ export function useIdleTimer ({
    */
   const message = useCallback<(data: MessageType, emitOnSelf?: boolean) => void>((data: MessageType, emitOnSelf?: boolean): void => {
     if (manager.current) {
-      if (emitOnSelf) emitOnMessage.current(data)
+      if (emitOnSelf) emitOnMessage.current(data, idleTimer)
       manager.current.message(data)
     } else if (emitOnSelf) {
-      emitOnMessage.current(data)
+      emitOnMessage.current(data, idleTimer)
     }
   }, [onMessage])
 
@@ -795,8 +796,8 @@ export function useIdleTimer ({
         onActive: () => {
           toggleActive()
         },
-        onMessage: (...args) => {
-          emitOnMessage.current(...args)
+        onMessage: (data: any) => {
+          emitOnMessage.current(data, idleTimer)
         },
         start,
         reset,
@@ -866,7 +867,7 @@ export function useIdleTimer ({
   }, [firstLoad])
 
   // Return API
-  return {
+  const idleTimer = {
     message,
     start,
     reset,
@@ -888,7 +889,7 @@ export function useIdleTimer ({
     getActiveTime,
     getTotalActiveTime,
     // @ts-ignore
-    setOnPresenceChange: (fn: (presence: PresenceType) => void) => {
+    setOnPresenceChange: (fn: IPresenceChangeHandler) => {
       onPresenceChange = fn
       emitOnPresenceChange.current = fn
     },
@@ -913,4 +914,6 @@ export function useIdleTimer ({
       emitOnMessage.current = fn
     }
   }
+
+  return idleTimer
 }
