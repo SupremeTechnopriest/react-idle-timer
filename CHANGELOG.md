@@ -1,6 +1,6 @@
 # Changelog
 
-### 5.4.0
+### 5.6.0
 
 #### ⚡️ Features
 - Expose `IIdleTimer` interface as the second parameter to callback methods. #339
@@ -8,7 +8,7 @@
 #### 🐞 Bug Fixes
 - Prevent race condition error from being thrown when the hook unmounts while using leader election. #337
 
-### 5.3.3
+### 5.5.3
 
 #### 🐞 Bug Fixes
 - Fix a bug where `onPrompt` would be emitted instead of `onIdle` after `timeout` is exceeded when devices wake from sleep. #172
