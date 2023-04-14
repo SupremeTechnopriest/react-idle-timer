@@ -117,9 +117,11 @@ export class LeaderElector {
          */
         if (resolved) return
         resolved = true
-        timers.clearInterval(interval)
+        try { timers.clearInterval(interval) } catch {}
         const index = this.intervals.indexOf(interval)
-        this.intervals.splice(index, 1)
+        if (index && index >= 1) {
+          this.intervals.splice(index, 1)
+        }
         this.channel.removeEventListener('message', onClose)
         resolve()
       }
@@ -179,7 +181,9 @@ export class LeaderElector {
 
     this.sendAction(MessageActionType.CLOSE)
 
-    this.listeners.forEach(listener => this.channel.removeEventListener('message', listener))
-    this.intervals.forEach(interval => timers.clearInterval(interval))
+    try {
+      this.listeners.forEach(listener => this.channel.removeEventListener('message', listener))
+      this.intervals.forEach(interval => timers.clearInterval(interval))
+    } catch {}
   }
 }
