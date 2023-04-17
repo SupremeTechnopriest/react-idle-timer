@@ -1,5 +1,10 @@
 # Changelog
 
+### 5.6.1
+
+#### 🐞 Bug Fixes
+- Throw an error when `promptBeforeIdle` is greater than or equal to `timeout`. #342
+
 ### 5.6.0
 
 #### ⚡️ Features
