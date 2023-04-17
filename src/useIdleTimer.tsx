@@ -97,7 +97,7 @@ export function useIdleTimer ({
     }
 
     if (promptBeforeIdle >= timeout) {
-      throw new Error(`❌ The value for the promptBeforeIdle property be less than the timeout property, ${timeout}.`)
+      throw new Error(`❌ The value for the promptBeforeIdle property must be less than the timeout property, ${timeout}.`)
     }
 
     if (promptBeforeIdle) {
