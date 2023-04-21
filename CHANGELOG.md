@@ -1,9 +1,14 @@
 # Changelog
 
-### 5.6.1
+### 5.6.2
 
 #### ✨ Enhancements
 - Allow `null` or `undefined` as the value for the `element` property to enable easier integration with refs.
+
+### 5.6.1
+
+#### 🐞 Bug Fixes
+- Throw an error when `promptBeforeIdle` is greater than or equal to `timeout`. #342
 
 ### 5.6.0
 
