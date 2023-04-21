@@ -1,5 +1,10 @@
 # Changelog
 
+### 5.6.1
+
+#### ✨ Enhancements
+- Allow `null` or `undefined` as the value for the `element` property to enable easier integration with refs.
+
 ### 5.6.0
 
 #### ⚡️ Features
