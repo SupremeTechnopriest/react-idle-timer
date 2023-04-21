@@ -401,6 +401,7 @@ export function useIdleTimer ({
     // Don't bind events if
     // we are not in a browser
     if (!IS_BROWSER) return
+    if (!elementRef.current) return
     // Otherwise we bind all the events
     // to the supplied element
     if (!eventsBound.current) {
@@ -423,6 +424,7 @@ export function useIdleTimer ({
     // If we are not in a browser
     // we don't need to unbind events
     if (!IS_BROWSER) return
+    if (!elementRef.current) return
     // Unbind all events
     if (eventsBound.current || force) {
       eventsRef.current.forEach(e => {

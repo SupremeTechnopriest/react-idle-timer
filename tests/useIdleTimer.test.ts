@@ -173,6 +173,20 @@ describe('useIdleTimer', () => {
           fireEvent.mouseDown(window)
           expect(props.onAction).toHaveBeenCalledTimes(2)
         })
+
+        it('Should support undefined element to start', async () => {
+          props.element = null
+          props.onAction = jest.fn()
+          props.eventsThrottle = 0
+          props.startOnMount = false
+
+          const { rerender } = idleTimer()
+
+          props.element = window
+          rerender()
+          fireEvent.mouseDown(window)
+          expect(props.onAction).toBeCalledTimes(1)
+        })
       })
 
       describe('.events', () => {
