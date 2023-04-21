@@ -96,6 +96,10 @@ export function useIdleTimer ({
       throw new Error(`❌ The value for the promptBeforeIdle property must fit in a 32 bit signed integer, ${MAX_TIMEOUT}.`)
     }
 
+    if (promptBeforeIdle >= timeout) {
+      throw new Error(`❌ The value for the promptBeforeIdle property must be less than the timeout property, ${timeout}.`)
+    }
+
     if (promptBeforeIdle) {
       timeoutRef.current = timeout - promptBeforeIdle
       promptTimeoutRef.current = promptBeforeIdle

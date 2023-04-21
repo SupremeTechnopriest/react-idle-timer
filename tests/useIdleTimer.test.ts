@@ -449,6 +449,16 @@ describe('useIdleTimer', () => {
           )
         })
 
+        it('Should not allow an value greater than or equal to timeout', () => {
+          props.promptBeforeIdle = 1000
+          props.timeout = 1000
+
+          const { result } = idleTimer()
+          expect(result.error.message).toBe(
+            '❌ The value for the promptBeforeIdle property must be less than the timeout property, 1000.'
+          )
+        })
+
         it('Should call idle after prompt duration', async () => {
           props.timeout = 400
           props.promptBeforeIdle = 100
