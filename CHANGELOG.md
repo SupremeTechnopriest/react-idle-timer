@@ -3,7 +3,7 @@
 ### 5.7.2
 
 #### 🐞 Bug Fixes
-- Fixes a bug with GitHub workflow badge in README. This requires a version bump to resolve on npmjs.com.
+- Fix a bug with GitHub workflow badge in README. This requires a version bump to resolve on npmjs.com.
 
 ### 5.7.1
 
