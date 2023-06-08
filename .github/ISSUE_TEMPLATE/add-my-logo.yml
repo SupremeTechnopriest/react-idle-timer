@@ -1,0 +1,42 @@
+name: 🎨 Add My Logo
+description: Add your logo to the Documentation Site.
+title: "🎨 "
+labels: ["triage", "docs"]
+assignees:
+  - supremetechnopriest
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for adding your logo to the Documentation Site!
+  - type: input
+    id: name
+    attributes:
+      label: What is your company name?
+      description: "Your company name will be used for the tooltip when you hover over your logo."
+      placeholder: "My Company"
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: What is your website?
+      description: "Your website will be used as the href when your logo is clicked."
+      placeholder: "https://my.co"
+      value: "https://"
+    validations:
+      required: true
+  - type: textarea
+    id: logo
+    attributes:
+      label: Upload your logo.
+      description: Your logo should be exactly 100px high.
+    validations:
+      required: true
+  - type: checkboxes
+    id: verified
+    attributes:
+      label: Sponsorship
+      description: No worries if you are not. This is used for positioning of your logo.
+      options:
+        - label: Are you a sponsor of Idle Timer?

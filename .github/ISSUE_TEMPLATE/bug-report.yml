@@ -1,0 +1,104 @@
+name: 🐞 Bug Report
+description: Report a bug found in IdleTimer.
+title: "🐞 "
+labels: ["triage", "bug"]
+assignees:
+  - supremetechnopriest
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to fill out this bug report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Steps
+      description: "How do you trigger this bug? Please walk us through it step by step."
+      value: |
+        1.
+        2.
+        3.
+        ...
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: bash
+  - type: textarea
+    id: context
+    attributes:
+      label: Screenshots or Additional Context
+      description: Add any screenshots or provide additional context that may be helpful in resolving the issue.
+  - type: dropdown
+    id: version
+    attributes:
+      label: Module Version
+      description: Select the version you are running.
+      options:
+        - 5.7.0
+        - 5.6.2
+        - 5.6.1
+        - 5.6.0
+        - 5.5.3
+        - 5.5.2
+        - 5.5.1
+        - 5.5.0
+        - 5.4.2
+        - 5.4.1
+        - 5.4.0
+        - 5.3.0
+        - 5.2.0
+        - 5.1.3
+        - 5.1.2
+        - 5.1.1
+        - 5.1.0
+        - 5.0.0
+        - 4.*.*
+        - 3.*.*
+        - 2.*.*
+        - 1.*.*
+        - 0.*.*
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on? Select all that apply.
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Other
+  - type: dropdown
+    id: devices
+    attributes:
+      label: What devices are you seeing the problem on?
+      multiple: true
+      options:
+        - Desktop
+        - Mobile
+        - Tablet
+        - Wearable
+        - Other
+  - type: checkboxes
+    id: verify
+    attributes:
+      label: Verification
+      description: Please check closed issues and discussions before opening a new issue.
+      options:
+        - label: I have checked for existing closed issues and discussions.
+          required: true

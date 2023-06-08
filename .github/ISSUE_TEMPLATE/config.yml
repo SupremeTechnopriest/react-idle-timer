@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ❓ Question or Other
+    url: https://github.com/SupremeTechnopriest/react-idle-timer/discussions/new/choose
+    about: Ask a question or start a discussion.
+  - name: 📖 Documentation
+    url: https://idletimer.dev/
+    about: Explore detailed documentation and examples.
+  - name: 💬 Join the Community
+    url: https://discord.gg/YPuxNdWA4D
+    about: Join our discord community for announcements and support.
