@@ -1,8 +1,12 @@
 #!/usr/bin/env node
+const { dirname } = require('node:path')
 const fs = require('fs-extra')
-const { build, ts, dirname, glob, log } = require('estrella')
+const { build } = require('esbuild')
+const { es5Plugin } = require('esbuild-plugin-es5')
 
 const entry = './src/index.ts'
+const outLegacyCJS = './dist/index.legacy.cjs.js'
+const outLegacyESM = './dist/index.legacy.esm.js'
 const outCJS = './dist/index.cjs.js'
 const outESM = './dist/index.esm.js'
 
@@ -10,12 +14,36 @@ const outESM = './dist/index.esm.js'
 fs.emptyDirSync('./dist')
 
 const common = {
-  entry,
+  entryPoints: [entry],
   bundle: true,
   minify: true,
   platform: 'browser',
   external: ['react', 'react-dom']
 }
+
+// Build legacy source
+build({
+  ...common,
+  outfile: outLegacyCJS,
+  format: 'cjs',
+  target: ['es5'],
+  plugins: [es5Plugin()],
+  alias: {
+    '@swc/helpers': dirname(require.resolve('@swc/helpers/package.json'))
+  }
+})
+
+
+build({
+  ...common,
+  outfile: outLegacyESM,
+  format: 'esm',
+  target: ['es5'],
+  plugins: [es5Plugin()],
+  alias: {
+    '@swc/helpers': dirname(require.resolve('@swc/helpers/package.json'))
+  }
+})
 
 // Build cjs source
 build({
@@ -28,27 +56,5 @@ build({
 build({
   ...common,
   outfile: outESM,
-  format: 'esm',
-  onEnd (config) {
-    const dtsFilesOutDir = dirname(config.outfile)
-    const tsconfig = fs.readJsonSync('./tsconfig.json')
-    generateTypeDefs(tsconfig, config.entry, dtsFilesOutDir)
-  }
+  format: 'esm'
 })
-
-function generateTypeDefs (tsconfig, entryFiles, outDir) {
-  log.info('Generating type declaration files for', entryFiles.join(', '))
-  const compilerOptions = {
-    ...tsconfig.compilerOptions,
-    moduleResolution: undefined,
-    outDir
-  }
-  const program = ts.ts.createProgram(entryFiles, compilerOptions)
-  const targetSourceFile = undefined
-  const writeFile = undefined
-  const cancellationToken = undefined
-  const emitOnlyDtsFiles = true
-  const result = program.emit(targetSourceFile, writeFile, cancellationToken, emitOnlyDtsFiles)
-  if (result.emitSkipped) console.log(result)
-  log.info('Wrote', glob(outDir + '/**/*.d.ts').join(', '))
-}
