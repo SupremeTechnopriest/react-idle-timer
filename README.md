@@ -19,7 +19,7 @@
     <img src="https://img.shields.io/github/sponsors/supremetechnopriest?color=ff5c45" alt="GitHub Sponsors">
   </a>
   <a href="https://codeclimate.com/github/SupremeTechnopriest/react-idle-timer/test_coverage">
-    <img src="https://img.shields.io/github/workflow/status/SupremeTechnopriest/react-idle-timer/tests?label=tests&color=ff4f50" alt="Tests">
+    <img src="https://img.shields.io/github/actions/workflow/status/supremetechnopriest/react-idle-timer/test.yml?branch=main?label=tests&color=ff4f50" alt="Tests">
   </a>
   <a href="https://codeclimate.com/github/SupremeTechnopriest/react-idle-timer/test_coverage">
     <img src="https://img.shields.io/codeclimate/coverage/SupremeTechnopriest/react-idle-timer?color=ff415b"alt="Test Coverage">
