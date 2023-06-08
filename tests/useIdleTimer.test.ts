@@ -1470,6 +1470,8 @@ describe('useIdleTimer', () => {
           result.current.resume()
           expect(result.current.getRemainingTime()).toBe(200)
 
+          result.current.pause()
+          expect(result.current.getRemainingTime()).toBe(200)
         })
       })
     })

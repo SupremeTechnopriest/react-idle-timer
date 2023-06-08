@@ -137,7 +137,7 @@ export function useIdleTimer ({
   const disabledRef = useRef<boolean>(disabled)
   useEffect(() => {
     disabledRef.current = disabled
-    if (firstLoad) return
+    if (firstLoad.current) return
     if (disabled) {
       pause()
     } else if (!startManually) {
