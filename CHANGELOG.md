@@ -1,5 +1,10 @@
 # Changelog
 
+### 5.7.1
+
+#### 🐞 Bug Fixes
+- Fix a bug where `disabled` property would not immediately disable the timer.
+
 ### 5.7.0
 
 #### ⚡️ Features
