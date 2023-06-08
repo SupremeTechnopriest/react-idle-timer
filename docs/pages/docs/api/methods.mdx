@@ -10,38 +10,38 @@ and [higher order component](/docs/api/with-idle-timer) docs.
 
 ### start
 <Property
-  description='Resets the IdleTimer instance to its initial state and starts the timer.'
-  type='() => void'
+  description='Resets the IdleTimer instance to its initial state and starts the timer. Returns a boolean denoting if the instance was started successfully.'
+  type='() => boolean'
 />
 
 ### reset
 <Property
-  description='Resets the IdleTimer instance to its initial state.'
-  type='() => void'
+  description='Resets the IdleTimer instance to its initial state. Returns a boolean denoting if the instance was reset successfully.'
+  type='() => boolean'
 />
 
 ### activate
 <Property
-  description='Resets the IdleTimer instance to its initial state, restarting the timer, and emitting the `onActive` event if the user was idle or prompted.'
-  type='() => void'
+  description='Resets the IdleTimer instance to its initial state, restarting the timer, and emitting the `onActive` event if the user was idle or prompted. Returns a boolean denoting if the instance was activated successfully.'
+  type='() => boolean'
 />
 
 ### pause
 <Property
-  description='Pauses the IdleTimer instance. When paused all events are unbound.'
-  type='() => void'
+  description='Pauses the IdleTimer instance. When paused all events are unbound. Returns a boolean denoting if the instance was paused successfully.'
+  type='() => boolean'
 />
 
 ### resume
 <Property
-  description='Resumes an IdleTimer instance from the time it was paused. When resumed, all events will be bound.'
-  type='() => void'
+  description='Resumes an IdleTimer instance from the time it was paused. When resumed, all events will be bound. Returns a boolean denoting if the instance was resumed successfully.'
+  type='() => boolean'
 />
 
 ### message
 <Property
-  description='Broadcast an arbitrary message to all instances of IdleTimer. If crossTab is enabled, all tabs will receive the message and their `onMessage` callback will be emitted. If `emitOnSelf` is set to true, the callee instance will also emit its `onMessage` callback.'
-  type='(data: MessageType, emitOnSelf?: boolean) => void'
+  description='Broadcast an arbitrary message to all instances of IdleTimer. If crossTab is enabled, all tabs will receive the message and their `onMessage` callback will be emitted. If `emitOnSelf` is set to true, the callee instance will also emit its `onMessage` callback. Returns a boolean denoting if the message was sent successfully.'
+  type='(data: MessageType, emitOnSelf?: boolean) => boolean'
 />
 
 ### isIdle

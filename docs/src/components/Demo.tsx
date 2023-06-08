@@ -240,6 +240,7 @@ function ControlPanel ({ frameA, frameB, crossTab, setCrossTab, setDescription }
             <Spacer />
             <SwitchWithEvent event='startOnMount' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.startOnMount')} />
             <SwitchWithEvent event='startManually' frames={[frameA, frameB]} setDescription={setDescription} defaultChecked description={t('props.startManually')} />
+            <SwitchWithEvent event='disabled' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.disabled')} />
             <SwitchWithEvent event='stopOnIdle' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.stopOnIdle')} />
             <SwitchWithEvent event='crossTab' frames={[frameA, frameB]} setDescription={setDescription} description={t('props.crossTab')} onChange={setCrossTab} />
             {crossTab && (

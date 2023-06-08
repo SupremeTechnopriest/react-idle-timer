@@ -6,7 +6,7 @@ description: How to install and set up IdleTimer
 ## Welcome
 
 Hello and welcome to IdleTimer. If you are new here, you can get a detailed
-overview of how to use IdleTimer on this page. Check out the examples in the 
+overview of how to use IdleTimer on this page. Check out the examples in the
 [features](/docs/features/idle-detection) section.
 
 ### Installation
@@ -14,18 +14,40 @@ overview of how to use IdleTimer on this page. Check out the examples in the
 Inside your React project directory, install IdleTimer by running either of the
 following:
 
-```bash
+```bash copy
 npm i react-idle-timer
 ```
 
-```bash
+```bash copy
 yarn add react-idle-timer
+```
+
+### Legacy Browser Support
+
+IdleTimer supports legacy browsers for both `esm` and `cjs` projects. With a modern node.js runtime you can import IdleTimer like this:
+
+```ts
+import { useIdleTimer } from 'react-idle-timer/legacy'
+```
+
+For older versions of node which lack support for `package.json` exports, you will have to import the full path.
+
+For CommonJS:
+
+```ts
+import { useIdleTimer } from 'react-idle-timer/dist/index.legacy.cjs.js'
+```
+
+For ECMAScript Modules:
+
+```ts
+import { useIdleTimer } from 'react-idle-timer/dist/index.legacy.esm.js'
 ```
 
 ## Changelog
 
-To see what has updated in a given version of IdleTimer, you can check the 
-[changelog](/docs/about/changelog) or the 
+To see what has updated in a given version of IdleTimer, you can check the
+[changelog](/docs/about/changelog) or the
 [github releases](https://github.com/SupremeTechnopriest/react-idle-timer/releases).
 
 ## Contributing
@@ -35,5 +57,5 @@ can contribute to this project.
 
 ## License
 
-IdleTimer is MIT Licensed. You can view the [license](/docs/about/license) here. 
+IdleTimer is MIT Licensed. You can view the [license](/docs/about/license) here.
 A copy of the license is also shipped with every installation from NPM.

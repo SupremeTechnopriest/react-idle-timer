@@ -76,6 +76,7 @@ export default function Demo () {
   const [promptBeforeIdle, setPromptBeforeIdle] = useState<number>(0)
   const [startOnMount, setStartOnMount] = useState<boolean>(false)
   const [startManually, setStartManually] = useState<boolean>(false)
+  const [disabled, setDisabled] = useState<boolean>(false)
   const [stopOnIdle, setStopOnIdle] = useState<boolean>(false)
   const [debounce, setDebounce] = useState<number>(0)
   const [throttle, setThrottle] = useState<number>(0)
@@ -94,6 +95,7 @@ export default function Demo () {
     if (query.syncTimers) setSyncTimers(parseInt(query.syncTimers as string, 10))
     if (query.startOnMount !== undefined && query.startOnMount !== 'false') setStartOnMount(true)
     if (query.startManually !== undefined && query.startManually !== 'false') setStartManually(true)
+    if (query.disabled !== undefined && query.disabled !== 'false') setDisabled(true)
     if (query.stopOnIdle !== undefined && query.stopOnIdle !== 'false') setStopOnIdle(true)
     if (query.crossTab !== undefined && query.crossTab !== 'false') setCrossTab(true)
     if (query.emitOnSelf !== undefined && query.emitOnSelf !== 'false') emitOnSelf.current = true
@@ -181,6 +183,7 @@ export default function Demo () {
     timers: workerTimers,
     startOnMount,
     startManually,
+    disabled,
     stopOnIdle,
     timeout,
     promptBeforeIdle,
@@ -219,31 +222,35 @@ export default function Demo () {
   const handler = useCallback((event: string, data?: any): any => {
     switch (event) {
       case 'start':
-        setLastEvent('START')
-        setLastKey('')
-        return start()
+        if (start()) {
+          setLastEvent('START')
+          setLastKey('')
+        }
+        break
       case 'reset':
-        setLastEvent('RESET')
-        setLastKey('')
-        return reset()
+        if (reset()) {
+          setLastEvent('RESET')
+          setLastKey('')
+        }
+        break
       case 'activate':
-        setLastEvent('ACTIVATE')
-        setLastKey('')
-        return activate()
+        if (activate()) {
+          setLastEvent('ACTIVATE')
+          setLastKey('')
+        }
+        break
       case 'pause':
         if (pause()) {
           setLastEvent('PAUSE')
           setLastKey('')
-          return true
         }
-        return false
+        break
       case 'resume':
         if (resume()) {
           setLastEvent('RESUME')
           setLastKey('')
-          return true
         }
-        return false
+        break
       case 'isIdle': {
         const result = isIdle()
         alert('isIdle', result)
@@ -342,6 +349,12 @@ export default function Demo () {
         setLastKey('')
         break
       }
+      case 'disabled': {
+        setDisabled(data)
+        setLastEvent('INITIAL')
+        setLastKey('')
+        break
+      }
       case 'startManually': {
         setStartManually(data)
         setLastEvent('INITIAL')
@@ -421,6 +434,8 @@ export default function Demo () {
           setStartOnMount={data => handler('startOnMount', data)}
           startManually={startManually}
           setStartManually={data => handler('startManually', data)}
+          disabled={disabled}
+          setDisabled={data => handler('disabled', data)}
           stopOnIdle={stopOnIdle}
           setStopOnIdle={data => handler('stopOnIdle', data)}
           crossTab={crossTab}

@@ -1,6 +1,6 @@
 {
   "announcement": {
-    "message": "⚡️ Version 5.6 is now released!",
+    "message": "⚡️ Version 5.7 is now released!",
     "link": {
       "href": "/docs/getting-started/new",
       "title": "Find out whats new"
@@ -119,6 +119,7 @@
     "element": "Element reference to bind activity listeners to.",
     "startOnMount": "Start the timer on mount.",
     "startManually": "Require the timer to be started manually.",
+    "disabled": "Disable the timer.",
     "stopOnIdle": "Once the user goes idle the IdleTimer will not reset on user input instead, start() or reset() must be called manually to restart the timer.",
     "crossTab": "Enable the cross tab feature.",
     "syncTimers": "Sync timers across all tabs.",

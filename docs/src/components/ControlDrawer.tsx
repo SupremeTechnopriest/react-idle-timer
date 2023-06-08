@@ -184,6 +184,7 @@ interface IControlDrawerProps extends IdleTimerType {
   setEventsThrottle: (value: number) => void
   setStartOnMount: (value: boolean) => void
   setStartManually: (value: boolean) => void
+  setDisabled: (value: boolean) => void
   setStopOnIdle: (value: boolean) => void
   setCrossTab: (value: boolean) => void
   setLeaderElection: (value: boolean) => void
@@ -238,6 +239,7 @@ export function ControlDrawer (props: IControlDrawerProps) {
                     <Spacer />
                     <SwitchWithLabel label='startOnMount' defaultChecked={props.startOnMount} onChange={props.setStartOnMount} />
                     <SwitchWithLabel label='startManually' defaultChecked={props.startManually} onChange={props.setStartManually} />
+                    <SwitchWithLabel label='disabled' defaultChecked={props.disabled} onChange={props.setDisabled} />
                     <SwitchWithLabel label='stopOnIdle' defaultChecked={props.stopOnIdle} onChange={props.setStopOnIdle} />
                     <SwitchWithLabel label='crossTab' defaultChecked={props.crossTab} onChange={props.setCrossTab} />
                     {props.crossTab && (

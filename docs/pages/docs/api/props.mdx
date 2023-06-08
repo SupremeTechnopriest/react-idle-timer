@@ -6,12 +6,12 @@ description: IdleTimer properties
 Props are the configuration options that can be passed to `useIdleTimer` or
 `withIdleTimer`. All props are optional and have sensible defaults. If a prop
 is updated dynamically, IdleTimer will be automatically restarted with the new
-set of properties. Examples of how they are used can be found in the 
-[hook](/docs/api/use-idle-timer) and 
+set of properties. Examples of how they are used can be found in the
+[hook](/docs/api/use-idle-timer) and
 [higher order component](/docs/api/with-idle-timer) docs.
 
 ### timeout
-<Property 
+<Property
   description='Activity Timeout in milliseconds.'
   type='number'
   defaultValue='1200000'
@@ -21,7 +21,7 @@ set of properties. Examples of how they are used can be found in the
   ### promptTimeout
   <Box><Tag colorScheme='yellow'>Deprecated</Tag></Box>
 </Flex>
-<Property 
+<Property
   description='When the user becomes idle, the `onPrompt` and `onPresenceChange` event handlers are called. After the prompt timeout in milliseconds is reached, the `onIdle` and `onPresenceChange` event handlers are called.'
   type='number'
   defaultValue='0'
@@ -29,33 +29,33 @@ set of properties. Examples of how they are used can be found in the
 />
 
 ### promptBeforeIdle
-<Property 
+<Property
   description='The amount of milliseconds before idle timeout to call the onPrompt and onPresenceChange event handlers.'
   type='number'
   defaultValue='0'
 />
 
 ### events
-<Property 
+<Property
   description='DOM events to watch for activity on.'
   type='EventsType[]'
   defaultValue={`[
-  'mousemove', 
-  'keydown', 
-  'wheel', 
-  'DOMMouseScroll', 
-  'mousewheel', 
-  'mousedown', 
-  'touchstart', 
-  'touchmove', 
-  'MSPointerDown', 
-  'MSPointerMove', 
+  'mousemove',
+  'keydown',
+  'wheel',
+  'DOMMouseScroll',
+  'mousewheel',
+  'mousedown',
+  'touchstart',
+  'touchmove',
+  'MSPointerDown',
+  'MSPointerMove',
   'visibilitychange'
 ]`}
 />
 
 ### immediateEvents
-<Property 
+<Property
   description='DOM events that will bypass the timeout and immediately call onPrompt/onIdle. The events in this array take precedence over the events array.'
   type='EventsType[]'
   defaultValue='[]'
@@ -80,124 +80,131 @@ set of properties. Examples of how they are used can be found in the
     const isIdle = presence.type === 'idle'
     const isActive = presence.type === 'active' && !presence.prompted
     const isPrompted = presence.type === 'active' && presence.prompted
-  } 
+  }
   ```
 </Property>
 
 ### onPrompt
-<Property 
+<Property
   description='When `promptTimeout` is set, this function is called after the user becomes idle. This is useful for displaying a confirmation prompt. If the prompt timeout is reached, `onIdle` is then called. The IIdleTimer API is passed in as the second parameter.'
   type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onIdle
-<Property 
+<Property
   description='Function to call when the user is idle. The IIdleTimer API is passed in as the second parameter.'
   type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onActive
-<Property 
+<Property
   description='Function to call when the user becomes active. The IIdleTimer API is passed in as the second parameter.'
   type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onAction
-<Property 
+<Property
   description='Function to call on user activity. The IIdleTimer API is passed in as the second parameter.'
   type='(event?: Event, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### onMessage
-<Property 
+<Property
   description='Function to call when a `message` event is received. The IIdleTimer API is passed in as the second parameter.'
   type='(data: any, idleTimer?: IIdleTimer) => void'
   defaultValue='() => {}'
 />
 
 ### debounce
-<Property 
+<Property
   description='Debounce the `onAction` function by setting delay in milliseconds.'
   type='number'
   defaultValue='0'
 />
 
 ### throttle
-<Property 
+<Property
   description='Throttle the `onAction` function by setting delay in milliseconds.'
   type='number'
   defaultValue='0'
 />
 
 ### eventsThrottle
-<Property 
+<Property
   description='Throttle the activity events. Useful if you are listening to mouse events. Helps to cut down on CPU usage.'
   type='number'
   defaultValue='200'
 />
 
 ### element
-<Property 
+<Property
   description='Element to bind activity listeners to.'
   type='Node'
   defaultValue='document'
 />
 
 ### startOnMount
-<Property 
+<Property
   description='Start the timer when the hook mounts.'
   type='boolean'
   defaultValue='true'
 />
 
 ### startManually
-<Property 
+<Property
   description='Require the timer to be started manually.'
   type='boolean'
   defaultValue='false'
 />
 
 ### stopOnIdle
-<Property 
+<Property
   description='Once the user goes idle the IdleTimer will not reset on user input. Instead, `start()` or `reset()` must be called manually to restart the timer.'
   type='boolean'
   defaultValue='false'
 />
 
+### disabled
+<Property
+  description='Disables the timer. Disabling the timer resets the internal state. When the property is set to true (enabled), the timer will be restarted, respecting the `startManually` property. If the timer is disabled, the control methods `start`, `reset`, `activate`, `pause` and `resume` will not do anything.'
+  type='boolean'
+  defaultValue='false'
+/>
+
 ### timers
-<Property 
+<Property
   description='Set custom timers. By default main thread timers are used to allow for better tree shaking. If you want to use worker thread timers, import them from the package and set them here.'
   type='ITimers'
   defaultValue='{ setTimeout, clearTimeout, setInterval, clearInterval }'
 />
 
 ### crossTab
-<Property 
+<Property
   description='Enable cross tab event replication.'
   type='boolean'
   defaultValue='false'
 />
 
 ### name
-<Property 
+<Property
   description='Sets the name for the IdleTimer instance. This is required if you are running multiple instances with `crossTab` enabled.'
   type='string'
   defaultValue='idle-timer'
 />
 
 ### syncTimers
-<Property 
+<Property
   description='Syncs timers across all tabs. Timers are synced when user input is detected. The value of this property is the duration of the throttle on the sync operation. Setting to 0 disables the feature.'
   type='number'
   defaultValue='0'
 />
 
 ### leaderElection
-<Property 
+<Property
   description='Enables the Leader Election feature. Leader Election will assign one tab to be the leader. To determine if a tab is the leader, use the `isLeader` method.'
   type='boolean'
   defaultValue='false'
