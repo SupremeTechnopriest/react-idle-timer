@@ -20,7 +20,7 @@
   "scripts": {
     "start": "nps",
     "test": "jest",
-    "build": "scripts/build.js"
+    "build": "scripts/build.js && tsc --project ./tsconfig.build.json"
   },
   "keywords": [
     "react",
