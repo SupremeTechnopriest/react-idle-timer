@@ -1,6 +1,12 @@
+const { concurrent } = require('nps-utils')
+
 module.exports = {
   scripts: {
-    build: 'scripts/build.js',
+    build: {
+      default: concurrent.nps('build.source', 'build.types'),
+      source: 'scripts/build.js',
+      types: 'tsc --project tsconfig.build.json'
+    },
     watch: 'scripts/build.js -w',
     lint: 'eslint src/*',
     fix: 'eslint src/* --fix',
