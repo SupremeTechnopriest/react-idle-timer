@@ -222,6 +222,7 @@ export function useIdleTimer ({
    * Create a timeout.
    *
    * @param time Time remaining in timeout
+   * @param setLastActive Set the last active time
    */
   const createTimeout = (time?: number, setLastActive: boolean = true): void => {
     destroyTimeout()
