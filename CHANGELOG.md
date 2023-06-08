@@ -1,5 +1,23 @@
 # Changelog
 
+### 5.7.0
+
+#### ⚡️ Features
+- Added [disabled](http://idletimer.dev/docs/api/props#disabled) property to enable easier toggling of the timer. #349
+
+#### ✨ Enhancements
+- Add a [legacy bundle](http://idletimer.dev/docs/getting-started/installation#legacy-browser-support) to support older browsers. #345.
+- Control methods now return a boolean representing the success of the call.
+- Update issue templates to use new issue forms.
+- Added issue chooser links.
+- Replace `estrella` with `esbuild` and update build chain.
+- Updated all dependencies.
+
+#### 🐞 Bug Fixes
+- Fix types export for latest typescript. #343
+
+> The project has switched IDEs from VS Code to WebStorm. The `.vscode` directory has been replaced with `.idea`.
+
 ### 5.6.2
 
 #### ✨ Enhancements
