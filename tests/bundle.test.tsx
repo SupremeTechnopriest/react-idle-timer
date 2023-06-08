@@ -1,6 +1,5 @@
 import { Component } from 'react'
-import { renderHook } from '@testing-library/react-hooks'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, renderHook, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import {

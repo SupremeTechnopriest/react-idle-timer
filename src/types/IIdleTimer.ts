@@ -1,30 +1,36 @@
 export interface IIdleTimer {
   /**
    * Restore initial state and restart timer.
+   *
+   * @returns whether the instance was started.
    */
-  start(): void
+  start(): boolean
 
   /**
    * Restore initial state.
+   *
+   * @returns whether the instance was reset.
    */
-  reset(): void
+  reset(): boolean
 
   /**
    * Restore initial state and emit onActive if the user was prompted or idle.
+   *
+   * @returns whether the instance was activated.
    */
-  activate(): void
+  activate(): boolean
 
   /**
    * Store remaining time and stop timer.
    *
-   * @returns whether or not the instance was paused.
+   * @returns whether the instance was paused.
    */
   pause(): boolean
 
   /**
    * Resumes a paused timer.
    *
-   * @returns whether or not the instance was resumed.
+   * @returns whether the instance was resumed.
    */
   resume(): boolean
 
@@ -33,32 +39,34 @@ export interface IIdleTimer {
    *
    * @param data  Data to emit to `onMessage` callbacks.
    * @param emitOnSelf  Emit the event on the callee instance.
+   *
+   * @returns whether the message was sent.
    */
-  message(data: string | number | object, emitOnSelf?: boolean): void
+  message(data: string | number | object, emitOnSelf?: boolean): boolean
 
   /**
-  * Returns whether or not the user is idle.
+  * Returns whether the user is idle.
   *
   * @returns Idle state.
   */
   isIdle(): boolean
 
   /**
-   * Returns whether or not the current tab is the leader.
+   * Returns whether the current tab is the leader.
    *
    * @returns Leader state.
    */
   isLeader(): boolean
 
   /**
-   * Returns whether or not the prompt is active.
+   * Returns whether the prompt is active.
    *
    * @returns Prompted state.
    */
   isPrompted(): boolean
 
   /**
-   * Returns whether or not this is the last active tab.
+   * Returns whether this is the last active tab.
    *
    * @returns Last active state.
    */

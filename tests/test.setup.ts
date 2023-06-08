@@ -1,4 +1,4 @@
-import * as expect from 'expect'
+import { expect } from '@jest/globals'
 import { cleanup } from '@testing-library/react'
 import { MessageChannel } from 'worker_threads'
 

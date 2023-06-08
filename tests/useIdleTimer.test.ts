@@ -1,5 +1,4 @@
-import { fireEvent } from '@testing-library/react'
-import { renderHook } from '@testing-library/react-hooks'
+import { fireEvent, renderHook } from '@testing-library/react'
 import { sleep, waitFor } from './test.utils'
 
 import { useIdleTimer } from '../src'
@@ -37,7 +36,8 @@ describe('useIdleTimer', () => {
       crossTab: undefined,
       name: undefined,
       syncTimers: undefined,
-      leaderElection: undefined
+      leaderElection: undefined,
+      disabled: undefined
     }
   })
 
@@ -294,9 +294,8 @@ describe('useIdleTimer', () => {
         it('Should not allow an overflowed value', () => {
           props.timeout = 2147483648
 
-          const { result } = idleTimer()
-          expect(result.error.message).toBe(
-            '❌ The value for the timeout property must fit in a 32 bit signed integer, 2147483647.'
+          expect(() => idleTimer()).toThrow(
+            new Error('❌ The value for the timeout property must fit in a 32 bit signed integer, 2147483647.')
           )
         })
 
@@ -392,9 +391,8 @@ describe('useIdleTimer', () => {
         it('Should not allow an overflowed value', () => {
           props.promptTimeout = 2147483648
 
-          const { result } = idleTimer()
-          expect(result.error.message).toBe(
-            '❌ The value for the promptTimeout property must fit in a 32 bit signed integer, 2147483647.'
+          expect(() => idleTimer()).toThrowError(
+            new Error('❌ The value for the promptTimeout property must fit in a 32 bit signed integer, 2147483647.')
           )
         })
 
@@ -434,18 +432,16 @@ describe('useIdleTimer', () => {
           props.promptTimeout = 100
           props.promptBeforeIdle = 100
 
-          const { result } = idleTimer()
-          expect(result.error.message).toBe(
-            '❌ Both promptTimeout and promptBeforeIdle can not be set. The promptTimeout property will be deprecated in a future version.'
+          expect(() => idleTimer()).toThrowError(
+            new Error('❌ Both promptTimeout and promptBeforeIdle can not be set. The promptTimeout property will be deprecated in a future version.')
           )
         })
 
         it('Should not allow an overflowed value', () => {
           props.promptBeforeIdle = 2147483648
 
-          const { result } = idleTimer()
-          expect(result.error.message).toBe(
-            '❌ The value for the promptBeforeIdle property must fit in a 32 bit signed integer, 2147483647.'
+          expect(() => idleTimer()).toThrowError(
+            new Error('❌ The value for the promptBeforeIdle property must fit in a 32 bit signed integer, 2147483647.')
           )
         })
 
@@ -453,9 +449,8 @@ describe('useIdleTimer', () => {
           props.promptBeforeIdle = 1000
           props.timeout = 1000
 
-          const { result } = idleTimer()
-          expect(result.error.message).toBe(
-            '❌ The value for the promptBeforeIdle property must be less than the timeout property, 1000.'
+          expect(() => idleTimer()).toThrowError(
+            new Error('❌ The value for the promptBeforeIdle property must be less than the timeout property, 1000.')
           )
         })
 
@@ -820,7 +815,7 @@ describe('useIdleTimer', () => {
 
         it('Should not call onIdle on larger timeouts', async () => {
           props.onIdle = jest.fn()
-          props.timeout = 2147483647
+          props.timeout = 2147483646
           idleTimer()
           await sleep(100)
           expect(props.onIdle).toHaveBeenCalledTimes(0)
@@ -1060,13 +1055,12 @@ describe('useIdleTimer', () => {
       })
 
       describe('.debounce', () => {
-        it('Should error if debounce and throttle are set', done => {
+        it('Should error if debounce and throttle are set', () => {
           jest.spyOn(console, 'error')
           props.debounce = 200
           props.throttle = 200
-          const { result } = idleTimer()
-          expect(result.error).toEqual(new Error('❌ onAction can either be throttled or debounced, not both.'))
-          done()
+          expect(() => idleTimer())
+            .toThrowError(new Error('❌ onAction can either be throttled or debounced, not both.'))
         })
 
         it('Should debounce calls to onAction', async () => {
@@ -1141,13 +1135,12 @@ describe('useIdleTimer', () => {
       })
 
       describe('.throttle', () => {
-        it('Should error if throttle and debounce are set', done => {
+        it('Should error if throttle and debounce are set', () => {
           jest.spyOn(console, 'error')
           props.throttle = 200
           props.debounce = 200
-          const { result } = idleTimer()
-          expect(result.error).toEqual(new Error('❌ onAction can either be throttled or debounced, not both.'))
-          done()
+          expect(() => idleTimer())
+            .toThrowError(new Error('❌ onAction can either be throttled or debounced, not both.'))
         })
 
         it('Should throttle calls to onAction', async () => {
@@ -1352,6 +1345,131 @@ describe('useIdleTimer', () => {
           await sleep(200)
           expect(result.current.getRemainingTime()).toBeAround(300, 20)
           expect(result2.current.getRemainingTime()).toBeAround(300, 20)
+        })
+      })
+
+      describe('.disabled', () => {
+        it('Should not start a disabled timer by default', async () => {
+          props.eventsThrottle = 0
+          props.timeout = 200
+          props.disabled = true
+          props.onActive = jest.fn()
+          const { result } = idleTimer()
+          await sleep(200)
+          expect(result.current.isIdle()).toBe(false)
+          fireEvent.mouseDown(document)
+          expect(result.current.isIdle()).toBe(false)
+          expect(props.onActive).toHaveBeenCalledTimes(0)
+        })
+
+        it('Should disable the timer when its running', async () => {
+          props.eventsThrottle = 0
+          props.timeout = 200
+          props.disabled = false
+          props.onActive = jest.fn()
+          const { result, rerender } = idleTimer()
+
+          await sleep(100)
+          expect(result.current.getRemainingTime()).toBeGreaterThan(0)
+
+          props.disabled = true
+          rerender()
+          await sleep(200)
+
+          expect(result.current.isIdle()).toBe(false)
+          fireEvent.mouseDown(document)
+
+          expect(result.current.isIdle()).toBe(false)
+          expect(props.onActive).toHaveBeenCalledTimes(0)
+        })
+
+        it('Should enable the timer when disabled', async () => {
+          props.eventsThrottle = 0
+          props.timeout = 200
+          props.disabled = false
+          props.onActive = jest.fn()
+          const { result, rerender } = idleTimer()
+
+          await sleep(100)
+          expect(result.current.getRemainingTime()).toBeGreaterThan(0)
+
+          props.disabled = true
+          rerender()
+          await sleep(200)
+
+          expect(result.current.isIdle()).toBe(false)
+          fireEvent.mouseDown(document)
+
+          expect(result.current.isIdle()).toBe(false)
+          expect(props.onActive).toHaveBeenCalledTimes(0)
+
+          props.disabled = false
+          rerender()
+
+          expect(result.current.getRemainingTime()).toBeGreaterThan(0)
+          await waitFor(() => result.current.isIdle())
+
+          fireEvent.mouseDown(document)
+          expect(props.onActive).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should respect startManually', async () => {
+          props.eventsThrottle = 0
+          props.timeout = 200
+          props.disabled = false
+          props.startManually = true
+          props.onActive = jest.fn()
+          const { result, rerender } = idleTimer()
+
+          await sleep(100)
+          expect(result.current.getRemainingTime()).toBeGreaterThan(0)
+
+          props.disabled = true
+          rerender()
+          await sleep(200)
+
+          expect(result.current.isIdle()).toBe(false)
+          fireEvent.mouseDown(document)
+
+          expect(result.current.isIdle()).toBe(false)
+          expect(props.onActive).toHaveBeenCalledTimes(0)
+
+          props.disabled = false
+          rerender()
+
+          expect(result.current.isIdle()).toBe(false)
+          fireEvent.mouseDown(document)
+
+          expect(result.current.isIdle()).toBe(false)
+          expect(props.onActive).toHaveBeenCalledTimes(0)
+
+          result.current.start()
+
+          expect(result.current.getRemainingTime()).toBeGreaterThan(0)
+          await waitFor(() => result.current.isIdle())
+
+          fireEvent.mouseDown(document)
+          expect(props.onActive).toHaveBeenCalledTimes(1)
+        })
+
+        it('Disables control methods', async () => {
+          props.eventsThrottle = 0
+          props.timeout = 200
+          props.disabled = true
+          const { result } = idleTimer()
+
+          result.current.start()
+          expect(result.current.getRemainingTime()).toBe(200)
+
+          result.current.reset()
+          expect(result.current.getRemainingTime()).toBe(200)
+
+          result.current.activate()
+          expect(result.current.getRemainingTime()).toBe(200)
+
+          result.current.resume()
+          expect(result.current.getRemainingTime()).toBe(200)
+
         })
       })
     })

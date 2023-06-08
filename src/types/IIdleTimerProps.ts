@@ -183,4 +183,13 @@ export interface IIdleTimerProps {
    * be the leader. Determine if a tab is leader using the `isLeader` method.
    */
   leaderElection?: boolean
+
+  /**
+   * Disables the timer. Disabling the timer resets the internal state.
+   * When the property is set to true (enabled), the timer will be restarted,
+   * respecting the `startManually` property. When the timer is disabled
+   * the control methods `start`, `reset`, `activate`, `pause` and `resume`
+   * will not do anything.
+   */
+  disabled?: boolean
 }

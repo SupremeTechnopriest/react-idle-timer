@@ -49,7 +49,8 @@ export function useIdleTimer ({
   crossTab = false,
   name = 'idle-timer',
   syncTimers = 0,
-  leaderElection = false
+  leaderElection = false,
+  disabled = false
 }: IIdleTimerProps = {}): IIdleTimer {
   // Time References
   const startTime = useRef<number>(now())
@@ -109,7 +110,7 @@ export function useIdleTimer ({
     }
 
     if (!firstLoad.current) {
-      if (startManually) return
+      if (startManually || disabled) return
       if (idle.current) {
         emitOnActive.current(null, idleTimer)
         if (manager.current) {
@@ -118,7 +119,7 @@ export function useIdleTimer ({
       }
       start()
     }
-  }, [timeout, promptTimeout, promptBeforeIdle, startManually])
+  }, [timeout, promptTimeout, promptBeforeIdle, startManually, disabled])
 
   const stopOnIdleRef = useRef<boolean>(stopOnIdle)
   useEffect(() => {
@@ -131,6 +132,18 @@ export function useIdleTimer ({
   const eventsRef = useRef<EventsType[]>(
     [...new Set([...events, ...immediateEvents]).values()]
   )
+
+  // Disabled handler
+  const disabledRef = useRef<boolean>(disabled)
+  useEffect(() => {
+    disabledRef.current = disabled
+    if (firstLoad) return
+    if (disabled) {
+      pause()
+    } else if (!startManually) {
+      start()
+    }
+  }, [disabled])
 
   // On Presence Change Emitter
   const emitOnPresenceChange = useRef<IPresenceChangeHandler>(onPresenceChange)
@@ -443,11 +456,11 @@ export function useIdleTimer ({
   /**
    * Set initial state and start timer.
    */
-  const start = useCallback<(remote?: boolean) => void>((remote?: boolean): void => {
+  const start = useCallback<(remote?: boolean) => boolean>((remote?: boolean): boolean => {
+    if (disabledRef.current) return false
+
     // Clear timeout
     destroyTimeout()
-
-    // console.log('here')
 
     // Bind the events
     bindEvents()
@@ -465,12 +478,15 @@ export function useIdleTimer ({
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, timeoutRef, manager])
+    return true
+  }, [tId, idle, disabledRef, timeoutRef, manager])
 
   /**
   * Restore initial state and restart timer, calling onActive
   */
-  const reset = useCallback<(remote?: boolean) => void>((remote?: boolean): void => {
+  const reset = useCallback<(remote?: boolean) => boolean>((remote?: boolean): boolean => {
+    if (disabledRef.current) return false
+
     // Clear timeout
     destroyTimeout()
 
@@ -496,12 +512,16 @@ export function useIdleTimer ({
     if (!startManually) {
       createTimeout()
     }
-  }, [tId, idle, timeoutRef, startManually, manager])
+
+    return true
+  }, [tId, idle, timeoutRef, startManually, disabledRef, manager])
 
   /**
    * Manually trigger an activation event.
    */
-  const activate = useCallback<(remote?: boolean) => void>((remote?: boolean): void => {
+  const activate = useCallback<(remote?: boolean) => boolean>((remote?: boolean): boolean => {
+    if (disabledRef.current) return false
+
     // Clear timeout
     destroyTimeout()
 
@@ -527,13 +547,16 @@ export function useIdleTimer ({
 
     // Set new timeout
     createTimeout()
-  }, [tId, idle, prompted, timeoutRef, manager])
+
+    return true
+  }, [tId, idle, prompted, disabledRef, timeoutRef, manager])
 
   /**
    * Pause a running timer.
-   *
    */
   const pause = useCallback<(remote?: boolean) => boolean>((remote: boolean = false): boolean => {
+    if (disabledRef.current) return false
+
     // Timer is already paused
     if (paused.current) return false
 
@@ -554,12 +577,14 @@ export function useIdleTimer ({
     }
 
     return true
-  }, [tId, manager])
+  }, [tId, disabledRef, manager])
 
   /**
    * Resumes a paused timer.
    */
   const resume = useCallback<(remote?: boolean) => boolean>((remote: boolean = false): boolean => {
+    if (disabledRef.current) return false
+
     // Timer is not paused
     if (!paused.current) return false
     paused.current = false
@@ -585,22 +610,24 @@ export function useIdleTimer ({
     }
 
     return true
-  }, [tId, timeoutRef, remaining, manager])
+  }, [tId, timeoutRef, disabledRef, remaining, manager])
 
   /**
    * Sends a message to all tabs.
    */
-  const message = useCallback<(data: MessageType, emitOnSelf?: boolean) => void>((data: MessageType, emitOnSelf?: boolean): void => {
+  const message = useCallback<(data: MessageType, emitOnSelf?: boolean) => boolean>((data: MessageType, emitOnSelf?: boolean): boolean => {
     if (manager.current) {
       if (emitOnSelf) emitOnMessage.current(data, idleTimer)
       manager.current.message(data)
     } else if (emitOnSelf) {
       emitOnMessage.current(data, idleTimer)
     }
+
+    return true
   }, [onMessage])
 
   /**
-   * Returns whether or not the user is idle.
+   * Returns whether the user is idle.
    *
    * @return Idle state
    */
@@ -609,7 +636,7 @@ export function useIdleTimer ({
   }, [idle])
 
   /**
-   * Return whether or not the prompt is active.
+   * Return whether the prompt is active.
    *
    * @returns Prompt state
    */
@@ -618,7 +645,7 @@ export function useIdleTimer ({
   }, [prompted])
 
   /**
-   * Returns whether or not this is the leader tab.
+   * Returns whether this is the leader tab.
    */
   const isLeader = useCallback<() => boolean>((): boolean => {
     if (!manager.current) return null
@@ -626,7 +653,7 @@ export function useIdleTimer ({
   }, [manager])
 
   /**
-   * Returns whether or not this is the last active tab.
+   * Returns whether this is the last active tab.
    */
   const isLastActiveTab = useCallback<() => boolean>((): boolean => {
     if (!manager.current) return null
@@ -834,13 +861,13 @@ export function useIdleTimer ({
       destroyTimeout()
       unbindEvents(true)
     }
-    if (startManually) return
+    if (startManually || disabled) return
     if (startOnMount) {
       start()
     } else {
       bindEvents()
     }
-  }, [startManually, startOnMount, firstLoad])
+  }, [startManually, startOnMount, disabled, firstLoad])
 
   // Dynamic events and element
   useEffect(() => {
@@ -852,7 +879,7 @@ export function useIdleTimer ({
       eventsRef.current = newEvents
       elementRef.current = element
       immediateEventsRef.current = immediateEvents
-      if (startManually) return
+      if (startManually || disabled) return
       if (startOnMount) {
         start()
       } else {
@@ -864,6 +891,7 @@ export function useIdleTimer ({
     JSON.stringify(events),
     JSON.stringify(immediateEvents),
     firstLoad,
+    disabled,
     startManually,
     startOnMount
   ])

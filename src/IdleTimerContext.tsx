@@ -1,15 +1,12 @@
 import React, { PropsWithChildren, createContext, useContext } from 'react'
-import { IIdleTimer, IIdleTimerProps, useIdleTimer } from '.'
+import { useIdleTimer } from '.'
+
+import type { IIdleTimer, IIdleTimerProps } from '.'
 
 /**
  * IdleTimer Context.
  */
 export const IdleTimerContext = createContext<IIdleTimer>(null)
-
-/**
- * Context interface Type.
- */
-export type IIdleTimerContext = typeof IdleTimerContext
 
 /**
  * Provider for adding IdleTimer to Children.
