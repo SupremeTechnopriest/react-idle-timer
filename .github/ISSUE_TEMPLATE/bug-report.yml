@@ -47,6 +47,8 @@ body:
       label: Module Version
       description: Select the version you are running.
       options:
+        - 5.7.2
+        - 5.7.1
         - 5.7.0
         - 5.6.2
         - 5.6.1
