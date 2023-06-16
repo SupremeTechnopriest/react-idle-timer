@@ -9,12 +9,12 @@
     ".": {
       "types": "./dist/index.d.ts",
       "require": "./dist/index.cjs.js",
-      "import": "./dist/index.esm.js"
+      "import": "./dist/index.esm.mjs"
     },
     "./legacy": {
       "types": "./dist/index.d.ts",
       "require": "./dist/index.legacy.cjs.js",
-      "import": "./dist/index.legacy.esm.js"
+      "import": "./dist/index.legacy.esm.mjs"
     }
   },
   "scripts": {
