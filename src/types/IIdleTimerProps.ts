@@ -98,7 +98,8 @@ export interface IIdleTimerProps {
   onAction?: (event?: Event, idleTimer?: IIdleTimer) => void
 
   /**
-   * Function to call when message is has been emitted.
+   * Function to call when message is has been emitted, when `crossTab` is set
+   * to `true`.
    *
    * @default () => {}
    */
@@ -166,21 +167,31 @@ export interface IIdleTimerProps {
 
   /**
    * Name of this IdleTimer instance. Useful if you are instantiating multiple
-   * IdleTimer instances with crossTab enabled.
+   * IdleTimer instances with `crossTab` enabled.
    */
   name?: string
 
   /**
-   * Sync the timers across all tabs. The value is the interval in which timers
-   * will be synced. Setting it to 0 is equivalent to turning the feature off.
+   * Sync the timers across all tabs,, when `crossTab` is set to `true`. The value
+   * is the interval in which timers will be synced. Setting it to 0 is equivalent
+   * to turning the feature off. A good baseline value would be 200(ms).
+   *
+   * Generally, set either this or `leaderElection: true`, not both.
+   * If you want all your tabs to be in the same state, use `syncTimers`
    *
    * @default 0
    */
   syncTimers?: number
 
   /**
-   * Enables the leader election feature. Leader Election will assign one tab to
-   * be the leader. Determine if a tab is leader using the `isLeader` method.
+   * Enables the leader election feature, when `crossTab` is set to `true`.
+   * Leader Election will assign one tab to be the leader. Determine if a tab
+   * is leader using the `isLeader` method.
+   *
+   * Generally, set either this or `syncTimers`, not both.
+   * If you want your events to fire only in one tab, use `leaderElection`
+   *
+   * @default false
    */
   leaderElection?: boolean
 
