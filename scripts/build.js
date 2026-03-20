@@ -6,9 +6,9 @@ const { es5Plugin } = require('esbuild-plugin-es5')
 
 const entry = './src/index.ts'
 const outLegacyCJS = './dist/index.legacy.cjs.js'
-const outLegacyESM = './dist/index.legacy.esm.js'
+const outLegacyESM = './dist/index.legacy.esm.mjs'
 const outCJS = './dist/index.cjs.js'
-const outESM = './dist/index.esm.js'
+const outESM = './dist/index.esm.mjs'
 
 // Clear destination folder
 fs.emptyDirSync('./dist')
